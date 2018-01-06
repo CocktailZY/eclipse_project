@@ -81,20 +81,16 @@
                         <i class="iconfont">&#xe642;</i>
                     </a>
                     <ul class="sider-nav-s">
-                        <li class="active"><a href="#">商品审核</a></li>
-                        <li><a href="#">品牌管理</a></li>
+                        <li class="active"><a href="javascript:void(0);" onclick="toPage('goodsList',this);">商品审核</a></li>
+                        <li><a href="javascript:void(0);" onclick="toPage('ppList',this);">品牌管理</a></li>
                     </ul>
                 </li>
                 <li>
-                    <a href="javascript:;">
+                    <a href="javascript:void(0);" onclick="toPage('expressList',this);">
                         <span class="iconfont sider-nav-icon">&#xe60d;</span>
                         <span class="sider-nav-title">快递管理</span>
                         <i class="iconfont">&#xe642;</i>
                     </a>
-                    <ul class="sider-nav-s">
-                        <li class=""><a href="#">商品审核</a></li>
-                        <li><a href="#">品牌管理</a></li>
-                    </ul>
                 </li>
             </ul>
         </div>
@@ -105,10 +101,10 @@
                     <iframe class="page-iframe" src="welcome.html" frameborder="no" border="no" height="100%" width="100%"
                             scrolling="auto"></iframe>
                 </div>
-                <div title="商品审核" style="padding:10px 5px 5px 10px;">
+                <!--<div title="商品审核" data-options="closable:true" style="padding:10px 5px 5px 10px;">
                     <iframe class="page-iframe" src="index.html" frameborder="no" border="no" height="100%" width="100%"
                             scrolling="auto"></iframe>
-                </div>
+                </div>-->
             </div>
         </div>
     </div>
@@ -128,6 +124,7 @@
 <script type="text/javascript" src="lib/jquery.min.js"></script>
 <script type="text/javascript" src="lib/jquery.easyui.min.js"></script>
 <!-- <script type="text/javascript" src="js/menu.js"></script> -->
+<script type="text/javascript" src="lib/custom/util.js"></script>
 <script type="text/javascript" src="js/main.js"></script>
 <!--[if IE 7]>
 <script type="text/javascript">
@@ -149,7 +146,7 @@
             }
         }
     })
-    $(window).resize(function () {
+    /*$(window).resize(function () {
         $('.tabs-panels').height($("#pf-page").height() - 46);
         $('.panel-body').height($("#pf-page").height() - 76)
     }).resize();
@@ -185,7 +182,7 @@
             }
 
         }
-    })
+    })*/
 
     // setTimeout(function(){
     //    $('.tabs-panels').height($("#pf-page").height()-46);

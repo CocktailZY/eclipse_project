@@ -9,24 +9,38 @@
 <body>
     <div style="margin:20px 0"></div>
     <div style="width: 100%;clear: both;"><!--easyui-draggable-->
-        <div style="float: left; width: 70%">
-            <p style="font-size:14px">欢迎登录后台管理系统</p>
+        <div style="float: left; width: 59%">
+            <h3>欢迎登录后台管理系统</h3>
             <ul>
-                <li id="nowTime">当前时间：<span>2017-01-03 17:34</span></li>
-                <li>easyui provides essential functionality for building modem, interactive, javascript applications.</li>
-                <li>complete framework for HTML5 web page.</li>
-                <li>easyui save your time and scales while developing your products.</li>
-                <li>easyui is very easy but powerful.</li>
+                <li>当前时间：<span id="nowDate"></span><span id="nowTime"></span></li>
+                <li>当前运行浏览器：<span id="browser"></span></li>
+                <li>当前运行环境：<span id="OS"></span></li>
             </ul>
         </div>
-        <div class="easyui-calendar" style="width:250px;height:250px;float: right; width: 30%"></div>
+        <div class="easyui-calendar" style="width:250px;height:250px;float: left; width: 40%"></div>
     </div>
     <script type="text/javascript" src="lib/jquery.min.js"></script>
     <script type="text/javascript" src="lib/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="lib/custom/util.js"></script>
     <script type="text/javascript">
-//        $(function(){
-//            $('#nowTime').text()
-//        })
+        $(function(){
+            var newDate = new Date();
+            var nowDate = newDate.getFullYear()+'-'+p(newDate.getMonth()+1)+'-'+p(newDate.getDate());
+            $('#nowDate').text(nowDate);
+            $('#nowTime').text(' '+p(newDate.getHours())+':'+p(newDate.getMinutes())+':'+p(newDate.getSeconds()));
+            setInterval(function(){
+                var newTime = new Date();
+                var h=newTime.getHours();
+                var m=newTime.getMinutes();
+                var s=newTime.getSeconds();
+                $('#nowTime').text(' '+p(h)+':'+p(m)+':'+p(s));
+            },1000);
+            $('#browser').text(Util.getBrowser());
+            $('#OS').text(Util.getOS() + ' ' +Util.get32_64());
+        });
+        function p(s) {
+            return s < 10 ? '0' + s: s;
+        }
     </script>
 </body>
 </html>

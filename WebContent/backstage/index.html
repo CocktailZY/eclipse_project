@@ -12,36 +12,13 @@
 </head>
 <body>
 <div class="container">
-    <table id="dg" style="width:100%;height:600px;" title="商品申请列表" data-options="
-                align:'center',
-                rownumbers:false,
-                singleSelect:true,
-                autoRowHeight:false,
-                pagination:true,
-                fitColumns:true,
-                striped:false,
-                checkOnSelect:true,
-                selectOnCheck:true,
-                collapsible:false,
-                toolbar:'#tb',
-                pageSize:10">
-        <thead>
-        <tr>
-            <th data-options="field:'ck',checkbox:true"></th>
-            <th data-options="field:'code', width:110, align:'center'">商品编码</th>
-            <th data-options="field:'name', width:226, align:'center'">商品名称</th>
-            <th data-options="field:'level', width:112, align:'center'">商品描述</th>
-            <th data-options="field:'provide', width:170, align:'center'">商品类型</th>
-            <th data-options="field:'full', width:100, align:'center'">商品图片</th>
-            <th data-options="field:'status', width:120, align:'center'">审核状态</th>
-        </tr>
-        </thead>
-    </table>
+    <!-- 查询结果显示 -->
+    <table id="tt"></table>
     <div id="tb" style="padding:0 30px;">
-        <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-add'" onclick="append()">通过</a>
-        <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-undo'" onclick="reject()">拒绝</a>
-        供应商编码: <input class="easyui-textbox" type="text" name="code" style="width:166px;height:35px;line-height:35px;"></input>
-        供应商名称: <input class="easyui-textbox" type="text" name="name" style="width:166px;height:35px;line-height:35px;"></input>
+        <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-add'" onclick="appendFunc()">通过</a>
+        <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-undo'" onclick="rejectFunc()">拒绝</a>
+        商品编码: <input class="easyui-textbox" type="text" name="code" style="width:166px;height:35px;line-height:35px;"></input>
+        商品名称: <input class="easyui-textbox" type="text" name="name" style="width:166px;height:35px;line-height:35px;"></input>
         <a href="#" class="easyui-linkbutton" iconCls="icon-search" data-options="selected:true">查询</a>
         <a href="#" class="easyui-linkbutton" iconCls="icon-reload">重置</a>
     </div>
@@ -49,132 +26,69 @@
 <script type="text/javascript" src="lib/jquery.min.js"></script>
 <script type="text/javascript" src="lib/jquery.easyui.min.js"></script>
 <script type="text/javascript" src="lib/easyui-lang-zh_CN.js"></script>
-
-
-
-
-
+<script type="text/javascript" src="lib/datagrid-detailview.js"></script>
+<script type="text/javascript" src="lib/custom/pageFilter.js"></script>
 
 <script type="text/javascript">
-    (function($){
-        function pagerFilter(data){
-            if ($.isArray(data)){   // is array
-                data = {
-                    total: data.length,
-                    rows: data
-                }
+    $(function(){
+        $('#tt').datagrid({
+            title:'商品申请列表',
+            width:'auto',
+            height:600,
+            idField:"itemid",
+            rownumbers:false,
+            singleSelect:false,
+            autoRowHeight:false,
+            pagination:true,
+            fitColumns:true,
+            striped:true,
+            checkOnSelect:true,
+            selectOnCheck:true,
+            collapsible:true,
+            toolbar:'#tb',
+            pageSize:10,
+            data:getData(),
+            columns:[[
+                {field:'ck',checkbox:true,width:'5%'},
+                {field:'itemid',title:'商品编号',width:'10%',align:'center',sortable:true},
+                {field:'productid',title:'商品名称',width:'15%',align:'center'},
+                {field:'listprice',title:'价格',width:'10%',align:'center',sortable:true},
+                {field:'unitcost',title:'商品描述',width:'50%',align:'center'},
+                {field:'status',title:'商品状态',width:'10%',align:'center',sortable:true},
+            ]],
+            view: detailview,
+            detailFormatter: function(rowIndex, rowData){
+                return '<table><tr>' +
+                    '<td rowspan=7 style="border:0"><img src="images/' + rowData.itemid + '.png" style="height:100px;">' +
+                    '<img src="images/' + rowData.itemid + '.png" style="height:100px;">' +
+                    '<img src="images/' + rowData.itemid + '.png" style="height:100px;">' +
+                    '<img src="images/' + rowData.itemid + '.png" style="height:100px;">' +
+                    '<img src="images/' + rowData.itemid + '.png" style="height:100px;">' +
+                    '</td></tr></table>';
             }
-            var target = this;
-            var dg = $(target);
-            var state = dg.data('datagrid');
-            var opts = dg.datagrid('options');
-            if (!state.allRows){
-                state.allRows = (data.rows);
-            }
-            if (!opts.remoteSort && opts.sortName){
-                var names = opts.sortName.split(',');
-                var orders = opts.sortOrder.split(',');
-                state.allRows.sort(function(r1,r2){
-                    var r = 0;
-                    for(var i=0; i<names.length; i++){
-                        var sn = names[i];
-                        var so = orders[i];
-                        var col = $(target).datagrid('getColumnOption', sn);
-                        var sortFunc = col.sorter || function(a,b){
-                                return a==b ? 0 : (a>b?1:-1);
-                            };
-                        r = sortFunc(r1[sn], r2[sn]) * (so=='asc'?1:-1);
-                        if (r != 0){
-                            return r;
-                        }
-                    }
-                    return r;
-                });
-            }
-            var start = (opts.pageNumber-1)*parseInt(opts.pageSize);
-            var end = start + parseInt(opts.pageSize);
-            data.rows = state.allRows.slice(start, end);
-            return data;
-        }
+        }).datagrid('clientPaging');
 
-        var loadDataMethod = $.fn.datagrid.methods.loadData;
-        var deleteRowMethod = $.fn.datagrid.methods.deleteRow;
-        $.extend($.fn.datagrid.methods, {
-            clientPaging: function(jq){
-                return jq.each(function(){
-                    var dg = $(this);
-                    var state = dg.data('datagrid');
-                    var opts = state.options;
-                    opts.loadFilter = pagerFilter;
-                    var onBeforeLoad = opts.onBeforeLoad;
-                    opts.onBeforeLoad = function(param){
-                        state.allRows = null;
-                        return onBeforeLoad.call(this, param);
-                    }
-                    var pager = dg.datagrid('getPager');
-                    pager.pagination({
-                        onSelectPage:function(pageNum, pageSize){
-                            opts.pageNumber = pageNum;
-                            opts.pageSize = pageSize;
-                            pager.pagination('refresh',{
-                                pageNumber:pageNum,
-                                pageSize:pageSize
-                            });
-                            dg.datagrid('loadData',state.allRows);
-                        }
-                    });
-                    $(this).datagrid('loadData', state.data);
-                    if (opts.url){
-                        $(this).datagrid('reload');
-                    }
-                });
-            },
-            loadData: function(jq, data){
-                jq.each(function(){
-                    $(this).data('datagrid').allRows = null;
-                });
-                return loadDataMethod.call($.fn.datagrid.methods, jq, data);
-            },
-            deleteRow: function(jq, index){
-                return jq.each(function(){
-                    var row = $(this).datagrid('getRows')[index];
-                    deleteRowMethod.call($.fn.datagrid.methods, $(this), index);
-                    var state = $(this).data('datagrid');
-                    if (state.options.loadFilter == pagerFilter){
-                        for(var i=0; i<state.allRows.length; i++){
-                            if (state.allRows[i] == row){
-                                state.allRows.splice(i,1);
-                                break;
-                            }
-                        }
-                        $(this).datagrid('loadData', state.allRows);
-                    }
-                });
-            },
-            getAllRows: function(jq){
-                return jq.data('datagrid').allRows;
-            }
-        })
-    })(jQuery);
-
+    });
     function getData(){
         var rows = [];
-        for(var i=1; i<=800; i++){
+        for(var i=1; i<=30; i++){
             rows.push({
-                code: '10695',
-                name: '南京天泽星网股份有限公司',
-                level: '正式',
-                provide: '光纤通信设备配件',
-                full: '查看',
+                itemid: 'EST-1',//记得添加唯一标识可在不同页面保持选中状态
+                productid: '南京天泽星网股份有限公司',
+                listprice: '10',
+                unitcost: '光纤通信设备配件',
                 status:'已审核'
             });
         }
         return rows;
     }
+    function appendFunc(){
 
-    $(function(){
-        $('#dg').datagrid({data:getData()}).datagrid('clientPaging');
-    });
+    }
+    function rejectFunc(){
+
+    }
+
 </script>
 </body>
 </html>

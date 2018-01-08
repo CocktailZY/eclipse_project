@@ -74,19 +74,19 @@
             </h2>
 
             <ul class="sider-nav">
-                <li class="current">
+                <li class="firstMenu">
                     <a href="javascript:;">
                         <span class="iconfont sider-nav-icon">&#xe620;</span>
                         <span class="sider-nav-title">商品管理</span>
                         <i class="iconfont">&#xe642;</i>
                     </a>
                     <ul class="sider-nav-s">
-                        <li><a href="javascript:void(0);" onclick="toPage('商品审核','index.html');">商品审核</a></li>
-                        <li><a href="javascript:void(0);" onclick="toPage('品牌管理','ppList.html');">品牌管理</a></li>
+                        <li><a href="javascript:void(0);" onclick="toPage('商品审核','index.html',this);">商品审核</a></li>
+                        <li><a href="javascript:void(0);" onclick="toPage('品牌管理','ppList.html',this);">品牌管理</a></li>
                     </ul>
                 </li>
-                <li>
-                    <a href="javascript:void(0);" onclick="toPage('快递管理','expressList.html');">
+                <li class="firstMenu">
+                    <a href="javascript:void(0);" onclick="toPage('快递管理','expressList.html',this);">
                         <span class="iconfont sider-nav-icon">&#xe60d;</span>
                         <span class="sider-nav-title">快递管理</span>
                         <i class="iconfont">&#xe642;</i>
@@ -140,10 +140,30 @@
     $('.easyui-tabs1').tabs({
         tabHeight: 44,
         onSelect: function (title, index) {
+            if(index > 0){
+                $('.sider-nav li').removeClass('current');
+                $('.sider-nav-s li').removeClass('active');
+                $('.sider-nav-s').find('li').each(function(){
+                    if($(this).find('a').text() == title){
+                        $(this).addClass('active');
+                        $(this).parents('.firstMenu').addClass('current');
+                    }
+                });
+            }
             var currentTab = $('.easyui-tabs1').tabs("getSelected");
             if (currentTab.find("iframe") && currentTab.find("iframe").size()) {
                 currentTab.find("iframe").attr("src", currentTab.find("iframe").attr("src"));
             }
+        },
+        onClose: function(title, index){
+            if(index > 0){
+                $('.sider-nav-s').find('li').each(function(){
+                    if($(this).find('a').text() == title){
+                        $(this).removeClass('active');
+                    }
+                });
+            }
+
         }
     });
     /*$(window).resize(function () {
@@ -188,7 +208,10 @@
     //    $('.tabs-panels').height($("#pf-page").height()-46);
     //    $('.panel-body').height($("#pf-page").height()-76)
     // }, 200)
-    function toPage(title, url){
+    function toPage(title, url,thisObj){
+        $('.sider-nav-s li').removeClass('active');
+        $(thisObj).parent('li').addClass('active');
+
         if ($('#tabs').tabs('exists', title)){
             $('#tabs').tabs('select', title);
         } else {

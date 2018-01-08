@@ -29,7 +29,7 @@ var Util = {
     },
     getOS: function(){
         var sUserAgent = navigator.userAgent;
-        var isWin = (navigator.platform == "Win32") || (navigator.platform == "Windows");
+        var isWin = (navigator.platform == "Win32") || (navigator.platform == "Windows") || (navigator.platform == "Win64");
         var isMac = (navigator.platform == "Mac68K") || (navigator.platform == "MacPPC") || (navigator.platform == "Macintosh") || (navigator.platform == "MacIntel");
         if (isMac) return "Mac";
         var isUnix = (navigator.platform == "X11") && !isWin && !isMac;
@@ -53,12 +53,17 @@ var Util = {
         return "None";
     },
     get32_64: function(){
-      var OSAgent = navigator.appVersion;
-      if(OSAgent.indexOf("64") > -1){
-          return "64位";
+      var isWin = (navigator.platform == "Win32") || (navigator.platform == "Windows") || (navigator.platform == "Win64");
+      if(isWin){
+          if(navigator.platform.indexOf("64") > -1){
+              return "64位";
+          }else{
+              return "32位";
+          }
       }else{
-          return "32位";
+          return '';
       }
+
     },
     queryString: function (val) {
         var uri = decodeURI(window.location.search, "UTF-8");

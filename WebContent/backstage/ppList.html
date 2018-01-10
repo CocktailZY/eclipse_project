@@ -8,62 +8,95 @@
 
     <script type="text/javascript" src="lib/jquery.min.js"></script>
     <script type="text/javascript" src="lib/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="lib/custom/pageFilter.js"></script>
 </head>
 <body>
-<h2>Row Editing in DataGrid</h2>
-<p>Click the row to start editing.</p>
-<div style="margin:20px 0;"></div>
+<div class="container">
 
-<table id="dg" class="easyui-datagrid" title="Row Editing in DataGrid" style="width:700px;height:auto"
-       data-options="
-				iconCls: 'icon-edit',
-				singleSelect: true,
-				toolbar: '#tb',
-				url: 'datagrid_data1.json',
-				method: 'get',
-				onClickRow: onClickRow
-			">
-    <thead>
-    <tr>
-        <th data-options="field:'itemid',width:80">Item ID</th>
-        <th data-options="field:'productid',width:100,
-						formatter:function(value,row){
-							return row.productname;
-						},
-						editor:{
-							type:'combobox',
-							options:{
-								valueField:'productid',
-								textField:'productname',
-								method:'get',
-								url:'products.json',
-								required:true
-							}
-						}">Product</th>
-        <th data-options="field:'listprice',width:80,align:'right',editor:{type:'numberbox',options:{precision:1}}">List Price</th>
-        <th data-options="field:'unitcost',width:80,align:'right',editor:'numberbox'">Unit Cost</th>
-        <th data-options="field:'attr1',width:250,editor:'textbox'">Attribute</th>
-        <th data-options="field:'status',width:60,align:'center',editor:{type:'checkbox',options:{on:'P',off:''}}">Status</th>
-    </tr>
-    </thead>
-</table>
+    <table id="dg"></table>
 
-<div id="tb" style="height:auto">
-    <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true" onclick="append()">Append</a>
-    <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true" onclick="removeit()">Remove</a>
-    <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-save',plain:true" onclick="accept()">Accept</a>
-    <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-undo',plain:true" onclick="reject()">Reject</a>
-    <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-search',plain:true" onclick="getChanges()">GetChanges</a>
+    <div id="tb" style="height:auto">
+        <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:false"
+           onclick="addRemark()">新增</a>
+        <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:false"
+           onclick="removeit()">删除</a>
+        <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-save',plain:false"
+           onclick="accept()">保存</a>
+        <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-undo',plain:false"
+           onclick="cancelrow()">撤回</a>
+        商品编码: <input class="easyui-textbox" type="text" name="code" style="width:166px;height:35px;line-height:35px;"></input>
+        商品名称: <input class="easyui-textbox" type="text" name="name" style="width:166px;height:35px;line-height:35px;"></input>
+        <a href="#" class="easyui-linkbutton" iconCls="icon-search" data-options="selected:true">查询</a>
+        <a href="#" class="easyui-linkbutton" iconCls="icon-reload">重置</a>
+    </div>
 </div>
 
 <script type="text/javascript">
+    $(function(){
+        $('#dg').datagrid({
+            title:'品牌列表',
+            width:'auto',
+            height:600,
+            rownumbers:false,
+            singleSelect:true,
+            autoRowHeight:false,
+            pagination:true,
+            fitColumns:true,
+            striped:true,
+            checkOnSelect:true,
+            selectOnCheck:true,
+            collapsible:true,
+            toolbar:'#tb',
+            pageSize:10,
+            data:getData(),
+            columns:[[
+                {field:'ck',checkbox:true,width:'5%'},
+                {field:'pid',title:'品牌编号',width:'10%',align:'center',sortable:true},
+                {field:'pname',title:'品牌名称',width:'85%',align:'center',editor:'text'},
+            ]],
+            onDblClickRow: onClickCell,
+            onBeforeEdit:function(index,row){
+                /*//修改时要获取选择到的行
+                var rows = row;
+                //如果只选择了一行则可以进行修改，否则不操作
+                if (rows.length == 1) {
+                    //修改之前先关闭已经开启的编辑行，当调用endEdit该方法时会触发onAfterEdit事件
+                    if (index != undefined) {
+                        $('#dg').datagrid("endEdit", index);
+                    }
+                    //当无编辑行时
+                    if (index == undefined) {
+                        //获取到当前选择行的下标
+                        var index = $('#dg').datagrid("getRowIndex", rows[0]);
+                        //开启编辑
+                        $('#dg').datagrid("beginEdit", index);
+                        //把当前开启编辑的行赋值给全局变量editRow
+                        //应该取消当前列表的所有选择行，要不然双击之后无法再选择其他行进行编辑
+                        $('#dg').datagrid("unselectAll");
+                    }
+                }*/
+            },
+            onAfterEdit:function(index,row){
+            },
+            onCancelEdit:function(index,row){
+            }
+        }).datagrid('clientPaging');
+    });
+    function getData(){
+        var rows = [];
+        for(var i=1; i<=30; i++){
+            rows.push({
+                pid: 'pid-'+i,//记得添加唯一标识可在不同页面保持选中状态
+                pname: '苹果',
+            });
+        }
+        return rows;
+    }
+    //可编辑行
     var editIndex = undefined;
     function endEditing(){
         if (editIndex == undefined){return true}
         if ($('#dg').datagrid('validateRow', editIndex)){
-            var ed = $('#dg').datagrid('getEditor', {index:editIndex,field:'productid'});
-            var productname = $(ed.target).combobox('getText');
-            $('#dg').datagrid('getRows')[editIndex]['productname'] = productname;
             $('#dg').datagrid('endEdit', editIndex);
             editIndex = undefined;
             return true;
@@ -71,44 +104,78 @@
             return false;
         }
     }
-    function onClickRow(index){
+    //修改的方式是直接点击单元格，所以table要加上onClickCell属性，然后重写onClickCell方法
+    function onClickCell(index, field){
+
         if (editIndex != index){
             if (endEditing()){
                 $('#dg').datagrid('selectRow', index)
                     .datagrid('beginEdit', index);
+                var ed = $('#dg').datagrid('getEditor', {index:index,field:field});
+                ($(ed.target).data('textbox') ? $(ed.target).textbox('textbox') : $(ed.target)).focus();
                 editIndex = index;
             } else {
                 $('#dg').datagrid('selectRow', editIndex);
             }
         }
     }
-    function append(){
+    // 添加
+    function addRemark(){
         if (endEditing()){
-            $('#dg').datagrid('appendRow',{status:'P'});
+            $('#dg').datagrid('appendRow',{'pid':'pid-'});
             editIndex = $('#dg').datagrid('getRows').length-1;
             $('#dg').datagrid('selectRow', editIndex)
                 .datagrid('beginEdit', editIndex);
         }
     }
+    // 删除
     function removeit(){
-        if (editIndex == undefined){return}
-        $('#dg').datagrid('cancelEdit', editIndex)
-            .datagrid('deleteRow', editIndex);
-        editIndex = undefined;
+
+        $.messager.confirm('Confirm','确认删除?',function(r){
+            if (r){
+                var row = $('#dg').datagrid('getSelected');
+                var rindex = $('#dg').datagrid('getRowIndex', row);
+                //alert(rindex);   
+                $('#dg').datagrid('deleteRow', rindex);
+//                $.ajax({
+//                    url : '<%=path%>/mbFlup/deleteFlupCycle.do',
+//                    type : 'POST',
+//                    timeout : 60000,
+//                    success : function(data) {
+//                        var msg = '删除';
+//                        if (data) {
+//                            $obj.datagrid('deleteRow', rindex);
+//                            //$obj.datagrid('reload');  
+//                            $.messager.alert('提示', msg + '成功！', 'info', function() {
+//                                //window.location.href = root + 'esbService/initSysConfig.do';  
+//                            });
+//                        } else {
+//                            $.messager.alert('提示', msg + '失败！', 'error', function() {
+//                                //window.location.href = root + 'esbService/initSysConfig.do';  
+//                            });
+//                        }
+//                    }
+//                });
+            }
+        });
+
     }
+    // 保存方法（添加修改用了一个方法accept()）
     function accept(){
-        if (endEditing()){
-            $('#dg').datagrid('acceptChanges');
+        if (endEditing()) {
+            var row = $('#remark_dg').datagrid('getSelected');
+            //发ajax请求后台
         }
     }
-    function reject(){
-        $('#dg').datagrid('rejectChanges');
-        editIndex = undefined;
+
+    function cancelrow(){
+        if(endEditing()){
+            var row = $('#dg').datagrid('getSelected');
+            var rindex = $('#dg').datagrid('getRowIndex', row);
+            $('#dg').datagrid('rejectChanges', rindex);
+        }
     }
-    function getChanges(){
-        var rows = $('#dg').datagrid('getChanges');
-        alert(rows.length+' rows are changed!');
-    }
+
 </script>
 </body>
 </html>

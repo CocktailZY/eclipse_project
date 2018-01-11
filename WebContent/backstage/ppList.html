@@ -16,13 +16,13 @@
     <table id="dg"></table>
 
     <div id="tb" style="height:auto">
-        <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:false"
+        <a href="javascript:void(0)" id="addBtn" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:false"
            onclick="addRemark()">新增</a>
-        <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:false"
+        <a href="javascript:void(0)" id="delBtn" class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:false"
            onclick="removeit()">删除</a>
-        <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-save',plain:false"
-           onclick="accept()">保存</a>
-        <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-undo',plain:false"
+        <a href="javascript:void(0)" id="saveBtn" class="easyui-linkbutton" data-options="iconCls:'icon-save',plain:false"
+           onclick="acceptRow()">保存</a>
+        <a href="javascript:void(0)" id="rejectBtn" class="easyui-linkbutton" data-options="iconCls:'icon-undo',plain:false"
            onclick="cancelrow()">撤回</a>
         商品编码: <input class="easyui-textbox" type="text" name="code" style="width:166px;height:35px;line-height:35px;"></input>
         商品名称: <input class="easyui-textbox" type="text" name="name" style="width:166px;height:35px;line-height:35px;"></input>
@@ -55,6 +55,23 @@
                 {field:'pname',title:'品牌名称',width:'85%',align:'center',editor:'text'},
             ]],
             onDblClickRow: onClickCell,
+            onClickRow:function(rowIndex, rowData){
+                var indexs = $(this).datagrid('getEditingRowIndexs');
+                if(indexs.length > 0){
+                    $.each(indexs,function(index,item){
+                        $('#dg').datagrid('rejectChanges', item);
+                        $('#dg').datagrid("endEdit", item);
+                    });
+                }
+//                $('#addBtn').linkbutton('disable');
+//                $('#delBtn').linkbutton('enable');
+//                $('#saveBtn').linkbutton('enable');
+//                $('#rejectBtn').linkbutton('enable');
+            },
+           /* onClickCell: function(index,field,value){
+                $(this).datagrid('beginEdit', index);
+                var ed = $(this).datagrid('getEditor', {index:index,field:field});
+            },*/
             onBeforeEdit:function(index,row){
                 /*//修改时要获取选择到的行
                 var rows = row;
@@ -79,6 +96,11 @@
             onAfterEdit:function(index,row){
             },
             onCancelEdit:function(index,row){
+            },
+            onLoadSuccess:function(){
+//                $('#delBtn').linkbutton('disable');
+//                $('#saveBtn').linkbutton('disable');
+//                $('#rejectBtn').linkbutton('disable');
             }
         }).datagrid('clientPaging');
     });
@@ -92,6 +114,19 @@
         }
         return rows;
     }
+    $.extend($.fn.datagrid.methods, {
+        getEditingRowIndexs: function(jq) {
+            var rows = $.data(jq[0], "datagrid").panel.find('.datagrid-row-editing');
+            var indexs = [];
+            rows.each(function(i, row) {
+                var index = row.sectionRowIndex;
+                if (indexs.indexOf(index) == -1) {
+                    indexs.push(index);
+                }
+            });
+            return indexs;
+        }
+    });
     //可编辑行
     var editIndex = undefined;
     function endEditing(){
@@ -99,19 +134,29 @@
         if ($('#dg').datagrid('validateRow', editIndex)){
             $('#dg').datagrid('endEdit', editIndex);
             editIndex = undefined;
+//            $('#addBtn').linkbutton('enable');
+//            $('#delBtn').linkbutton('disable');
+//            $('#saveBtn').linkbutton('disable');
+//            $('#rejectBtn').linkbutton('disable');
             return true;
         } else {
+//            $('#addBtn').linkbutton('disable');
+//            $('#delBtn').linkbutton('enable');
+//            $('#saveBtn').linkbutton('enable');
+//            $('#rejectBtn').linkbutton('enable');
             return false;
         }
     }
     //修改的方式是直接点击单元格，所以table要加上onClickCell属性，然后重写onClickCell方法
     function onClickCell(index, field){
+        console.log(index);
+        console.log(field);
 
         if (editIndex != index){
             if (endEditing()){
                 $('#dg').datagrid('selectRow', index)
                     .datagrid('beginEdit', index);
-                var ed = $('#dg').datagrid('getEditor', {index:index,field:field});
+                var ed = $('#dg').datagrid('getEditor', {index:index,field:'pname'});
                 ($(ed.target).data('textbox') ? $(ed.target).textbox('textbox') : $(ed.target)).focus();
                 editIndex = index;
             } else {
@@ -121,22 +166,34 @@
     }
     // 添加
     function addRemark(){
+//        $('#addBtn').linkbutton('disable');
+//        $('#delBtn').linkbutton('enable');
+//        $('#saveBtn').linkbutton('enable');
+//        $('#rejectBtn').linkbutton('enable');
         if (endEditing()){
-            $('#dg').datagrid('appendRow',{'pid':'pid-'});
-            editIndex = $('#dg').datagrid('getRows').length-1;
+            editIndex = 0;
+//            $('#dg').datagrid('insertRow',{'pid':'pid-'});
+            $('#dg').datagrid('insertRow',{
+                index: editIndex,  // 索引从0开始
+                row: {'ck': true,'pid':'pid-'}
+            });
+//            editIndex = $('#dg').datagrid('getRows').length-1;
             $('#dg').datagrid('selectRow', editIndex)
                 .datagrid('beginEdit', editIndex);
+            var ed = $('#dg').datagrid('getEditor', {index:editIndex,field:'pname'});
+            ($(ed.target).data('textbox') ? $(ed.target).textbox('textbox') : $(ed.target)).focus();
         }
     }
     // 删除
     function removeit(){
-
-        $.messager.confirm('Confirm','确认删除?',function(r){
-            if (r){
-                var row = $('#dg').datagrid('getSelected');
-                var rindex = $('#dg').datagrid('getRowIndex', row);
-                //alert(rindex);   
-                $('#dg').datagrid('deleteRow', rindex);
+        $.messager.defaults = {ok: '确定', cancel: '取消', width: '200px'};
+        var row = $('#dg').datagrid('getSelected');
+        if(row){
+            $.messager.confirm('操作提示','确认删除?',function(r){
+                if (r){
+                    var rindex = $('#dg').datagrid('getRowIndex', row);
+                    //alert(rindex);
+                    $('#dg').datagrid('deleteRow', rindex);
 //                $.ajax({
 //                    url : '<%=path%>/mbFlup/deleteFlupCycle.do',
 //                    type : 'POST',
@@ -145,30 +202,48 @@
 //                        var msg = '删除';
 //                        if (data) {
 //                            $obj.datagrid('deleteRow', rindex);
-//                            //$obj.datagrid('reload');  
+//                            //$obj.datagrid('reload');
 //                            $.messager.alert('提示', msg + '成功！', 'info', function() {
-//                                //window.location.href = root + 'esbService/initSysConfig.do';  
+//                                //window.location.href = root + 'esbService/initSysConfig.do';
 //                            });
 //                        } else {
 //                            $.messager.alert('提示', msg + '失败！', 'error', function() {
-//                                //window.location.href = root + 'esbService/initSysConfig.do';  
+//                                //window.location.href = root + 'esbService/initSysConfig.do';
 //                            });
 //                        }
 //                    }
 //                });
-            }
-        });
-
+                }else{
+                    $('#dg').datagrid('clearSelections');
+                }
+            });
+        }else{
+            $.messager.alert("操作提示", "请至少选中一行!","error",function () {});
+        }
+//        $('#addBtn').linkbutton('enable');
+//        $('#delBtn').linkbutton('disable');
+//        $('#saveBtn').linkbutton('disable');
+//        $('#rejectBtn').linkbutton('disable');
     }
     // 保存方法（添加修改用了一个方法accept()）
-    function accept(){
+    function acceptRow(){
+        //成功之后
+//        $('#addBtn').linkbutton('enable');
+//        $('#delBtn').linkbutton('disable');
+//        $('#saveBtn').linkbutton('disable');
+//        $('#rejectBtn').linkbutton('disable');
         if (endEditing()) {
-            var row = $('#remark_dg').datagrid('getSelected');
+            var row = $('#dg').datagrid('getSelected');
+            console.log(row);
             //发ajax请求后台
         }
     }
     //取消编辑
     function cancelrow(){
+//        $('#addBtn').linkbutton('enable');
+//        $('#delBtn').linkbutton('disable');
+//        $('#saveBtn').linkbutton('disable');
+//        $('#rejectBtn').linkbutton('disable');
         if(endEditing()){
             var row = $('#dg').datagrid('getSelected');
             var rindex = $('#dg').datagrid('getRowIndex', row);

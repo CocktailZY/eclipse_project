@@ -21,10 +21,6 @@
            onclick="acceptRow()">保存</a>
         <a href="javascript:void(0)" id="rejectBtn" class="easyui-linkbutton" data-options="iconCls:'icon-undo',plain:false"
            onclick="cancelrow()">撤回</a>
-        商品编码: <input class="easyui-textbox" type="text" name="code" style="width:166px;height:35px;line-height:35px;"></input>
-        商品名称: <input class="easyui-textbox" type="text" name="name" style="width:166px;height:35px;line-height:35px;"></input>
-        <a href="#" class="easyui-linkbutton" iconCls="icon-search" data-options="selected:true">查询</a>
-        <a href="#" class="easyui-linkbutton" iconCls="icon-reload">重置</a>
     </div>
 </div>
 
@@ -36,7 +32,7 @@
 <script type="text/javascript">
     $(function(){
         $('#dg').datagrid({
-            title:'品牌列表',
+            title:'类型列表',
             width:'auto',
             height:600,
             rownumbers:false,
@@ -53,8 +49,8 @@
             data:getData(),
             columns:[[
                 {field:'ck',checkbox:true,width:'5%'},
-                {field:'pid',title:'品牌编号',width:'10%',align:'center',sortable:true},
-                {field:'pname',title:'品牌名称',width:'85%',align:'center',editor:'text'},
+                {field:'pid',title:'类型编号',width:'10%',align:'center',sortable:true},
+                {field:'pname',title:'类型名称',width:'85%',align:'center',editor:'text'},
             ]],
             onDblClickRow: onClickCell,
             onClickRow:function(rowIndex, rowData){
@@ -111,7 +107,7 @@
         for(var i=1; i<=30; i++){
             rows.push({
                 pid: 'pid-'+i,//记得添加唯一标识可在不同页面保持选中状态
-                pname: '苹果',
+                pname: '9成新',
             });
         }
         return rows;

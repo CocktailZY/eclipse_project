@@ -42,7 +42,7 @@
             <div class="pf-user-photo">
                 <img src="images/main/user.png" alt="">
             </div>
-            <h4 class="pf-user-name ellipsis">uimaker</h4>
+            <h4 class="pf-user-name ellipsis" id="username"></h4>
             <i class="iconfont xiala">&#xe607;</i>
 
             <div class="pf-user-panel">
@@ -54,7 +54,7 @@
                         </a>
                     </li>
                     <li class="pf-logout">
-                        <a href="login.html">
+                        <a href="javascript:adminLoginOut()">
                             <i class="iconfont">&#xe60e;</i>
                             <span class="pf-opt-name">退出</span>
                         </a>
@@ -145,6 +145,15 @@
 
 
 <script type="text/javascript">
+	$(function(){
+		var loginUser = JSON.parse(Util.getLocalStorage("loginUser"));
+		if(loginUser == null || loginUser == ''){
+			alert('请先登录!');
+			window.location.href = 'login.html';
+		}else{
+			$('#username').text(loginUser.username);
+		}
+	})
     $('.easyui-tabs1').tabs({
         tabHeight: 44,
         onSelect: function (title, index) {
@@ -231,6 +240,24 @@
             });
         }
 //        $('#tabs').tabs('select', $(page).text());
+    }
+    function adminLoginOut(){
+    	$.ajax({
+    		type:"post",
+    		async:false,
+    		url:"../login/logout.action",
+    		dataType:"json",
+    		data:{},
+    		success:function(data){
+    			console.log(data);
+    			if(data.status == 'success'){
+   					Util.clearLocalStorage();
+   					window.location.href = 'login.html';
+    			}else{
+    				//没有数据或服务器错误
+    			}
+    		}
+    	});
     }
 </script>
 </body>

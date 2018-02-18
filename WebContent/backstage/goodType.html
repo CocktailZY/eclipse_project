@@ -43,14 +43,14 @@
             striped:true,
             checkOnSelect:true,
             selectOnCheck:true,
-            collapsible:true,
+            collapsible:false,
             toolbar:'#tb',
             pageSize:10,
             data:getData(),
             columns:[[
                 {field:'ck',checkbox:true,width:'5%'},
-                {field:'pid',title:'类型编号',width:'10%',align:'center',sortable:true},
-                {field:'pname',title:'类型名称',width:'85%',align:'center',editor:'text'},
+                {field:'id',title:'类型编号',width:'10%',align:'center',sortable:true},
+                {field:'goodsTypeName',title:'类型名称',width:'85%',align:'center',editor:'text'},
             ]],
             onDblClickRow: onClickCell,
             onClickRow:function(rowIndex, rowData){
@@ -103,15 +103,26 @@
         }).datagrid('clientPaging');
     });
     function getData(){
-        var rows = [];
-        for(var i=1; i<=30; i++){
-            rows.push({
-                pid: 'pid-'+i,//记得添加唯一标识可在不同页面保持选中状态
-                pname: '9成新',
-            });
-        }
-        return rows;
+    	//获取用户列表
+        $.ajax({
+    		type:"get",
+    		async:true,
+    		url:"../goodsType/list.action",
+    		dataType:"json",
+    		data:{},
+    		success:function(data){
+    			console.log(data);
+    			if(data.status == 'success'){
+   					var rows = [];
+       				rows = data.data;
+       				$('#dg').datagrid('loadData', rows);
+    			}else{
+    				//没有数据或服务器错误
+    			}
+    		}
+    	});
     }
+    getData();
     $.extend($.fn.datagrid.methods, {
         getEditingRowIndexs: function(jq) {
             var rows = $.data(jq[0], "datagrid").panel.find('.datagrid-row-editing');

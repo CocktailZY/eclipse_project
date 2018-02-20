@@ -2,30 +2,30 @@ package com.ldh.dao;
 
 import java.util.List;
 
-import com.ldh.model.GoodsType;
+import com.ldh.model.Brand;
 import com.ldh.util.PageBean;
 
-public interface IGoodsTypeDao {
+public interface IBrandDao {
 	/**
 	 * 新增商品类型
 	 * @param goodsType
 	 * @return
 	 */
-	public boolean save(GoodsType goodsType);
+	public boolean save(Brand goodsType);
 	
 	/**
 	 * 删除商品类型
 	 * @param goodsType
 	 * @return
 	 */
-	public boolean delete(GoodsType goodsType);
+	public boolean delete(Brand goodsType);
 	
 	/**
 	 * 更新商品类型
 	 * @param goodsType
 	 * @return
 	 */
-	public boolean update(GoodsType goodsType);
+	public boolean update(Brand goodsType);
 	
 	/**
 	 * 查询所有商品类型
@@ -44,7 +44,7 @@ public interface IGoodsTypeDao {
 	 * @param id
 	 * @return
 	 */
-	public GoodsType getById(int id);
+	public Brand getById(int id);
 	
 	/**
 	 * 根据其他条件查询商品类型带分页

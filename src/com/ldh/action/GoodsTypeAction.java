@@ -11,8 +11,8 @@ import org.apache.struts2.convention.annotation.Namespace;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.springframework.context.annotation.Scope;
 
-import com.ldh.dao.IGoodsTypeDao;
-import com.ldh.model.GoodsType;
+import com.ldh.dao.IBrandDao;
+import com.ldh.model.Brand;
 import com.ldh.util.JsonUtil;
 
 import net.sf.json.JSONObject;
@@ -20,17 +20,17 @@ import net.sf.json.JSONObject;
 @Scope("prototype")
 @ParentPackage("struts-default")
 //表示继承的父包
-@Namespace(value = "/goodsType")
+@Namespace(value = "/brand")
 public class GoodsTypeAction {
 	
-private IGoodsTypeDao goodsTypeDao;
+	private IBrandDao brandDao;
 	
-	public IGoodsTypeDao getUserDao() {
-		return goodsTypeDao;
+	public IBrandDao getUserDao() {
+		return brandDao;
 	}
 	@Resource(name="GoodsTypeDao")
-	public void setUserDao(IGoodsTypeDao goodsTypeDao) {
-		this.goodsTypeDao = goodsTypeDao;
+	public void setUserDao(IBrandDao brandDao) {
+		this.brandDao = brandDao;
 	}
 	
 	/**
@@ -40,10 +40,10 @@ private IGoodsTypeDao goodsTypeDao;
 	 */
 	@Action(value="save")
 	public String save() throws IOException{
-		String goodsTypeName = ServletActionContext.getRequest().getParameter("goodsTypeName");
-		GoodsType goodsType = new GoodsType();
-		goodsType.setGoodsTypeName(goodsTypeName);
-		if(goodsTypeDao.save(goodsType)){
+		String bDescribe = ServletActionContext.getRequest().getParameter("bDescribe");
+		Brand brand = new Brand();
+		brand.setbDescribe(bDescribe);
+		if(brandDao.save(brand)){
 			//save success
 			JSONObject jobj = JSONObject.fromObject("{mes:\'保存成功!\',status:\'success\'}");
 			ServletActionContext.getResponse().setHeader("content-type", "text/html;charset=UTF-8");
@@ -64,8 +64,8 @@ private IGoodsTypeDao goodsTypeDao;
 	@Action(value="delete")
 	public String delete() throws IOException{
 		String goodsTypeId = ServletActionContext.getRequest().getParameter("id");
-		GoodsType goodsType = goodsTypeDao.getById(Integer.parseInt(goodsTypeId));
-		if(goodsTypeDao.delete(goodsType)){
+		Brand brand = brandDao.getById(Integer.parseInt(goodsTypeId));
+		if(brandDao.delete(brand)){
 			//save success
 			JSONObject jobj = JSONObject.fromObject("{mes:\'删除成功!\',status:\'success\'}");
 			ServletActionContext.getResponse().setHeader("content-type", "text/html;charset=UTF-8");
@@ -85,12 +85,12 @@ private IGoodsTypeDao goodsTypeDao;
 	 */
 	@Action(value="update")
 	public String update() throws IOException{
-		String goodsTypeId = ServletActionContext.getRequest().getParameter("id");
-		String goodsTypeName = ServletActionContext.getRequest().getParameter("typeName");
-		GoodsType goodsType = new GoodsType();
-		goodsType.setId(Integer.parseInt(goodsTypeId));
-		goodsType.setGoodsTypeName(goodsTypeName);
-		if(goodsTypeDao.update(goodsType)){
+		String brandId = ServletActionContext.getRequest().getParameter("id");
+		String brandName = ServletActionContext.getRequest().getParameter("typeName");
+		Brand brand = new Brand();
+		brand.setbId(brandId);
+		brand.setbDescribe(brandName);
+		if(brandDao.update(brand)){
 			//save success
 			JSONObject jobj = JSONObject.fromObject("{mes:\'更新成功!\',status:\'success\'}");
 			ServletActionContext.getResponse().setHeader("content-type", "text/html;charset=UTF-8");
@@ -112,10 +112,10 @@ private IGoodsTypeDao goodsTypeDao;
 	@Action(value="getById")
 	public String getById() throws IOException{
 		String goodsTypeId = ServletActionContext.getRequest().getParameter("id");
-		GoodsType goodsType = goodsTypeDao.getById(Integer.parseInt(goodsTypeId));
-		if(goodsType != null){
+		Brand brand = brandDao.getById(Integer.parseInt(goodsTypeId));
+		if(brand != null){
 			//save success
-			JSONObject jobj = JSONObject.fromObject("{mes:\'获取成功!\',status:\'success\',data:"+JsonUtil.toJson(goodsType)+"}");
+			JSONObject jobj = JSONObject.fromObject("{mes:\'获取成功!\',status:\'success\',data:"+JsonUtil.toJson(brand)+"}");
 			ServletActionContext.getResponse().setHeader("content-type", "text/html;charset=UTF-8");
 			ServletActionContext.getResponse().getWriter().write(jobj.toString());
 		}else{
@@ -140,7 +140,7 @@ private IGoodsTypeDao goodsTypeDao;
 //			pageNum = Integer.parseInt(pageNumStr);
 //		}
 //		List<Object> list = new ArrayList<Object>();
-		List<Object> goodsTypelist = goodsTypeDao.list();//获取所有类型数据，不带分页
+		List<Object> goodsTypelist = brandDao.list();//获取所有类型数据，不带分页
 //		PageBean page=null;
 //		if(userlist.size()>0){
 //			page = new PageBean(userlist.size(),pageNum,5);

@@ -12,7 +12,7 @@ import org.apache.struts2.convention.annotation.ParentPackage;
 import org.springframework.context.annotation.Scope;
 
 import com.ldh.dao.IUserDao;
-import com.ldh.model.User;
+import com.ldh.model.Users;
 
 import net.sf.json.JSONObject;
 
@@ -42,10 +42,10 @@ public class LoginAction {
 	public String login() throws IOException{
 		String username = ServletActionContext.getRequest().getParameter("username");
 		String password = ServletActionContext.getRequest().getParameter("password");
-		String hql = "from User where username="+username+" and password="+password;
+		String hql = "from Users where username="+username+" and password="+password;
 		List<Object> list = userDao.getAllByConds(hql);
 		if(list.size() > 0){
-			User loginUser = (User) list.get(0);
+			Users loginUser = (Users) list.get(0);
 			//user exist
 			ServletActionContext.getRequest().getSession().setAttribute("login_user",loginUser);
 			JSONObject jobj = JSONObject.fromObject("{mes:\'用户存在!\',status:\'success\',user:"+loginUser+"}");
@@ -53,7 +53,7 @@ public class LoginAction {
 			ServletActionContext.getResponse().getWriter().write(jobj.toString());
 		}else{
 			//user not exist or password is not right
-			List<Object> templist = userDao.getAllByConds("from User where username="+username);
+			List<Object> templist = userDao.getAllByConds("from Users where username="+username);
 			if(list.size() > 0){
 				JSONObject jobj = JSONObject.fromObject("{mes:\'密码不正确!\',status:\'failed\'}");
 				ServletActionContext.getResponse().setHeader("content-type", "text/html;charset=UTF-8");
@@ -85,7 +85,7 @@ public class LoginAction {
 	@Action(value="checkName")
 	public String checkName(){
 		String username = ServletActionContext.getRequest().getParameter("aaa");
-		List<Object> templist = userDao.getAllByConds("from User where username='"+username+"'");
+		List<Object> templist = userDao.getAllByConds("from Users where username='"+username+"'");
 		if(templist.size() > 0){
 			try {
 				JSONObject jobj = JSONObject.fromObject("{mes:\'用户名已存在!\',status:\'failed\'}");

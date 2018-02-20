@@ -10,7 +10,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table
-public class User implements Serializable{
+public class Users implements Serializable{
 
 	/**
 	 *  序列化
@@ -19,6 +19,7 @@ public class User implements Serializable{
 	private int id;
 	private String username;
 	private String password;
+	private String headImgUrl;
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
@@ -39,6 +40,12 @@ public class User implements Serializable{
 	}
 	public void setPassword(String password) {
 		this.password = password;
+	}
+	public String getHeadImgUrl() {
+		return headImgUrl;
+	}
+	public void setHeadImgUrl(String headImgUrl) {
+		this.headImgUrl = headImgUrl;
 	}
 
 }

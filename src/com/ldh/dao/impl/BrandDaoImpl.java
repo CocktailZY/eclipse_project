@@ -10,12 +10,12 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Component;
 
-import com.ldh.dao.IGoodsTypeDao;
-import com.ldh.model.GoodsType;
+import com.ldh.dao.IBrandDao;
+import com.ldh.model.Brand;
 import com.ldh.util.PageBean;
 
-@Component(value="GoodsTypeDao")
-public class GoodsTypeDaoImpl implements IGoodsTypeDao {
+@Component(value="BrandDao")
+public class BrandDaoImpl implements IBrandDao {
 	
 	private SessionFactory sessionFactory;
 	
@@ -25,10 +25,10 @@ public class GoodsTypeDaoImpl implements IGoodsTypeDao {
 	}
 
 	@Override
-	public boolean save(GoodsType goodsType) {
+	public boolean save(Brand brand) {
 		Session session = sessionFactory.openSession();
 		session.beginTransaction();
-		int returnId = (int) session.save(goodsType);
+		int returnId = (int) session.save(brand);
 		session.getTransaction().commit();
 		session.close();
 		if(returnId != 0){
@@ -39,13 +39,13 @@ public class GoodsTypeDaoImpl implements IGoodsTypeDao {
 	}
 
 	@Override
-	public boolean delete(GoodsType goodsType) {
+	public boolean delete(Brand brand) {
 		boolean result = false;
 		try{
-			if(goodsType != null){
+			if(brand != null){
 				Session session = sessionFactory.openSession();
 				session.beginTransaction();
-				session.delete(goodsType);
+				session.delete(brand);
 				session.getTransaction().commit();
 				session.close();
 				result = true;
@@ -57,13 +57,13 @@ public class GoodsTypeDaoImpl implements IGoodsTypeDao {
 	}
 
 	@Override
-	public boolean update(GoodsType goodsType) {
+	public boolean update(Brand brand) {
 		boolean result = false;
 		try{
-			if(goodsType != null){
+			if(brand != null){
 				Session session = sessionFactory.openSession();
 				session.beginTransaction();
-				session.update(goodsType);
+				session.update(brand);
 				session.getTransaction().commit();
 				session.close();
 				result = true;
@@ -77,7 +77,7 @@ public class GoodsTypeDaoImpl implements IGoodsTypeDao {
 	@Override
 	public List<Object> list() {
 		Session session = sessionFactory.openSession();
-		Query query = session.createQuery("from GoodsType");
+		Query query = session.createQuery("from Brand");
 		List<Object> list = query.list();
 		session.close();
 		return list;
@@ -86,7 +86,7 @@ public class GoodsTypeDaoImpl implements IGoodsTypeDao {
 	@Override
 	public List<Object> listAll(PageBean page) {
 		Session session = sessionFactory.openSession();
-		Query query = session.createQuery("from GoodsType");
+		Query query = session.createQuery("from Brand");
 		query.setFirstResult(page.getRowStart());
 		query.setMaxResults(page.getPageSize());
 		List<Object> list = query.list();
@@ -95,9 +95,9 @@ public class GoodsTypeDaoImpl implements IGoodsTypeDao {
 	}
 
 	@Override
-	public GoodsType getById(int id) {
+	public Brand getById(int id) {
 		Session session = sessionFactory.openSession();
-		GoodsType dto = (GoodsType)session.get(GoodsType.class, id);
+		Brand dto = (Brand)session.get(Brand.class, id);
 		session.close();
 		return dto;
 	}

@@ -2,7 +2,7 @@ package com.ldh.dao;
 
 import java.util.List;
 
-import com.ldh.model.User;
+import com.ldh.model.Users;
 import com.ldh.util.PageBean;
 
 public interface IUserDao {
@@ -12,21 +12,21 @@ public interface IUserDao {
 	 * @param user
 	 * @return
 	 */
-	public boolean save(User user);
+	public boolean save(Users user);
 	
 	/**
 	 * 删除用户
 	 * @param user
 	 * @return
 	 */
-	public boolean delete(User user);
+	public boolean delete(Users user);
 	
 	/**
 	 * 更新用户
 	 * @param user
 	 * @return
 	 */
-	public boolean update(User user);
+	public boolean update(Users user);
 	
 	/**
 	 * 查询所有用户
@@ -45,7 +45,7 @@ public interface IUserDao {
 	 * @param id
 	 * @return
 	 */
-	public User getById(int id);
+	public Users getById(int id);
 	
 	/**
 	 * 根据其他条件查询用户带分页

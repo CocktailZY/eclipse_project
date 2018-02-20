@@ -11,7 +11,7 @@ import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Component;
 
 import com.ldh.dao.IUserDao;
-import com.ldh.model.User;
+import com.ldh.model.Users;
 import com.ldh.util.PageBean;
 
 @Component(value="UserDao")
@@ -25,7 +25,7 @@ public class UserDaoImpl implements IUserDao {
 	}
 
 	@Override
-	public boolean save(User user) {
+	public boolean save(Users user) {
 		Session session = sessionFactory.openSession();
 		session.beginTransaction();
 		int returnId = (int) session.save(user);
@@ -39,7 +39,7 @@ public class UserDaoImpl implements IUserDao {
 	}
 
 	@Override
-	public boolean delete(User user) {
+	public boolean delete(Users user) {
 		boolean result = false;
 		try{
 			if(user != null){
@@ -57,7 +57,7 @@ public class UserDaoImpl implements IUserDao {
 	}
 
 	@Override
-	public boolean update(User user) {
+	public boolean update(Users user) {
 		boolean result = false;
 		try{
 			if(user != null){
@@ -77,7 +77,7 @@ public class UserDaoImpl implements IUserDao {
 	@Override
 	public List<Object> list() {
 		Session session = sessionFactory.openSession();
-		Query query = session.createQuery("from User");
+		Query query = session.createQuery("from Users");
 		List<Object> list = query.list();
 		session.close();
 		return list;
@@ -86,7 +86,7 @@ public class UserDaoImpl implements IUserDao {
 	@Override
 	public List<Object> listAll(PageBean page) {
 		Session session = sessionFactory.openSession();
-		Query query = session.createQuery("from User");
+		Query query = session.createQuery("from Users");
 		query.setFirstResult(page.getRowStart());
 		query.setMaxResults(page.getPageSize());
 		List<Object> list = query.list();
@@ -95,9 +95,9 @@ public class UserDaoImpl implements IUserDao {
 	}
 
 	@Override
-	public User getById(int id) {
+	public Users getById(int id) {
 		Session session = sessionFactory.openSession();
-		User dto = (User)session.get(User.class, id);
+		Users dto = (Users)session.get(Users.class, id);
 		session.close();
 		return dto;
 	}

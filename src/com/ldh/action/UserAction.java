@@ -14,7 +14,7 @@ import org.apache.struts2.convention.annotation.ParentPackage;
 import org.springframework.context.annotation.Scope;
 
 import com.ldh.dao.IUserDao;
-import com.ldh.model.User;
+import com.ldh.model.Users;
 import com.ldh.util.JsonUtil;
 import com.ldh.util.PageBean;
 
@@ -46,16 +46,16 @@ public class UserAction{
 	public String save() throws IOException{
 		String username = ServletActionContext.getRequest().getParameter("username");
 		String password = ServletActionContext.getRequest().getParameter("password");
-//		String hql = "from User where username="+username+" and password="+password;
+//		String hql = "from Users where username="+username+" and password="+password;
 //		List<Object> list = userDao.getAllByConds(hql);
 //		if(list.size() == 0){
-			User user = new User();
+			Users user = new Users();
 			user.setUsername(username);
 			user.setPassword(password);
 			if(userDao.save(user)){
 				//save success
 				JSONObject jobj = JSONObject.fromObject("{mes:\'保存成功!\',status:\'success\'}");
-				ServletActionContext.getResponse().setHeader("ContentType", "UTF-8");
+				ServletActionContext.getResponse().setHeader("content-type", "text/html;charset=UTF-8");
 				ServletActionContext.getResponse().getWriter().write(jobj.toString());
 			}else{
 				//save failed
@@ -63,11 +63,11 @@ public class UserAction{
 				ServletActionContext.getResponse().getWriter().write(jobj.toString());
 			}
 //		}else{
-//			User user = (User) list.get(0);
+//			Users user = (Users) list.get(0);
 //			if(userDao.update(user)){
 //				//save success
 //				JSONObject jobj = JSONObject.fromObject("{mes:\'更新成功!\',status:\'success\'}");
-//				ServletActionContext.getResponse().setHeader("ContentType", "UTF-8");
+//				ServletActionContext.getResponse().setHeader("content-type", "text/html;charset=UTF-8");
 //				ServletActionContext.getResponse().getWriter().write(jobj.toString());
 //			}else{
 //				//save failed
@@ -85,20 +85,22 @@ public class UserAction{
 	@Action(value="delete")
 	public String delete() throws IOException{
 		String userId = ServletActionContext.getRequest().getParameter("id");
-		User user = userDao.getById(Integer.parseInt(userId));
+		Users user = userDao.getById(Integer.parseInt(userId));
 		if(userDao.delete(user)){
 			//save success
 			JSONObject jobj = JSONObject.fromObject("{mes:\'删除成功!\',status:\'success\'}");
+			ServletActionContext.getResponse().setHeader("content-type", "text/html;charset=UTF-8");
 			ServletActionContext.getResponse().getWriter().write(jobj.toString());
 		}else{
 			//save failed
 			JSONObject jobj = JSONObject.fromObject("{mes:\'删除失败!\',status:\'error\'}");
+			ServletActionContext.getResponse().setHeader("content-type", "text/html;charset=UTF-8");
 			ServletActionContext.getResponse().getWriter().write(jobj.toString());
 		}
 		return null;
 	}
 	/**
-	 * 删除用户信息
+	 * 修改用户信息
 	 * @return
 	 * @throws IOException 
 	 */
@@ -107,17 +109,19 @@ public class UserAction{
 		String userId = ServletActionContext.getRequest().getParameter("id");
 		String username = ServletActionContext.getRequest().getParameter("username");
 		String password = ServletActionContext.getRequest().getParameter("password");
-		User user = new User();
+		Users user = new Users();
 		user.setId(Integer.parseInt(userId));
 		user.setUsername(username);
 		user.setPassword(password);
 		if(userDao.update(user)){
 			//save success
 			JSONObject jobj = JSONObject.fromObject("{mes:\'更新成功!\',status:\'success\'}");
+			ServletActionContext.getResponse().setHeader("content-type", "text/html;charset=UTF-8");
 			ServletActionContext.getResponse().getWriter().write(jobj.toString());
 		}else{
 			//save failed
 			JSONObject jobj = JSONObject.fromObject("{mes:\'更新失败!\',status:\'error\'}");
+			ServletActionContext.getResponse().setHeader("content-type", "text/html;charset=UTF-8");
 			ServletActionContext.getResponse().getWriter().write(jobj.toString());
 		}
 		return null;
@@ -131,14 +135,16 @@ public class UserAction{
 	@Action(value="getById")
 	public String getById() throws IOException{
 		String userId = ServletActionContext.getRequest().getParameter("id");
-		User user = userDao.getById(Integer.parseInt(userId));
+		Users user = userDao.getById(Integer.parseInt(userId));
 		if(user != null){
 			//save success
 			JSONObject jobj = JSONObject.fromObject("{mes:\'获取成功!\',status:\'success\',data:"+JsonUtil.toJson(user)+"}");
+			ServletActionContext.getResponse().setHeader("content-type", "text/html;charset=UTF-8");
 			ServletActionContext.getResponse().getWriter().write(jobj.toString());
 		}else{
 			//save failed
 			JSONObject jobj = JSONObject.fromObject("{mes:\'获取失败!\',status:\'error\'}");
+			ServletActionContext.getResponse().setHeader("content-type", "text/html;charset=UTF-8");
 			ServletActionContext.getResponse().getWriter().write(jobj.toString());
 		}
 		return null;
@@ -187,7 +193,7 @@ public class UserAction{
 	public String listByConds() throws IOException{
 		String jsonConds = ServletActionContext.getRequest().getParameter("conds");
 		JSONObject jsonObj = JSONObject.fromObject(jsonConds);
-		String hql = "from User where ";
+		String hql = "from Users where ";
 		Iterator<String> sIterator = jsonObj.keys();  
 		while(sIterator.hasNext()){  
 		    // 获得key  
@@ -216,10 +222,12 @@ public class UserAction{
 		if(userlist.size() > 0){
 			//save success
 			JSONObject jobj = JSONObject.fromObject("{mes:\'获取成功!\',status:\'success\',data:"+JsonUtil.toJsonByListObj(userlist)+"}");
+			ServletActionContext.getResponse().setHeader("content-type", "text/html;charset=UTF-8");
 			ServletActionContext.getResponse().getWriter().write(jobj.toString());
 		}else{
 			//save failed
 			JSONObject jobj = JSONObject.fromObject("{mes:\'获取失败!\',status:\'error\'}");
+			ServletActionContext.getResponse().setHeader("content-type", "text/html;charset=UTF-8");
 			ServletActionContext.getResponse().getWriter().write(jobj.toString());
 		}
 		return null;

@@ -10,12 +10,12 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Component;
 
-import com.ldh.dao.IUserDao;
-import com.ldh.model.Users;
+import com.ldh.dao.IOrderDetailsDao;
+import com.ldh.model.OrderDetails;
 import com.ldh.util.PageBean;
 
-@Component(value="UserDao")
-public class UserDaoImpl implements IUserDao {
+@Component(value="OrderDetailsDao")
+public class OrderDetailsDaoImpl implements IOrderDetailsDao {
 	
 	private SessionFactory sessionFactory;
 	
@@ -25,10 +25,10 @@ public class UserDaoImpl implements IUserDao {
 	}
 
 	@Override
-	public boolean save(Users user) {
+	public boolean save(OrderDetails orderDetails) {
 		Session session = sessionFactory.openSession();
 		session.beginTransaction();
-		int returnId = (int) session.save(user);
+		int returnId = (int) session.save(orderDetails);
 		session.getTransaction().commit();
 		session.close();
 		if(returnId != 0){
@@ -39,13 +39,13 @@ public class UserDaoImpl implements IUserDao {
 	}
 
 	@Override
-	public boolean delete(Users user) {
+	public boolean delete(OrderDetails orderDetails) {
 		boolean result = false;
 		try{
-			if(user != null){
+			if(orderDetails != null){
 				Session session = sessionFactory.openSession();
 				session.beginTransaction();
-				session.delete(user);
+				session.delete(orderDetails);
 				session.getTransaction().commit();
 				session.close();
 				result = true;
@@ -57,13 +57,13 @@ public class UserDaoImpl implements IUserDao {
 	}
 
 	@Override
-	public boolean update(Users user) {
+	public boolean update(OrderDetails orderDetails) {
 		boolean result = false;
 		try{
-			if(user != null){
+			if(orderDetails != null){
 				Session session = sessionFactory.openSession();
 				session.beginTransaction();
-				session.update(user);
+				session.update(orderDetails);
 				session.getTransaction().commit();
 				session.close();
 				result = true;
@@ -77,7 +77,7 @@ public class UserDaoImpl implements IUserDao {
 	@Override
 	public List<Object> list() {
 		Session session = sessionFactory.openSession();
-		Query query = session.createQuery("from Users");
+		Query query = session.createQuery("from OrderDetails");
 		List<Object> list = query.list();
 		session.close();
 		return list;
@@ -86,7 +86,7 @@ public class UserDaoImpl implements IUserDao {
 	@Override
 	public List<Object> listAll(PageBean page) {
 		Session session = sessionFactory.openSession();
-		Query query = session.createQuery("from Users");
+		Query query = session.createQuery("from OrderDetails");
 		query.setFirstResult(page.getRowStart());
 		query.setMaxResults(page.getPageSize());
 		List<Object> list = query.list();
@@ -95,9 +95,9 @@ public class UserDaoImpl implements IUserDao {
 	}
 
 	@Override
-	public Users getById(int id) {
+	public OrderDetails getById(int id) {
 		Session session = sessionFactory.openSession();
-		Users dto = (Users)session.get(Users.class, id);
+		OrderDetails dto = (OrderDetails)session.get(OrderDetails.class, id);
 		session.close();
 		return dto;
 	}

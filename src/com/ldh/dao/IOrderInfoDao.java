@@ -2,60 +2,59 @@ package com.ldh.dao;
 
 import java.util.List;
 
-import com.ldh.model.Users;
+import com.ldh.model.OrderInfo;
 import com.ldh.util.PageBean;
 
-public interface IUserDao {
-	
+public interface IOrderInfoDao {
 	/**
-	 * 新增用户
-	 * @param user
+	 * 新增订单
+	 * @param orderInfo
 	 * @return
 	 */
-	public boolean save(Users user);
+	public boolean save(OrderInfo orderInfo);
 	
 	/**
-	 * 删除用户
-	 * @param user
+	 * 删除订单
+	 * @param orderInfo
 	 * @return
 	 */
-	public boolean delete(Users user);
+	public boolean delete(OrderInfo orderInfo);
 	
 	/**
-	 * 更新用户
-	 * @param user
+	 * 更新订单
+	 * @param orderInfo
 	 * @return
 	 */
-	public boolean update(Users user);
+	public boolean update(OrderInfo orderInfo);
 	
 	/**
-	 * 查询所有用户
+	 * 查询所有订单
 	 * @return
 	 */
 	public List<Object> list();
 	
 	/**
-	 * 查询所有用户带分页
+	 * 查询所有订单带分页
 	 * @return
 	 */
 	public List<Object> listAll(PageBean page);
 	
 	/**
-	 * 根据主键id查询用户
+	 * 根据主键id查询订单
 	 * @param id
 	 * @return
 	 */
-	public Users getById(int id);
+	public OrderInfo getById(int id);
 	
 	/**
-	 * 根据其他条件查询用户带分页
+	 * 根据其他条件查询订单带分页
 	 * @param hql 查询语句
 	 * @return
 	 */
 	public List<Object> getByConds(String hql,PageBean page);
 	
 	/**
-	 * 根据其他条件查询用户
+	 * 根据其他条件查询订单
 	 * @param hql 查询语句
 	 * @return
 	 */

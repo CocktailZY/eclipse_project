@@ -80,4 +80,14 @@ var Util = {
     clearSessionStorage: function () {
         sessionStorage.clear();
     },
+    setLocalStorage: function(key, value){
+    	localStorage.setItem(key, value);
+    },
+    getLocalStorage: function(key){
+    	return localStorage.getItem(key);
+    },
+    clearLocalStorage: function(){
+    	localStorage.clear();
+    }
+    
 }

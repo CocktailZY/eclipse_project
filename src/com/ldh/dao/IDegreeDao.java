@@ -44,7 +44,7 @@ public interface IDegreeDao {
 	 * @param id
 	 * @return
 	 */
-	public Degree getById(int id);
+	public Degree getById(String id);
 	
 	/**
 	 * 根据其他条件查询使用程度带分页

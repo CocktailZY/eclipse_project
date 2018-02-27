@@ -10,6 +10,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.GenericGenerator;
+
 @Entity
 @Table
 public class OrderDetails implements Serializable {
@@ -26,7 +28,8 @@ public class OrderDetails implements Serializable {
 	private OrderInfo dOId;
 	
 	@Id
-	@GeneratedValue(generator = "UUID")
+	@GenericGenerator(name="systemUUID",strategy="uuid")
+	@GeneratedValue(generator="systemUUID")
 	public String getdId() {
 		return dId;
 	}

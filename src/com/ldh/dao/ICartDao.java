@@ -44,7 +44,7 @@ public interface ICartDao {
 	 * @param id
 	 * @return
 	 */
-	public Cart getById(int id);
+	public Cart getById(String id);
 	
 	/**
 	 * 根据其他条件查询购物车带分页

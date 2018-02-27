@@ -28,10 +28,10 @@ public class ExpressDaoImpl implements IExpressDao {
 	public boolean save(Express express) {
 		Session session = sessionFactory.openSession();
 		session.beginTransaction();
-		int returnId = (int) session.save(express);
+		String returnId = (String) session.save(express);
 		session.getTransaction().commit();
 		session.close();
-		if(returnId != 0){
+		if("".equals(returnId) && null != returnId){
 			return true;
 		}else{
 			return false;
@@ -95,7 +95,7 @@ public class ExpressDaoImpl implements IExpressDao {
 	}
 
 	@Override
-	public Express getById(int id) {
+	public Express getById(String id) {
 		Session session = sessionFactory.openSession();
 		Express dto = (Express)session.get(Express.class, id);
 		session.close();

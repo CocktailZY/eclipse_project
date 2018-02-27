@@ -28,10 +28,10 @@ public class PictureDaoImpl implements IPictureDao {
 	public boolean save(Picture picture) {
 		Session session = sessionFactory.openSession();
 		session.beginTransaction();
-		int returnId = (int) session.save(picture);
+		String returnId = (String) session.save(picture);
 		session.getTransaction().commit();
 		session.close();
-		if(returnId != 0){
+		if("".equals(returnId) && null != returnId){
 			return true;
 		}else{
 			return false;
@@ -95,7 +95,7 @@ public class PictureDaoImpl implements IPictureDao {
 	}
 
 	@Override
-	public Picture getById(int id) {
+	public Picture getById(String id) {
 		Session session = sessionFactory.openSession();
 		Picture dto = (Picture)session.get(Picture.class, id);
 		session.close();

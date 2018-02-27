@@ -28,10 +28,10 @@ public class JudgeDaoImpl implements IJudgeDao {
 	public boolean save(Judge judge) {
 		Session session = sessionFactory.openSession();
 		session.beginTransaction();
-		int returnId = (int) session.save(judge);
+		String returnId = (String) session.save(judge);
 		session.getTransaction().commit();
 		session.close();
-		if(returnId != 0){
+		if("".equals(returnId) && null != returnId){
 			return true;
 		}else{
 			return false;
@@ -95,7 +95,7 @@ public class JudgeDaoImpl implements IJudgeDao {
 	}
 
 	@Override
-	public Judge getById(int id) {
+	public Judge getById(String id) {
 		Session session = sessionFactory.openSession();
 		Judge dto = (Judge)session.get(Judge.class, id);
 		session.close();

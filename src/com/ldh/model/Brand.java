@@ -8,6 +8,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.GenericGenerator;
+
 @Entity
 @Table
 public class Brand implements Serializable{
@@ -20,7 +22,8 @@ public class Brand implements Serializable{
 	private String bDescribe;
 	
 	@Id
-	@GeneratedValue(generator = "UUID")
+	@GenericGenerator(name="systemUUID",strategy="uuid")
+	@GeneratedValue(generator="systemUUID")
 	public String getbId() {
 		return bId;
 	}

@@ -28,10 +28,10 @@ public class OrderDetailsDaoImpl implements IOrderDetailsDao {
 	public boolean save(OrderDetails orderDetails) {
 		Session session = sessionFactory.openSession();
 		session.beginTransaction();
-		int returnId = (int) session.save(orderDetails);
+		String returnId = (String) session.save(orderDetails);
 		session.getTransaction().commit();
 		session.close();
-		if(returnId != 0){
+		if("".equals(returnId) && null != returnId){
 			return true;
 		}else{
 			return false;
@@ -95,7 +95,7 @@ public class OrderDetailsDaoImpl implements IOrderDetailsDao {
 	}
 
 	@Override
-	public OrderDetails getById(int id) {
+	public OrderDetails getById(String id) {
 		Session session = sessionFactory.openSession();
 		OrderDetails dto = (OrderDetails)session.get(OrderDetails.class, id);
 		session.close();

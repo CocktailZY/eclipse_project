@@ -1,7 +1,6 @@
 package com.ldh.action;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -13,28 +12,27 @@ import org.apache.struts2.convention.annotation.Namespace;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.springframework.context.annotation.Scope;
 
-import com.ldh.dao.IUserDao;
+import com.ldh.dao.IUsersDao;
 import com.ldh.model.Users;
 import com.ldh.util.JsonUtil;
-import com.ldh.util.PageBean;
 
 import net.sf.json.JSONObject;
 
 @Scope("prototype")
 @ParentPackage("struts-default")
 //表示继承的父包
-@Namespace(value = "/user")
+@Namespace(value = "/users")
 //表示当前Action所在命名空间
-public class UserAction{
+public class UsersAction{
 	
-	private IUserDao userDao;
+	private IUsersDao usersDao;
 	
-	public IUserDao getUserDao() {
-		return userDao;
+	public IUsersDao getUsersDao() {
+		return usersDao;
 	}
-	@Resource(name="UserDao")
-	public void setUserDao(IUserDao userDao) {
-		this.userDao = userDao;
+	@Resource(name="UsersDao")
+	public void setUsersDao(IUsersDao usersDao) {
+		this.usersDao = usersDao;
 	}
 	
 	/**
@@ -47,12 +45,12 @@ public class UserAction{
 		String username = ServletActionContext.getRequest().getParameter("username");
 		String password = ServletActionContext.getRequest().getParameter("password");
 //		String hql = "from Users where username="+username+" and password="+password;
-//		List<Object> list = userDao.getAllByConds(hql);
+//		List<Object> list = usersDao.getAllByConds(hql);
 //		if(list.size() == 0){
 			Users user = new Users();
-			user.setUsername(username);
-			user.setPassword(password);
-			if(userDao.save(user)){
+			user.setuName(username);
+			user.setuPassword(password);
+			if(usersDao.save(user)){
 				//save success
 				JSONObject jobj = JSONObject.fromObject("{mes:\'保存成功!\',status:\'success\'}");
 				ServletActionContext.getResponse().setHeader("content-type", "text/html;charset=UTF-8");
@@ -64,7 +62,7 @@ public class UserAction{
 			}
 //		}else{
 //			Users user = (Users) list.get(0);
-//			if(userDao.update(user)){
+//			if(usersDao.update(user)){
 //				//save success
 //				JSONObject jobj = JSONObject.fromObject("{mes:\'更新成功!\',status:\'success\'}");
 //				ServletActionContext.getResponse().setHeader("content-type", "text/html;charset=UTF-8");
@@ -85,8 +83,8 @@ public class UserAction{
 	@Action(value="delete")
 	public String delete() throws IOException{
 		String userId = ServletActionContext.getRequest().getParameter("id");
-		Users user = userDao.getById(Integer.parseInt(userId));
-		if(userDao.delete(user)){
+		Users user = usersDao.getById(userId);
+		if(usersDao.delete(user)){
 			//save success
 			JSONObject jobj = JSONObject.fromObject("{mes:\'删除成功!\',status:\'success\'}");
 			ServletActionContext.getResponse().setHeader("content-type", "text/html;charset=UTF-8");
@@ -110,10 +108,10 @@ public class UserAction{
 		String username = ServletActionContext.getRequest().getParameter("username");
 		String password = ServletActionContext.getRequest().getParameter("password");
 		Users user = new Users();
-		user.setId(Integer.parseInt(userId));
-		user.setUsername(username);
-		user.setPassword(password);
-		if(userDao.update(user)){
+		user.setuId(userId);
+		user.setuName(username);
+		user.setuPassword(password);
+		if(usersDao.update(user)){
 			//save success
 			JSONObject jobj = JSONObject.fromObject("{mes:\'更新成功!\',status:\'success\'}");
 			ServletActionContext.getResponse().setHeader("content-type", "text/html;charset=UTF-8");
@@ -135,7 +133,7 @@ public class UserAction{
 	@Action(value="getById")
 	public String getById() throws IOException{
 		String userId = ServletActionContext.getRequest().getParameter("id");
-		Users user = userDao.getById(Integer.parseInt(userId));
+		Users user = usersDao.getById(userId);
 		if(user != null){
 			//save success
 			JSONObject jobj = JSONObject.fromObject("{mes:\'获取成功!\',status:\'success\',data:"+JsonUtil.toJson(user)+"}");
@@ -164,11 +162,11 @@ public class UserAction{
 //			pageNum = Integer.parseInt(pageNumStr);
 //		}
 //		List<Object> list = new ArrayList<Object>();
-		List<Object> userlist = userDao.list();//获取所有用户数据，不带分页
+		List<Object> userlist = usersDao.list();//获取所有用户数据，不带分页
 //		PageBean page=null;
 //		if(userlist.size()>0){
 //			page = new PageBean(userlist.size(),pageNum,5);
-//			list = userDao.listAll(page);//带分页
+//			list = usersDao.listAll(page);//带分页
 //		}
 		if(userlist.size() > 0){
 			//save success
@@ -213,11 +211,11 @@ public class UserAction{
 		if(hql.lastIndexOf(", ") != -1){
 			hql = hql.substring(0, hql.lastIndexOf(", "));
 		}
-		List<Object> userlist = userDao.getAllByConds(hql);//获取所有用户数据，不带分页
+		List<Object> userlist = usersDao.getAllByConds(hql);//获取所有用户数据，不带分页
 //		PageBean page=null;
 //		if(userlist.size()>0){
 //			page = new PageBean(userlist.size(),pageNum,5);
-//			list = userDao.getByConds(hql,page);//带分页
+//			list = usersDao.getByConds(hql,page);//带分页
 //		}
 		if(userlist.size() > 0){
 			//save success

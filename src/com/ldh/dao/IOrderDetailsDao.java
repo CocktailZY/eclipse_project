@@ -44,7 +44,7 @@ public interface IOrderDetailsDao {
 	 * @param id
 	 * @return
 	 */
-	public OrderDetails getById(int id);
+	public OrderDetails getById(String id);
 	
 	/**
 	 * 根据其他条件查询订单详情带分页

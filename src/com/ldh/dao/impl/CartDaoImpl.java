@@ -28,10 +28,10 @@ public class CartDaoImpl implements ICartDao {
 	public boolean save(Cart cart) {
 		Session session = sessionFactory.openSession();
 		session.beginTransaction();
-		int returnId = (int) session.save(cart);
+		String returnId = (String) session.save(cart);
 		session.getTransaction().commit();
 		session.close();
-		if(returnId != 0){
+		if("".equals(returnId) && null != returnId){
 			return true;
 		}else{
 			return false;
@@ -95,7 +95,7 @@ public class CartDaoImpl implements ICartDao {
 	}
 
 	@Override
-	public Cart getById(int id) {
+	public Cart getById(String id) {
 		Session session = sessionFactory.openSession();
 		Cart dto = (Cart)session.get(Cart.class, id);
 		session.close();

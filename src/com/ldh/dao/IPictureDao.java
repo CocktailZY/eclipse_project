@@ -44,7 +44,7 @@ public interface IPictureDao {
 	 * @param id
 	 * @return
 	 */
-	public Picture getById(int id);
+	public Picture getById(String id);
 	
 	/**
 	 * 根据其他条件查询订单带分页

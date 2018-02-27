@@ -11,6 +11,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.GenericGenerator;
+
 @Entity
 @Table
 public class Address implements Serializable{
@@ -25,7 +27,8 @@ public class Address implements Serializable{
 	private Users aUId;
 	
 	@Id
-	@GeneratedValue(generator = "UUID")
+	@GenericGenerator(name="systemUUID",strategy="uuid")  
+	@GeneratedValue(generator="systemUUID")
 	public String getaId() {
 		return aId;
 	}

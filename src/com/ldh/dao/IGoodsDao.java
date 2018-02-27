@@ -44,7 +44,7 @@ public interface IGoodsDao {
 	 * @param id
 	 * @return
 	 */
-	public Goods getById(int id);
+	public Goods getById(String id);
 	
 	/**
 	 * 根据其他条件查询商品带分页

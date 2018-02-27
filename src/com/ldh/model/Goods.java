@@ -12,6 +12,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.GenericGenerator;
+
 @Entity
 @Table
 public class Goods implements Serializable{
@@ -28,8 +30,10 @@ public class Goods implements Serializable{
 	private Brand gBId;
 	private Degree gDeId;
 	private Users gUId;
+	
 	@Id
-	@GeneratedValue(generator = "UUID")
+	@GenericGenerator(name="systemUUID",strategy="uuid")
+	@GeneratedValue(generator="systemUUID")
 	public String getgId() {
 		return gId;
 	}

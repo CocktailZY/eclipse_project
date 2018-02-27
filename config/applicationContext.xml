@@ -47,6 +47,11 @@
 			<value>com.ldh.*</value>
 		</property>
 	</bean>
+	
+	<bean id="transactionManager"
+	    class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+	    <property name="dataSource" ref="dataSource" />
+	</bean>
 
 
 </beans>

@@ -28,10 +28,10 @@ public class BrandDaoImpl implements IBrandDao {
 	public boolean save(Brand brand) {
 		Session session = sessionFactory.openSession();
 		session.beginTransaction();
-		int returnId = (int) session.save(brand);
+		String returnId = (String) session.save(brand);
 		session.getTransaction().commit();
 		session.close();
-		if(returnId != 0){
+		if("".equals(returnId) && null != returnId){
 			return true;
 		}else{
 			return false;
@@ -95,7 +95,7 @@ public class BrandDaoImpl implements IBrandDao {
 	}
 
 	@Override
-	public Brand getById(int id) {
+	public Brand getById(String id) {
 		Session session = sessionFactory.openSession();
 		Brand dto = (Brand)session.get(Brand.class, id);
 		session.close();

@@ -44,7 +44,7 @@ public interface IAddressDao {
 	 * @param id
 	 * @return
 	 */
-	public Address getById(int id);
+	public Address getById(String id);
 	
 	/**
 	 * 根据其他条件查询品牌(类型)带分页

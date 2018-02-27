@@ -11,7 +11,7 @@ import org.apache.struts2.convention.annotation.Namespace;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.springframework.context.annotation.Scope;
 
-import com.ldh.dao.IUserDao;
+import com.ldh.dao.IUsersDao;
 import com.ldh.model.Users;
 
 import net.sf.json.JSONObject;
@@ -23,14 +23,14 @@ import net.sf.json.JSONObject;
 //表示当前Action所在命名空间
 public class LoginAction {
 	
-	private IUserDao userDao;
+	private IUsersDao usersDao;
 	
-	public IUserDao getUserDao() {
-		return userDao;
+	public IUsersDao getUsersDao() {
+		return usersDao;
 	}
 	@Resource(name="UserDao")
-	public void setUserDao(IUserDao userDao) {
-		this.userDao = userDao;
+	public void setUserDao(IUsersDao usersDao) {
+		this.usersDao = usersDao;
 	}
 	
 	/**
@@ -43,7 +43,7 @@ public class LoginAction {
 		String username = ServletActionContext.getRequest().getParameter("username");
 		String password = ServletActionContext.getRequest().getParameter("password");
 		String hql = "from Users where username="+username+" and password="+password;
-		List<Object> list = userDao.getAllByConds(hql);
+		List<Object> list = usersDao.getAllByConds(hql);
 		if(list.size() > 0){
 			Users loginUser = (Users) list.get(0);
 			//user exist
@@ -53,7 +53,7 @@ public class LoginAction {
 			ServletActionContext.getResponse().getWriter().write(jobj.toString());
 		}else{
 			//user not exist or password is not right
-			List<Object> templist = userDao.getAllByConds("from Users where username="+username);
+			List<Object> templist = usersDao.getAllByConds("from Users where username="+username);
 			if(list.size() > 0){
 				JSONObject jobj = JSONObject.fromObject("{mes:\'密码不正确!\',status:\'failed\'}");
 				ServletActionContext.getResponse().setHeader("content-type", "text/html;charset=UTF-8");
@@ -85,7 +85,7 @@ public class LoginAction {
 	@Action(value="checkName")
 	public String checkName(){
 		String username = ServletActionContext.getRequest().getParameter("aaa");
-		List<Object> templist = userDao.getAllByConds("from Users where username='"+username+"'");
+		List<Object> templist = usersDao.getAllByConds("from Users where username='"+username+"'");
 		if(templist.size() > 0){
 			try {
 				JSONObject jobj = JSONObject.fromObject("{mes:\'用户名已存在!\',status:\'failed\'}");

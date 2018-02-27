@@ -28,10 +28,10 @@ public class DegreeDaoImpl implements IDegreeDao {
 	public boolean save(Degree degree) {
 		Session session = sessionFactory.openSession();
 		session.beginTransaction();
-		int returnId = (int) session.save(degree);
+		String returnId = (String) session.save(degree);
 		session.getTransaction().commit();
 		session.close();
-		if(returnId != 0){
+		if("".equals(returnId) && null != returnId){
 			return true;
 		}else{
 			return false;
@@ -95,7 +95,7 @@ public class DegreeDaoImpl implements IDegreeDao {
 	}
 
 	@Override
-	public Degree getById(int id) {
+	public Degree getById(String id) {
 		Session session = sessionFactory.openSession();
 		Degree dto = (Degree)session.get(Degree.class, id);
 		session.close();

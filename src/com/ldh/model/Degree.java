@@ -7,6 +7,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.GenericGenerator;
+
 @Entity
 @Table
 public class Degree implements Serializable {
@@ -19,7 +21,8 @@ public class Degree implements Serializable {
 	private String deDescribe;
 	
 	@Id
-	@GeneratedValue(generator = "UUID")
+	@GenericGenerator(name="systemUUID",strategy="uuid")
+	@GeneratedValue(generator="systemUUID")
 	public String getDeId() {
 		return deId;
 	}

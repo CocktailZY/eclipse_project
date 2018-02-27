@@ -45,7 +45,7 @@ public interface IUsersDao {
 	 * @param id
 	 * @return
 	 */
-	public Users getById(int id);
+	public Users getById(String id);
 	
 	/**
 	 * 根据其他条件查询用户带分页

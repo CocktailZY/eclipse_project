@@ -44,7 +44,7 @@ public interface IJudgeDao {
 	 * @param id
 	 * @return
 	 */
-	public Judge getById(int id);
+	public Judge getById(String id);
 	
 	/**
 	 * 根据其他条件查询判定条件带分页

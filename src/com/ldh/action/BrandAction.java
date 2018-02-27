@@ -21,20 +21,20 @@ import net.sf.json.JSONObject;
 @ParentPackage("struts-default")
 //表示继承的父包
 @Namespace(value = "/brand")
-public class GoodsTypeAction {
+public class BrandAction {
 	
 	private IBrandDao brandDao;
 	
 	public IBrandDao getUserDao() {
 		return brandDao;
 	}
-	@Resource(name="GoodsTypeDao")
+	@Resource(name="BrandDao")
 	public void setUserDao(IBrandDao brandDao) {
 		this.brandDao = brandDao;
 	}
 	
 	/**
-	 * 保存商品类型信息
+	 * 保存品牌(类型)信息
 	 * @return
 	 * @throws IOException 
 	 */
@@ -57,14 +57,14 @@ public class GoodsTypeAction {
 		return null;
 	}
 	/**
-	 * 删除商品类型信息
+	 * 删除品牌(类型)信息
 	 * @return
 	 * @throws IOException 
 	 */
 	@Action(value="delete")
 	public String delete() throws IOException{
 		String goodsTypeId = ServletActionContext.getRequest().getParameter("id");
-		Brand brand = brandDao.getById(Integer.parseInt(goodsTypeId));
+		Brand brand = brandDao.getById(goodsTypeId);
 		if(brandDao.delete(brand)){
 			//save success
 			JSONObject jobj = JSONObject.fromObject("{mes:\'删除成功!\',status:\'success\'}");
@@ -79,7 +79,7 @@ public class GoodsTypeAction {
 		return null;
 	}
 	/**
-	 * 修改商品类型信息
+	 * 修改品牌(类型)信息
 	 * @return
 	 * @throws IOException 
 	 */
@@ -105,14 +105,14 @@ public class GoodsTypeAction {
 	}
 	
 	/**
-	 * 根据id商品类型信息
+	 * 根据id品牌(类型)信息
 	 * @return
 	 * @throws IOException
 	 */
 	@Action(value="getById")
 	public String getById() throws IOException{
 		String goodsTypeId = ServletActionContext.getRequest().getParameter("id");
-		Brand brand = brandDao.getById(Integer.parseInt(goodsTypeId));
+		Brand brand = brandDao.getById(goodsTypeId);
 		if(brand != null){
 			//save success
 			JSONObject jobj = JSONObject.fromObject("{mes:\'获取成功!\',status:\'success\',data:"+JsonUtil.toJson(brand)+"}");
@@ -127,7 +127,7 @@ public class GoodsTypeAction {
 		return null;
 	}
 	/**
-	 * 获取用户列表
+	 * 获取品牌(类型)列表
 	 * @return
 	 * @throws IOException
 	 */

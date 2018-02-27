@@ -28,10 +28,10 @@ public class OrderInfoDaoImpl implements IOrderInfoDao {
 	public boolean save(OrderInfo orderInfo) {
 		Session session = sessionFactory.openSession();
 		session.beginTransaction();
-		int returnId = (int) session.save(orderInfo);
+		String returnId = (String) session.save(orderInfo);
 		session.getTransaction().commit();
 		session.close();
-		if(returnId != 0){
+		if("".equals(returnId) && null != returnId){
 			return true;
 		}else{
 			return false;
@@ -95,7 +95,7 @@ public class OrderInfoDaoImpl implements IOrderInfoDao {
 	}
 
 	@Override
-	public OrderInfo getById(int id) {
+	public OrderInfo getById(String id) {
 		Session session = sessionFactory.openSession();
 		OrderInfo dto = (OrderInfo)session.get(OrderInfo.class, id);
 		session.close();

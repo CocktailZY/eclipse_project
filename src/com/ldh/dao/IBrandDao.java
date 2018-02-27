@@ -44,7 +44,7 @@ public interface IBrandDao {
 	 * @param id
 	 * @return
 	 */
-	public Brand getById(int id);
+	public Brand getById(String id);
 	
 	/**
 	 * 根据其他条件查询商品类型带分页

@@ -28,10 +28,10 @@ public class AddressDaoImpl implements IAddressDao {
 	public boolean save(Address address) {
 		Session session = sessionFactory.openSession();
 		session.beginTransaction();
-		int returnId = (int) session.save(address);
+		String returnId = (String) session.save(address);
 		session.getTransaction().commit();
 		session.close();
-		if(returnId != 0){
+		if("".equals(returnId) && null != returnId){
 			return true;
 		}else{
 			return false;
@@ -95,7 +95,7 @@ public class AddressDaoImpl implements IAddressDao {
 	}
 
 	@Override
-	public Address getById(int id) {
+	public Address getById(String id) {
 		Session session = sessionFactory.openSession();
 		Address dto = (Address)session.get(Address.class, id);
 		session.close();

@@ -28,10 +28,10 @@ public class GoodsDaoImpl implements IGoodsDao {
 	public boolean save(Goods goods) {
 		Session session = sessionFactory.openSession();
 		session.beginTransaction();
-		int returnId = (int) session.save(goods);
+		String returnId = (String) session.save(goods);
 		session.getTransaction().commit();
 		session.close();
-		if(returnId != 0){
+		if("".equals(returnId) && null != returnId){
 			return true;
 		}else{
 			return false;
@@ -95,7 +95,7 @@ public class GoodsDaoImpl implements IGoodsDao {
 	}
 
 	@Override
-	public Goods getById(int id) {
+	public Goods getById(String id) {
 		Session session = sessionFactory.openSession();
 		Goods dto = (Goods)session.get(Goods.class, id);
 		session.close();

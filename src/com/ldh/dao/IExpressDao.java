@@ -44,7 +44,7 @@ public interface IExpressDao {
 	 * @param id
 	 * @return
 	 */
-	public Express getById(int id);
+	public Express getById(String id);
 	
 	/**
 	 * 根据其他条件查询快递带分页

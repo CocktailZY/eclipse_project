@@ -28,13 +28,13 @@ public class UsersDaoImpl implements IUsersDao {
 	public boolean save(Users user) {
 		Session session = sessionFactory.openSession();
 		session.beginTransaction();
-		int returnId = (int) session.save(user);
+		String returnId = (String) session.save(user);
 		session.getTransaction().commit();
 		session.close();
-		if(returnId != 0){
-			return true;
-		}else{
+		if("".equals(returnId) && null != returnId){
 			return false;
+		}else{
+			return true;
 		}
 	}
 
@@ -95,7 +95,7 @@ public class UsersDaoImpl implements IUsersDao {
 	}
 
 	@Override
-	public Users getById(int id) {
+	public Users getById(String id) {
 		Session session = sessionFactory.openSession();
 		Users dto = (Users)session.get(Users.class, id);
 		session.close();

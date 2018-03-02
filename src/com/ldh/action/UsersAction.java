@@ -42,14 +42,23 @@ public class UsersAction{
 	 */
 	@Action(value="save")
 	public String save() throws IOException{
-		String username = ServletActionContext.getRequest().getParameter("username");
-		String password = ServletActionContext.getRequest().getParameter("password");
-//		String hql = "from Users where username="+username+" and password="+password;
+		String uName = ServletActionContext.getRequest().getParameter("uName");
+		String uPassword = ServletActionContext.getRequest().getParameter("uPassword");
+		String uPhone = ServletActionContext.getRequest().getParameter("uPhone");
+		String uMail = ServletActionContext.getRequest().getParameter("uMail");
+		String uFraction = ServletActionContext.getRequest().getParameter("uFraction");
+		String uMoney = ServletActionContext.getRequest().getParameter("uMoney");
+		
+//		String hql = "from Users where uName="+uName+" and uPassword="+uPassword;
 //		List<Object> list = usersDao.getAllByConds(hql);
 //		if(list.size() == 0){
 			Users user = new Users();
-			user.setuName(username);
-			user.setuPassword(password);
+			user.setuName(uName);
+			user.setuPassword(uPassword);
+			user.setuPhone(uPhone);
+			user.setuMail(uMail);
+			user.setuFraction(uFraction);
+			user.setuMoney(uMoney);
 			if(usersDao.save(user)){
 				//save success
 				JSONObject jobj = JSONObject.fromObject("{mes:\'保存成功!\',status:\'success\'}");
@@ -104,13 +113,23 @@ public class UsersAction{
 	 */
 	@Action(value="update")
 	public String update() throws IOException{
-		String userId = ServletActionContext.getRequest().getParameter("id");
-		String username = ServletActionContext.getRequest().getParameter("username");
-		String password = ServletActionContext.getRequest().getParameter("password");
+		String userId = ServletActionContext.getRequest().getParameter("uId");
+		String uName = ServletActionContext.getRequest().getParameter("uName");
+		String uPassword = ServletActionContext.getRequest().getParameter("uPassword");
+		String uPhone = ServletActionContext.getRequest().getParameter("uPhone");
+		String uMail = ServletActionContext.getRequest().getParameter("uMail");
+		String uFraction = ServletActionContext.getRequest().getParameter("uFraction");
+		String uMoney = ServletActionContext.getRequest().getParameter("uMoney");
+		String uSign = ServletActionContext.getRequest().getParameter("uSign");
 		Users user = new Users();
 		user.setuId(userId);
-		user.setuName(username);
-		user.setuPassword(password);
+		user.setuName(uName);
+		user.setuPassword(uPassword);
+		user.setuPhone(uPhone);
+		user.setuMail(uMail);
+		user.setuFraction(uFraction);
+		user.setuMoney(uMoney);
+		user.setuSign(Integer.parseInt(uSign));
 		if(usersDao.update(user)){
 			//save success
 			JSONObject jobj = JSONObject.fromObject("{mes:\'更新成功!\',status:\'success\'}");
@@ -191,14 +210,14 @@ public class UsersAction{
 	public String listByConds() throws IOException{
 		String jsonConds = ServletActionContext.getRequest().getParameter("conds");
 		JSONObject jsonObj = JSONObject.fromObject(jsonConds);
-		String hql = "from Users where ";
+		String hql = "from Users where uSign !=2 and ";
 		Iterator<String> sIterator = jsonObj.keys();  
 		while(sIterator.hasNext()){  
 		    // 获得key  
 		    String key = sIterator.next();  
 		    // 根据key获得value, value也可以是JSONObject,JSONArray,使用对应的参数接收即可  
 		    String value = jsonObj.getString(key);
-		    hql+=key+"='"+value+"', ";
+		    hql+=key+"='"+value+"'and ";
 //		    System.out.println("key: "+key+",value"+value);  
 		} 
 		//分页
@@ -208,8 +227,8 @@ public class UsersAction{
 //			pageNum = Integer.parseInt(pageNumStr);
 //		}
 //		List<Object> list = new ArrayList<Object>();
-		if(hql.lastIndexOf(", ") != -1){
-			hql = hql.substring(0, hql.lastIndexOf(", "));
+		if(hql.lastIndexOf("and ") != -1){
+			hql = hql.substring(0, hql.lastIndexOf("and "));
 		}
 		List<Object> userlist = usersDao.getAllByConds(hql);//获取所有用户数据，不带分页
 //		PageBean page=null;
@@ -224,7 +243,7 @@ public class UsersAction{
 			ServletActionContext.getResponse().getWriter().write(jobj.toString());
 		}else{
 			//save failed
-			JSONObject jobj = JSONObject.fromObject("{mes:\'获取失败!\',status:\'error\'}");
+			JSONObject jobj = JSONObject.fromObject("{mes:\'无符合条件的用户!\',status:\'error\'}");
 			ServletActionContext.getResponse().setHeader("content-type", "text/html;charset=UTF-8");
 			ServletActionContext.getResponse().getWriter().write(jobj.toString());
 		}

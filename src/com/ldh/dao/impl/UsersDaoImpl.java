@@ -40,12 +40,13 @@ public class UsersDaoImpl implements IUsersDao {
 
 	@Override
 	public boolean delete(Users user) {
+		user.setuSign(2);//逻辑删除
 		boolean result = false;
 		try{
 			if(user != null){
 				Session session = sessionFactory.openSession();
 				session.beginTransaction();
-				session.delete(user);
+				session.update(user);
 				session.getTransaction().commit();
 				session.close();
 				result = true;
@@ -77,7 +78,7 @@ public class UsersDaoImpl implements IUsersDao {
 	@Override
 	public List<Object> list() {
 		Session session = sessionFactory.openSession();
-		Query query = session.createQuery("from Users");
+		Query query = session.createQuery("from Users where uSign != 2");
 		List<Object> list = query.list();
 		session.close();
 		return list;
@@ -86,7 +87,7 @@ public class UsersDaoImpl implements IUsersDao {
 	@Override
 	public List<Object> listAll(PageBean page) {
 		Session session = sessionFactory.openSession();
-		Query query = session.createQuery("from Users");
+		Query query = session.createQuery("from Users where uSign != 2");
 		query.setFirstResult(page.getRowStart());
 		query.setMaxResults(page.getPageSize());
 		List<Object> list = query.list();

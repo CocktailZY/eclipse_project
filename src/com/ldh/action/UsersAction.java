@@ -121,15 +121,28 @@ public class UsersAction{
 		String uFraction = ServletActionContext.getRequest().getParameter("uFraction");
 		String uMoney = ServletActionContext.getRequest().getParameter("uMoney");
 		String uSign = ServletActionContext.getRequest().getParameter("uSign");
-		Users user = new Users();
-		user.setuId(userId);
-		user.setuName(uName);
-		user.setuPassword(uPassword);
-		user.setuPhone(uPhone);
-		user.setuMail(uMail);
-		user.setuFraction(uFraction);
-		user.setuMoney(uMoney);
-		user.setuSign(Integer.parseInt(uSign));
+		Users user = usersDao.getById(userId);
+		if(uName != null && "".equals(uName)){
+			user.setuName(uName);
+		}
+		if(uPassword != null && "".equals(uPassword)){
+			user.setuPassword(uPassword);
+		}
+		if(uPhone != null && "".equals(uPhone)){
+			user.setuPhone(uPhone);
+		}
+		if(uMail != null && "".equals(uMail)){
+			user.setuMail(uMail);
+		}
+		if(uFraction != null && "".equals(uFraction)){
+			user.setuFraction(uFraction);
+		}
+		if(uMoney != null && "".equals(uMoney)){
+			user.setuMoney(uMoney);
+		}
+		if(uSign != null && "".equals(uSign)){
+			user.setuSign(Integer.parseInt(uSign));
+		}
 		if(usersDao.update(user)){
 			//save success
 			JSONObject jobj = JSONObject.fromObject("{mes:\'更新成功!\',status:\'success\'}");

@@ -125,22 +125,22 @@ public class UsersAction{
 		if(uName != null && "".equals(uName)){
 			user.setuName(uName);
 		}
-		if(uPassword != null && "".equals(uPassword)){
+		if(uPassword != null && !"".equals(uPassword)){
 			user.setuPassword(uPassword);
 		}
-		if(uPhone != null && "".equals(uPhone)){
+		if(uPhone != null && !"".equals(uPhone)){
 			user.setuPhone(uPhone);
 		}
-		if(uMail != null && "".equals(uMail)){
+		if(uMail != null && !"".equals(uMail)){
 			user.setuMail(uMail);
 		}
-		if(uFraction != null && "".equals(uFraction)){
+		if(uFraction != null && !"".equals(uFraction)){
 			user.setuFraction(uFraction);
 		}
-		if(uMoney != null && "".equals(uMoney)){
+		if(uMoney != null && !"".equals(uMoney)){
 			user.setuMoney(uMoney);
 		}
-		if(uSign != null && "".equals(uSign)){
+		if(uSign != null && !"".equals(uSign)){
 			user.setuSign(Integer.parseInt(uSign));
 		}
 		if(usersDao.update(user)){

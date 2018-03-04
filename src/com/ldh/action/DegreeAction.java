@@ -12,7 +12,8 @@ import org.apache.struts2.convention.annotation.ParentPackage;
 import org.springframework.context.annotation.Scope;
 
 import com.ldh.dao.IBrandDao;
-import com.ldh.model.Brand;
+import com.ldh.dao.IDegreeDao;
+import com.ldh.model.Degree;
 import com.ldh.util.JsonUtil;
 
 import net.sf.json.JSONObject;
@@ -20,19 +21,18 @@ import net.sf.json.JSONObject;
 @Scope("prototype")
 @ParentPackage("struts-default")
 //表示继承的父包
-@Namespace(value = "/brand")
-public class BrandAction {
+@Namespace(value = "/degree")
+public class DegreeAction {
 	
-	private IBrandDao brandDao;
+	private IDegreeDao degreeDao;
 	
-	public IBrandDao getUserDao() {
-		return brandDao;
+	public IDegreeDao getDegreeDao() {
+		return degreeDao;
 	}
-	@Resource(name="BrandDao")
-	public void setUserDao(IBrandDao brandDao) {
-		this.brandDao = brandDao;
+	@Resource(name="DegreeDao")
+	public void setDegreeDao(IDegreeDao degreeDao) {
+		this.degreeDao = degreeDao;
 	}
-	
 	/**
 	 * 保存品牌(类型)信息
 	 * @return
@@ -40,11 +40,11 @@ public class BrandAction {
 	 */
 	@Action(value="save")
 	public String save() throws IOException{
-		String bDescribe = ServletActionContext.getRequest().getParameter("bDescribe");
-		Brand brand = new Brand();
-		brand.setbDescribe(bDescribe);
+		String deDescribe = ServletActionContext.getRequest().getParameter("deDescribe");
+		Degree degree = new Degree();
+		degree.setDeDescribe(deDescribe);
 		JSONObject jobj = new JSONObject();
-		if(brandDao.save(brand)){
+		if(degreeDao.save(degree)){
 			//save success
 			jobj.put("mes", "保存成功!");
 			jobj.put("status", "success");
@@ -64,16 +64,16 @@ public class BrandAction {
 	 */
 	@Action(value="delete")
 	public String delete() throws IOException{
-		String goodsTypeId = ServletActionContext.getRequest().getParameter("id");
-		Brand brand = brandDao.getById(goodsTypeId);
+		String deId = ServletActionContext.getRequest().getParameter("id");
+		Degree degree = degreeDao.getById(deId);
 		JSONObject jobj = new JSONObject();
-		if(brandDao.delete(brand)){
+		if(degreeDao.delete(degree)){
 			//save success
-			jobj.put("mes", "删除成功!");
+			jobj.put("mes", "保存成功!");
 			jobj.put("status", "success");
 		}else{
 			//save failed
-			jobj.put("mes", "删除失败!");
+			jobj.put("mes", "获取失败!");
 			jobj.put("status", "error");
 		}
 		ServletActionContext.getResponse().setHeader("content-type", "text/html;charset=UTF-8");
@@ -87,14 +87,14 @@ public class BrandAction {
 	 */
 	@Action(value="update")
 	public String update() throws IOException{
-		String brandId = ServletActionContext.getRequest().getParameter("bId");
-		String bDescribe = ServletActionContext.getRequest().getParameter("bDescribe");
-		Brand brand = brandDao.getById(brandId);
-		if(bDescribe != null && !"".equals(bDescribe)){
-			brand.setbDescribe(bDescribe);
+		String deId = ServletActionContext.getRequest().getParameter("deId");
+		String deDes = ServletActionContext.getRequest().getParameter("deDes");
+		Degree degree = degreeDao.getById(deId);
+		if(deDes != null && !"".equals(deDes)){
+			degree.setDeDescribe(deDes);
 		}
 		JSONObject jobj = new JSONObject();
-		if(brandDao.update(brand)){
+		if(degreeDao.update(degree)){
 			//save success
 			jobj.put("mes", "更新成功!");
 			jobj.put("status", "success");
@@ -115,10 +115,10 @@ public class BrandAction {
 	 */
 	@Action(value="getById")
 	public String getById() throws IOException{
-		String goodsTypeId = ServletActionContext.getRequest().getParameter("id");
-		Brand brand = brandDao.getById(goodsTypeId);
+		String deId = ServletActionContext.getRequest().getParameter("id");
+		Degree degree = degreeDao.getById(deId);
 		JSONObject jobj = new JSONObject();
-		if(brand != null){
+		if(degree != null){
 			//save success
 			jobj.put("mes", "获取成功!");
 			jobj.put("status", "success");
@@ -145,18 +145,18 @@ public class BrandAction {
 //			pageNum = Integer.parseInt(pageNumStr);
 //		}
 //		List<Object> list = new ArrayList<Object>();
-		List<Object> goodsTypelist = brandDao.list();//获取所有类型数据，不带分页
+		List<Object> degreelist = degreeDao.list();//获取所有类型数据，不带分页
 //		PageBean page=null;
 //		if(userlist.size()>0){
 //			page = new PageBean(userlist.size(),pageNum,5);
 //			list = userDao.listAll(page);//带分页
 //		}
 		JSONObject jobj = new JSONObject();
-		if(goodsTypelist.size() > 0){
+		if(degreelist.size() > 0){
 			//save success
 			jobj.put("mes", "获取成功!");
 			jobj.put("status", "success");
-			jobj.put("data", JsonUtil.toJsonByListObj(goodsTypelist));
+			jobj.put("data", JsonUtil.toJsonByListObj(degreelist));
 		}else{
 			//save failed
 			jobj.put("mes", "获取失败!");

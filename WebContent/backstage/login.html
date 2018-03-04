@@ -81,7 +81,6 @@
 </body> 
 </html>
 <script type="text/javascript" src="lib/jquery.min.js"></script>
-<script type="text/javascript" src="lib/jquery.min.js"></script>
 <script type="text/javascript" src="lib/custom/util.js"></script>
 <script type="text/javascript">
 
@@ -89,7 +88,7 @@ function adminLogin(){
 	var username = $('#name').val();
 	var password = $('#pwd').val();
 	if(username == 'admin' && password == 'admin'){
-		Util.setLocalStorage("loginUser", JSON.stringify({"username":username,"password":password}));
+		Util.setSession("adminloginUser", JSON.stringify({"username":username,"password":password}));
 		window.location.href='main.html';
 	}else{
 		alert('用户名密码错误!');

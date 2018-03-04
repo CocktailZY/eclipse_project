@@ -26,7 +26,7 @@ public class Goods implements Serializable{
 	private String gName;
 	private String gPrice;
 	private String gDexcribe;
-	private String gSign;
+	private int gSign;
 	private Brand gBId;
 	private Degree gDeId;
 	private Users gUId;
@@ -58,10 +58,10 @@ public class Goods implements Serializable{
 	public void setgDexcribe(String gDexcribe) {
 		this.gDexcribe = gDexcribe;
 	}
-	public String getgSign() {
+	public int getgSign() {
 		return gSign;
 	}
-	public void setgSign(String gSign) {
+	public void setgSign(int gSign) {
 		this.gSign = gSign;
 	}
 	@ManyToOne(cascade={CascadeType.MERGE})

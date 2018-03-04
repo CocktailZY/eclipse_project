@@ -46,11 +46,11 @@
             collapsible:false,
             toolbar:'#tb',
             pageSize:10,
-            data:getData(),
+            /* data:getData(), */
             columns:[[
                 {field:'ck',checkbox:true,width:'5%'},
-                {field:'id',title:'类型编号',width:'10%',align:'center',sortable:true},
-                {field:'goodsTypeName',title:'类型名称',width:'85%',align:'center',editor:'text'},
+                {field:'bId',title:'品牌编号',width:'20%',align:'center',sortable:true},
+                {field:'bDescribe',title:'品牌名称',width:'75%',align:'center',editor:'text'},
             ]],
             onDblClickRow: onClickCell,
             onClickRow:function(rowIndex, rowData){
@@ -165,7 +165,7 @@
             if (endEditing()){
                 $('#dg').datagrid('selectRow', index)
                     .datagrid('beginEdit', index);
-                var ed = $('#dg').datagrid('getEditor', {index:index,field:'pname'});
+                var ed = $('#dg').datagrid('getEditor', {index:index,field:'bDescribe'});
                 ($(ed.target).data('textbox') ? $(ed.target).textbox('textbox') : $(ed.target)).focus();
                 editIndex = index;
             } else {
@@ -184,12 +184,11 @@
 //            $('#dg').datagrid('insertRow',{'pid':'pid-'});
             $('#dg').datagrid('insertRow',{
                 index: editIndex,  // 索引从0开始
-                row: {'ck': true,'pid':'pid-'}
+                row: {'ck': true}
             });
 //            editIndex = $('#dg').datagrid('getRows').length-1;
-            $('#dg').datagrid('selectRow', editIndex)
-                .datagrid('beginEdit', editIndex);
-            var ed = $('#dg').datagrid('getEditor', {index:editIndex,field:'pname'});
+            $('#dg').datagrid('selectRow', editIndex).datagrid('beginEdit', editIndex);
+            var ed = $('#dg').datagrid('getEditor', {index:editIndex,field:'bDescribe'});
             ($(ed.target).data('textbox') ? $(ed.target).textbox('textbox') : $(ed.target)).focus();
         }
     }
@@ -203,25 +202,22 @@
                     var rindex = $('#dg').datagrid('getRowIndex', row);
                     //alert(rindex);
                     $('#dg').datagrid('deleteRow', rindex);
-//                $.ajax({
-//                    url : '<%=path%>/mbFlup/deleteFlupCycle.do',
-//                    type : 'POST',
-//                    timeout : 60000,
-//                    success : function(data) {
-//                        var msg = '删除';
-//                        if (data) {
-//                            $obj.datagrid('deleteRow', rindex);
-//                            //$obj.datagrid('reload');
-//                            $.messager.alert('提示', msg + '成功！', 'info', function() {
-//                                //window.location.href = root + 'esbService/initSysConfig.do';
-//                            });
-//                        } else {
-//                            $.messager.alert('提示', msg + '失败！', 'error', function() {
-//                                //window.location.href = root + 'esbService/initSysConfig.do';
-//                            });
-//                        }
-//                    }
-//                });
+                    $.ajax({
+            			type:"post",
+            			async:true,
+            			url:"../brand/delete.action",
+            			dataType:"json",
+            			data:{
+            				id:row.bId
+            			},
+            			success:function(data){
+            				if(data.status == 'success'){
+            					getData();
+            				}else{
+            					alert(data.mes);
+            				}
+            			}
+            		});
                 }else{
                     $('#dg').datagrid('clearSelections');
                 }
@@ -245,6 +241,43 @@
             var row = $('#dg').datagrid('getSelected');
             console.log(row);
             //发ajax请求后台
+          //发ajax请求后台
+            if(row.bId == '' || row.bId == null){
+            	$.ajax({
+        			type:"post",
+        			async:true,
+        			url:"../brand/save.action",
+        			dataType:"json",
+        			data:{
+       					bDescribe:row.bDescribe
+        			},
+        			success:function(data){
+        				if(data.status == 'success'){
+        					getData();
+        				}else{
+        					alert(data.mes);
+        				}
+        			}
+        		});
+            }else{
+            	$.ajax({
+        			type:"post",
+        			async:true,
+        			url:"../brand/update.action",
+        			dataType:"json",
+        			data:{
+        				bId:row.bId,
+       					bDescribe:row.bDescribe
+        			},
+        			success:function(data){
+        				if(data.status == 'success'){
+        					getData();
+        				}else{
+        					alert(data.mes);
+        				}
+        			}
+        		});
+            }
         }
     }
     //取消编辑
@@ -257,6 +290,7 @@
             var row = $('#dg').datagrid('getSelected');
             var rindex = $('#dg').datagrid('getRowIndex', row);
             $('#dg').datagrid('rejectChanges', rindex);
+            getData();
         }
     }
 

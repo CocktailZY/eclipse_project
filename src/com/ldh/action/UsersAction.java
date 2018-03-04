@@ -121,6 +121,7 @@ public class UsersAction{
 		String uFraction = ServletActionContext.getRequest().getParameter("uFraction");
 		String uMoney = ServletActionContext.getRequest().getParameter("uMoney");
 		String uSign = ServletActionContext.getRequest().getParameter("uSign");
+		String uPicture = ServletActionContext.getRequest().getParameter("uploadHeadImg");
 		Users user = usersDao.getById(userId);
 		if(uName != null && "".equals(uName)){
 			user.setuName(uName);
@@ -139,6 +140,10 @@ public class UsersAction{
 		}
 		if(uMoney != null && !"".equals(uMoney)){
 			user.setuMoney(uMoney);
+		}
+		if(uPicture != null && !"".equals(uPicture)){
+			//uPicture = uPicture.substring(0, uPicture.lastIndexOf("/"));
+			user.setuPicture(uPicture);
 		}
 		if(uSign != null && !"".equals(uSign)){
 			user.setuSign(Integer.parseInt(uSign));

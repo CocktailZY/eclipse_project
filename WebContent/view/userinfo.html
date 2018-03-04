@@ -58,91 +58,148 @@
 <div class="modal fade" id="myModal88" tabindex="-1" role="dialog" aria-labelledby="myModal88"
      aria-hidden="true">
     <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-                    &times;</button>
-                <h4 class="modal-title" id="myModalLabel">不要犹豫，马上注册!</h4>
-            </div>
-            <div class="modal-body modal-body-sub">
-                <div class="row">
-                    <div class="col-md-8 modal_body_left modal_body_left1" style="border-right: 1px dotted #C2C2C2;padding-right:3em;">
-                        <div class="sap_tabs">
-                            <div id="horizontalTab" style="display: block; width: 100%; margin: 0px;">
-                                <ul>
-                                    <li class="resp-tab-item" aria-controls="tab_item-0"><span>登录</span></li>
-                                    <li class="resp-tab-item" aria-controls="tab_item-1"><span>注册</span></li>
-                                </ul>
-                                <div class="tab-1 resp-tab-content" aria-labelledby="tab_item-0">
-                                    <div class="facts">
-                                        <div class="register">
-                                            <form action="#" method="post">
-                                                <input name="Email" placeholder="用户名" type="text" required="">
-                                                <input name="Password" placeholder="密码" type="password" required="">
-                                                <div class="sign-up">
-                                                    <input type="submit" value="登录"/>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="tab-2 resp-tab-content" aria-labelledby="tab_item-1">
-                                    <div class="facts">
-                                        <div class="register">
-                                            <form action="#" method="post">
-                                                <!--<input placeholder="Name" name="Name" type="text" required="">-->
-                                                <input placeholder="用户名" name="Email" type="email" required="">
-                                                <input placeholder="密码" name="Password" type="password" required="">
-                                                <input placeholder="确认密码" name="Password" type="password" required="">
-                                                <div class="sign-up">
-                                                    <input type="submit" value="创建用户"/>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <script src="js/easyResponsiveTabs.js" type="text/javascript"></script>
-                        <script type="text/javascript">
-                            $(document).ready(function () {
-                                $('#horizontalTab').easyResponsiveTabs({
-                                    type: 'default', //Types: default, vertical, accordion
-                                    width: 'auto', //auto or any width like 600px
-                                    fit: true   // 100% fit in a container
-                                });
-                            });
-                        </script>
-                        <div id="OR" class="hidden-xs">OR</div>
-                    </div>
-                    <div class="col-md-4 modal_body_right modal_body_right1">
-                        <div class="row text-center sign-with">
-                            <div class="col-md-12" style="margin:auto auto auto 5px;">
-                                <div class="jumbotron">
-                                    <h3>欢迎!</h3>
-                                    <p>点击下方按钮进入系统后台。</p>
-                                    <p><a class="btn btn-primary btn-lg" href="#" role="button">后台登录</a></p>
-                                </div>
-                            </div>
-                            <!--<div class="col-md-12">
-                                <h3 class="other-nw">前往后台</h3>
-                            </div>
-                            <div class="col-md-12 text-hide">
-                                <ul class="social">
-                                    <li class="social_facebook"><a href="#" class="entypo-facebook"></a></li>
-                                    <li class="social_dribbble"><a href="#" class="entypo-dribbble"></a></li>
-                                    <li class="social_twitter"><a href="#" class="entypo-twitter"></a></li>
-                                    <li class="social_behance"><a href="#" class="entypo-behance"></a></li>
-                                </ul>
-                            </div>
-                            <button type="button" class="btn btn-primary">后台登录</button>-->
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+						&times;</button>
+					<h4 class="modal-title" id="myModalLabel">不要犹豫，马上进入!</h4>
+				</div>
+				<div class="modal-body modal-body-sub">
+					<div class="row">
+						<div class="col-md-8 modal_body_left modal_body_left1" style="border-right: 1px dotted #C2C2C2;padding-right:3em;">
+							<div class="sap_tabs">	
+								<div id="horizontalTab" style="display: block; width: 100%; margin: 0px;">
+									<ul>
+										<li class="resp-tab-item" aria-controls="tab_item-0"><span>登录</span></li>
+										<li class="resp-tab-item" aria-controls="tab_item-1"><span>注册</span></li>
+									</ul>		
+									<div class="tab-1 resp-tab-content" aria-labelledby="tab_item-0">
+										<div class="facts">
+											<div class="register">
+												<form action="#" method="post">			
+													<input name="Email" placeholder="用户名" type="text" required="">						
+													<input name="Password" placeholder="密码" type="password" required="">										
+													<div class="sign-up">
+														<input type="submit" value="登录"/>
+													</div>
+												</form>
+											</div>
+										</div> 
+									</div>	 
+									<div class="tab-2 resp-tab-content" aria-labelledby="tab_item-1">
+										<div class="facts">
+											<div class="register">
+												<form id="regForm" onsubmit="return verification()" method="post">			
+													<!--<input placeholder="Name" name="Name" type="text" required="">-->
+													<input placeholder="用户名" id="username" name="username" type="text" required="">
+													<span id="message" class="label label-success" style="display: none;"></span>
+													<input placeholder="密码" id="password" name="password" type="password" required="">	
+													<input placeholder="确认密码" id="confirmPwd" name="confirmPwd" type="password" required="">
+													<div class="sign-up">
+														<input type="submit" value="创建用户"/>
+													</div>
+												</form>
+											</div>
+										</div>
+									</div> 			        					            	      
+								</div>	
+							</div>
+							<script src="js/easyResponsiveTabs.js" type="text/javascript"></script>
+							<script type="text/javascript">
+								$(document).ready(function () {
+									$('#horizontalTab').easyResponsiveTabs({
+										type: 'default', //Types: default, vertical, accordion           
+										width: 'auto', //auto or any width like 600px
+										fit: true   // 100% fit in a container
+									});
+									$("#username").blur(function(){
+										$.ajax({
+											type:"post",
+											async:true,
+											url:"../login/checkName.action",
+											dataType:"json",
+											data:{
+												aaa:$("#username").val(),
+											},
+											success:function(data){
+								    			if(data.status == 'success'){
+								    				$("#message").removeClass("label-danger").addClass("label-success").text(data.mes).show();
+								    			}else{
+								    				//没有数据或服务器错误
+								    				$("#message").removeClass("label-success").addClass("label-danger").text(data.mes).show();
+								    			}
+								    		}
+										});
+									});
+								});
+								function verification() {  
+					                if($('#username').val() == '') {  
+					                    alert('姓名不能为空!');  
+					                    return false;  
+					                }  
+					                if($('#password').val() == '') {  
+					                    alert('密码不能为空!');  
+					                    return false;  
+					                }
+					                if($('#confirmPwd').val() == '') {  
+					                    alert('请再次输入密码!');  
+					                    return false;  
+					                }
+					                if($('#confirmPwd').val() != '' && $('#password').val() != '') {
+					                	if($('#confirmPwd').val() != $('#password').val()){
+					                		alert('两次密码不一致!');  
+						                    return false;
+					                	}else{
+					                		$.ajax({  
+							                    url: "../user/save.action",  
+							                    type: 'post',  
+							                    dataType: 'json',  
+							                    data: {  
+							                        'username': $('#username').val(),  
+							                        'password': $('#password').val(),  
+							                    },  
+							                    success: function(data) {  
+							                        alert("提交成功，" + data.info);  
+							                    },  
+							                    error: function(XMLHttpRequest, textStatus, errorThrown) {  
+							                        alert("发生错误，" + textStatus);  
+							                    }  
+							                });  
+							                return true;  
+					                	}
+					                }
+					            }  
+							</script>
+							<div id="OR" class="hidden-xs">OR</div>
+						</div>
+						<div class="col-md-4 modal_body_right modal_body_right1">
+							<div class="row text-center sign-with">
+							<div class="col-md-12" style="margin:auto auto auto 5px;">
+								<div class="jumbotron">
+								  <h3>欢迎!</h3>
+								  <p>点击下方按钮进入系统后台。</p>
+								  <p><a class="btn btn-primary btn-lg" href="../backstage/login.html" role="button">后台登录</a></p>
+								</div>
+							</div>
+								<!--<div class="col-md-12">
+									<h3 class="other-nw">前往后台</h3>
+								</div>
+								<div class="col-md-12 text-hide">
+									<ul class="social">
+										<li class="social_facebook"><a href="#" class="entypo-facebook"></a></li>
+										<li class="social_dribbble"><a href="#" class="entypo-dribbble"></a></li>
+										<li class="social_twitter"><a href="#" class="entypo-twitter"></a></li>
+										<li class="social_behance"><a href="#" class="entypo-behance"></a></li>
+									</ul>
+								</div>
+								<button type="button" class="btn btn-primary">后台登录</button>-->
 
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
 </div>
 <!-- header modal -->
 <!-- header -->
@@ -270,8 +327,8 @@
 <div class="breadcrumb_dress">
     <div class="container">
         <ul>
-            <li><a href="index.html"><span class="glyphicon glyphicon-home" aria-hidden="true"></span> Home</a> <i>/</i></li>
-            <li>Person Center</li>
+            <li><a href="index.html"><span class="glyphicon glyphicon-home" aria-hidden="true"></span> 首页</a> <i>/</i></li>
+            <li>用户中心</li>
         </ul>
     </div>
 </div>
@@ -282,7 +339,7 @@
         <div class="span3" id="sidebar">
             <ul class="nav nav-list bs-docs-sidenav nav-collapse text-center">
                 <li>
-                    <a href="index.html"><i class="icon-chevron-right"></i> 我的商品</a>
+                    <a href="ucenter.html"><i class="icon-chevron-right"></i> 我的商品</a>
                 </li>
                 <li>
                     <a href="order.html"><i class="icon-chevron-right"></i> 我的订单</a>
@@ -304,16 +361,16 @@
 
                         <div class="panel panel-default removePadding remove-radius">
                             <div class="panel-body">
-                                <form class="form-horizontal">
+                                <form class="form-horizontal" enctype="multipart/form-data">
                                     <div class="form-group">
                                         <label for="inputEmail2" class="col-sm-2 control-label">头像</label>
                                         <div class="col-sm-10">
                                             <span id="inputEmail2">
-                                                <img src="images/right-arrow.png" width="60" height="60">
+                                                <img src="images/default.png" width="60" height="60" style="border:1px solid #dddddd;border-radius:4px;" id="headImg">
                                                 <span class="btn btn-primary btn-xs fileinput-button" style="margin-left: 8px;">
                                                     <p style="padding-top: 7px;">
                                                         <span>上传头像</span>
-                                                        <input type="file" class="fileuploadComponent" uploader="uploader">
+                                                        <input type="file" class="fileuploadComponent" name="file" id="file" onchange="uploadImg()">
                                                     </p>
                                                 </span>
                                             </span>
@@ -322,7 +379,8 @@
                                     <div class="form-group">
                                         <label for="inputEmail3" class="col-sm-2 control-label">用户名</label>
                                         <div class="col-sm-6">
-                                            <input type="text" class="form-control" id="inputEmail3" readonly>
+                                            <!-- <input type="text" class="form-control" id="inputEmail3" readonly> -->
+                                            <div class="form-control" id="inputEmail3" style="border:none;font-size: initial;"></div>
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -338,16 +396,29 @@
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label for="inputEmail4" class="col-sm-2 control-label">账户余额</label>
+                                        <label for="inputEmail5" class="col-sm-2 control-label">邮箱</label>
                                         <div class="col-sm-6">
-                                            <span>100.0</span><strong style="color: #ff5635;">￥</strong>
+                                            <input type="text" class="form-control mark" id="inputEmail5" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputEmail6" class="col-sm-2 control-label">信用度</label>
+                                        <div class="col-sm-6">
+                                            <!-- <input type="text" class="form-control mark" id="inputEmail6" readonly> -->
+                                        	<div class="form-control" id="inputEmail6" style="border:none;font-size: initial;"></div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputEmail5" class="col-sm-2 control-label">账户余额</label>
+                                        <div class="col-sm-6">
+                                            <span id="yue">100.0</span><strong style="color: #ff5635;">￥</strong>
                                             <button type="button" class="btn btn-default" click="chongzhi()">充值</button>
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <div class="col-sm-offset-2 col-sm-10">
-                                            <button type="button" class="btn btn-default" click="editUserInfo()">修改</button>
-                                            <button type="button" class="btn btn-default" click="updateUserInfo(info)">保存</button>
+                                            <button type="button" class="btn btn-default" onclick="editUserInfo()">修改</button>
+                                            <button type="button" class="btn btn-default" onclick="updateUserInfo()">保存</button>
                                         </div>
                                     </div>
                                 </form>
@@ -509,14 +580,118 @@
 </div>
 <!-- //footer -->
 <script src="vendors/jquery-1.9.1.min.js"></script>
+<script src="js/ajaxfileupload.js"></script>
 <script src="bootstrap/js/bootstrap.min.js"></script>
 <script src="vendors/easypiechart/jquery.easy-pie-chart.js"></script>
 <script src="assets/scripts.js"></script>
+<script src="assets/urlproperties.js"></script>
+<script type="text/javascript" src="../backstage/lib/custom/util.js"></script>
 <script>
+	var uId;
     $(function() {
         // Easy pie charts
         $('.chart').easyPieChart({animate: 1000});
+        getData();
+        function getData(){
+        	var conds = {
+            		uName:'admin1'//Util.getSession("loginUser")
+            	};
+        	$.ajax({
+        		type:"get",
+        		async:true,
+        		url:"../users/listByConds.action",
+        		dataType:"json",
+        		data:{
+        			conds:JSON.stringify(conds)
+        		},
+        		success:function(data){
+        			console.log(data);
+        			if(data.status == 'success'){
+       					var userinfo = data.data[0];
+       					uId = userinfo.uId;
+       					$('#inputEmail3').text(userinfo.uName);
+       					$('#inputPassword3').val(userinfo.uPassword);
+       					$('#inputEmail4').val(userinfo.uPhone);
+       					$('#inputEmail5').val(userinfo.uMail);
+       					$('#inputEmail6').text(userinfo.uFraction);
+       					if(userinfo.uPicture){
+       						$('#headImg').attr('src',userinfo.uPicture);
+       					}else{
+       						$('#headImg').attr('src','images/default.png');
+       					}
+       					//$('#yue').text(userinfo.uMoney);
+        			}else{
+        				//没有数据或服务器错误
+        			}
+        		}
+        	});
+        };
     });
+    function editUserInfo(){
+		$('#inputPassword3').removeAttr('readonly').attr('type','text').focus();
+		$('#inputEmail4').removeAttr('readonly');
+		$('#inputEmail5').removeAttr('readonly');
+    };
+    function updateUserInfo(){
+    	$.ajax({
+			type:"post",
+			async:true,
+			url:"../users/update.action",
+			dataType:"json",
+			data:{
+				uId:uId,
+				uPassword:$('#inputPassword3').val(),
+				uPhone:$('#inputEmail4').val(),
+				uMail:$('#inputEmail5').val(),
+				uploadHeadImg:$('#headImg').attr('src')
+			},
+			success:function(data){
+				if(data.status == 'success'){
+					$('#inputPassword3').attr({'type':'password','readonly':'readonly'}).focus();
+					$('#inputEmail4').attr('readonly','readonly');
+					$('#inputEmail5').attr('readonly','readonly');
+				}else{
+					alert(data.mes);
+				}
+			}
+		});
+    };
+    function uploadImg(){
+    	var formData = new FormData();
+        formData.append('file', $('#file')[0].files[0]);
+        $.ajax({
+            url: '../upload/uploadImg.action',
+            type: 'POST',
+            dataType:"json",
+            cache: false,
+            data: formData,
+            processData: false,
+            contentType: false,
+            success:function(data){
+				if(data.status == 'success'){
+					//var re = new RegExp("\\", "g")
+					var imgPath = data.data.replace(/\\/g,'/');
+					$('#headImg').attr('src', base + 'upload/readImg.action?name='+data.imgName);
+				}else{
+					alert(data.mes);
+				}
+			}
+    	});
+        /* $.ajaxFileUpload({
+           url: '../upload/uploadImg.action', //用于文件上传的服务器端请求地址
+           secureuri: false, //是否需要安全协议，一般设置为false
+           fileElementId: 'uploadHeadImg', //文件上传域的ID
+           dataType: 'json', //返回值类型 一般设置为json
+           success: function (data, status)  //服务器成功响应处理函数
+           {
+               alert('1');
+           },
+           error: function (data, status, e)//服务器响应失败处理函数
+           {
+               alert(e);
+           }
+       }); */
+    }
 </script>
 <!-- //cart-js -->
 </body>

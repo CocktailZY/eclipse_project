@@ -566,7 +566,7 @@ li.w3pages .dropdown-menu > li > a:hover{
     border: none;
 }
 .video-img {
-    background: url(../images/2.jpg)no-repeat right center;
+    background: url(../images/2.gif)no-repeat right center;
     -webkit-background-size: cover;
     background-size: cover;
     -moz-background-size: cover;
@@ -1278,7 +1278,7 @@ ul.wmuSliderPagination {
 /*-- //newsletter --*/
 /*-- footer --*/
 .footer{
-	padding:4em 0;
+	padding:4em 0 0 0;
 	background:#fff;
 }
 .w3_footer_grid h3{
@@ -1394,7 +1394,7 @@ ul.wmuSliderPagination {
     box-shadow: 0px 0px 30px 5px #ff5063;
 }
 .footer-copy p{
-	margin:4em 0 0;
+	margin:3em 0 0;
 	text-align:center;
 	color:#999;
 	line-height:1.8em;
@@ -2769,8 +2769,8 @@ h2.typoh2{
     opacity: 1;
 }
 .checkbox input,.radio input {
-    position: absolute;
-    left: -9999px;
+    /*position: absolute;
+    left: -9999px;*/
 }
 .checkbox input + i:after {
     content: '';

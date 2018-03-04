@@ -33,6 +33,63 @@
 			event.preventDefault();
 			$('html,body').animate({scrollTop:$(this.hash).offset().top},1000);
 		});
+        $(window).scroll(function(){
+            var viewH = $(this).height();//可见高度
+            var contentH = $('.new-products .container').get(0).scrollHeight;//内容高度
+            var scrollTop = $(this).scrollTop();//滚动高度
+            //if(contentH - viewH - scrollTop <= 100) { //到达底部100px时,加载新内容
+            if (scrollTop / (contentH - viewH) >= 2.5) { //到达底部5%以内,加载新内容
+                // 这里加载数据..
+                if($('.new-products .container').find('#loadLable').length <= 0){
+                    $('.new-products').find('.container').append('<label class="text-center col-sm-12" id="loadLable">加载中...</label>');
+                }else{
+
+                }
+            }else{
+                $('#loadLable').remove();
+			}
+        });
+        $('#horizontalTab').easyResponsiveTabs({
+			type: 'default', //Types: default, vertical, accordion           
+			width: 'auto', //auto or any width like 600px
+			fit: true   // 100% fit in a container
+		});
+		$("#username").blur(function(){
+			$.ajax({
+				type:"post",
+				async:true,
+				url:"../login/checkName.action",
+				dataType:"json",
+				data:{
+					aaa:$("#username").val(),
+				},
+				success:function(data){
+	    			if(data.status == 'success'){
+	    				$("#message").removeClass("label-danger").addClass("label-success").text(data.mes).show();
+	    			}else{
+	    				//没有数据或服务器错误
+	    				$("#message").removeClass("label-success").addClass("label-danger").text(data.mes).show();
+	    			}
+	    		}
+			});
+		});
+//        scrollBottomTest =function() {
+//            $("#contain").scroll(function () {
+//                var viewH = $(this).height();//可见高度
+//                var contentH = $(this).get(0).scrollHeight;//内容高度
+//                var scrollTop = $(this).scrollTop();//滚动高度
+//                //if(contentH - viewH - scrollTop <= 100) { //到达底部100px时,加载新内容
+//                if (scrollTop / (contentH - viewH) >= 0.85) { //到达底部5%以内,加载新内容
+//                    // 这里加载数据..
+//					if($('.new-products .container').find('#loadLable').length <= 0){
+//                        $('.new-products').find('.container').append('<label class="text-center col-sm-12" id="loadLable">加载中...</label>');
+//					}else{
+//
+//					}
+//                }
+//            });
+//        };
+//        scrollBottomTest();
 	});
 </script>
 <!-- //end-smooth-scrolling --> 
@@ -40,6 +97,7 @@
 <body>
 	<!-- for bootstrap working -->
 	<script type="text/javascript" src="js/bootstrap-3.1.1.min.js"></script>
+	<script src="js/easyResponsiveTabs.js" type="text/javascript"></script>
 	<!-- //for bootstrap working -->
 	<!-- header modal -->
 	<div class="modal fade" id="myModal88" tabindex="-1" role="dialog" aria-labelledby="myModal88"
@@ -49,7 +107,7 @@
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
 						&times;</button>
-					<h4 class="modal-title" id="myModalLabel">不要犹豫，马上注册!</h4>
+					<h4 class="modal-title" id="myModalLabel">不要犹豫，马上进入!</h4>
 				</div>
 				<div class="modal-body modal-body-sub">
 					<div class="row">
@@ -76,11 +134,12 @@
 									<div class="tab-2 resp-tab-content" aria-labelledby="tab_item-1">
 										<div class="facts">
 											<div class="register">
-												<form action="#" method="post">			
+												<form id="regForm" onsubmit="return verification()" method="post">			
 													<!--<input placeholder="Name" name="Name" type="text" required="">-->
-													<input placeholder="用户名" name="Email" type="email" required="">	
-													<input placeholder="密码" name="Password" type="password" required="">	
-													<input placeholder="确认密码" name="Password" type="password" required="">
+													<input placeholder="用户名" id="username" name="username" type="text" required="">
+													<span id="message" class="label label-success" style="display: none;"></span>
+													<input placeholder="密码" id="password" name="password" type="password" required="">	
+													<input placeholder="确认密码" id="confirmPwd" name="confirmPwd" type="password" required="">
 													<div class="sign-up">
 														<input type="submit" value="创建用户"/>
 													</div>
@@ -90,15 +149,44 @@
 									</div> 			        					            	      
 								</div>	
 							</div>
-							<script src="js/easyResponsiveTabs.js" type="text/javascript"></script>
 							<script type="text/javascript">
-								$(document).ready(function () {
-									$('#horizontalTab').easyResponsiveTabs({
-										type: 'default', //Types: default, vertical, accordion           
-										width: 'auto', //auto or any width like 600px
-										fit: true   // 100% fit in a container
-									});
-								});
+								function verification() {  
+					                if($('#username').val() == '') {  
+					                    alert('姓名不能为空!');  
+					                    return false;  
+					                }  
+					                if($('#password').val() == '') {  
+					                    alert('密码不能为空!');  
+					                    return false;  
+					                }
+					                if($('#confirmPwd').val() == '') {  
+					                    alert('请再次输入密码!');  
+					                    return false;  
+					                }
+					                if($('#confirmPwd').val() != '' && $('#password').val() != '') {
+					                	if($('#confirmPwd').val() != $('#password').val()){
+					                		alert('两次密码不一致!');  
+						                    return false;
+					                	}else{
+					                		$.ajax({  
+							                    url: "../user/save.action",  
+							                    type: 'post',  
+							                    dataType: 'json',  
+							                    data: {  
+							                        'username': $('#username').val(),  
+							                        'password': $('#password').val(),  
+							                    },  
+							                    success: function(data) {  
+							                        alert("提交成功，" + data.info);  
+							                    },  
+							                    error: function(XMLHttpRequest, textStatus, errorThrown) {  
+							                        alert("发生错误，" + textStatus);  
+							                    }  
+							                });  
+							                return true;  
+					                	}
+					                }
+					            }  
 							</script>
 							<div id="OR" class="hidden-xs">OR</div>
 						</div>
@@ -108,7 +196,7 @@
 								<div class="jumbotron">
 								  <h3>欢迎!</h3>
 								  <p>点击下方按钮进入系统后台。</p>
-								  <p><a class="btn btn-primary btn-lg" href="#" role="button">后台登录</a></p>
+								  <p><a class="btn btn-primary btn-lg" href="../backstage/login.html" role="button">后台登录</a></p>
 								</div>
 							</div>
 								<!--<div class="col-md-12">
@@ -131,9 +219,9 @@
 			</div>
 		</div>
 	</div>
-	<script>
-		$('#myModal88').modal('show');
-	</script>  
+	<!--<script>
+		//$('#myModal88').modal('show');
+	</script>  -->
 	<!-- header modal -->
 	<!-- header -->
 	<div class="header" id="home1">
@@ -276,7 +364,9 @@
 					<script src="js/jquery.magnific-popup.js" type="text/javascript"></script>
 					<!--//pop-up-box -->
 					<div id="small-dialog" class="mfp-hide">
-						<iframe src="F:\录屏资料\二手商城-定制商城.mp4"></iframe>
+						<video src="assets/video.mp4" controls="controls" width="500" height="400">
+							您的浏览器不支持 video 标签。
+						</video>
 					</div>
 					<script>
 						$(document).ready(function() {

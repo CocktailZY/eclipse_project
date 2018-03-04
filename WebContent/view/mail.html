@@ -19,7 +19,7 @@
 <!-- js -->
 <script src="js/jquery.min.js"></script> 
 <!-- //js -->  
-<!-- web fonts --> 
+<!-- web fonts
 <link href='http://fonts.googleapis.com/css?family=Glegoo:400,700' rel='stylesheet' type='text/css'>
 <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,400italic,600,600italic,700,700italic,800,800italic' rel='stylesheet' type='text/css'>
 <!-- //web fonts --> 
@@ -46,65 +46,72 @@
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
 						&times;</button>
-					<h4 class="modal-title" id="myModalLabel">Don't Wait, Login now!</h4>
+					<h4 class="modal-title" id="myModalLabel">不要犹豫，马上注册!</h4>
 				</div>
 				<div class="modal-body modal-body-sub">
 					<div class="row">
 						<div class="col-md-8 modal_body_left modal_body_left1" style="border-right: 1px dotted #C2C2C2;padding-right:3em;">
-							<div class="sap_tabs">	
+							<div class="sap_tabs">
 								<div id="horizontalTab" style="display: block; width: 100%; margin: 0px;">
 									<ul>
-										<li class="resp-tab-item" aria-controls="tab_item-0"><span>Sign in</span></li>
-										<li class="resp-tab-item" aria-controls="tab_item-1"><span>Sign up</span></li>
-									</ul>		
+										<li class="resp-tab-item" aria-controls="tab_item-0"><span>登录</span></li>
+										<li class="resp-tab-item" aria-controls="tab_item-1"><span>注册</span></li>
+									</ul>
 									<div class="tab-1 resp-tab-content" aria-labelledby="tab_item-0">
 										<div class="facts">
 											<div class="register">
-												<form action="#" method="post">			
-													<input name="Email" placeholder="Email Address" type="text" required="">						
-													<input name="Password" placeholder="Password" type="password" required="">										
+												<form action="#" method="post">
+													<input name="Email" placeholder="用户名" type="text" required="">
+													<input name="Password" placeholder="密码" type="password" required="">
 													<div class="sign-up">
-														<input type="submit" value="Sign in"/>
-													</div>
-												</form>
-											</div>
-										</div> 
-									</div>	 
-									<div class="tab-2 resp-tab-content" aria-labelledby="tab_item-1">
-										<div class="facts">
-											<div class="register">
-												<form action="#" method="post">			
-													<input placeholder="Name" name="Name" type="text" required="">
-													<input placeholder="Email Address" name="Email" type="email" required="">	
-													<input placeholder="Password" name="Password" type="password" required="">	
-													<input placeholder="Confirm Password" name="Password" type="password" required="">
-													<div class="sign-up">
-														<input type="submit" value="Create Account"/>
+														<input type="submit" value="登录"/>
 													</div>
 												</form>
 											</div>
 										</div>
-									</div> 			        					            	      
-								</div>	
+									</div>
+									<div class="tab-2 resp-tab-content" aria-labelledby="tab_item-1">
+										<div class="facts">
+											<div class="register">
+												<form action="#" method="post">
+													<!--<input placeholder="Name" name="Name" type="text" required="">-->
+													<input placeholder="用户名" name="Email" type="email" required="">
+													<input placeholder="密码" name="Password" type="password" required="">
+													<input placeholder="确认密码" name="Password" type="password" required="">
+													<div class="sign-up">
+														<input type="submit" value="创建用户"/>
+													</div>
+												</form>
+											</div>
+										</div>
+									</div>
+								</div>
 							</div>
 							<script src="js/easyResponsiveTabs.js" type="text/javascript"></script>
 							<script type="text/javascript">
-								$(document).ready(function () {
-									$('#horizontalTab').easyResponsiveTabs({
-										type: 'default', //Types: default, vertical, accordion           
-										width: 'auto', //auto or any width like 600px
-										fit: true   // 100% fit in a container
-									});
-								});
+                                $(document).ready(function () {
+                                    $('#horizontalTab').easyResponsiveTabs({
+                                        type: 'default', //Types: default, vertical, accordion
+                                        width: 'auto', //auto or any width like 600px
+                                        fit: true   // 100% fit in a container
+                                    });
+                                });
 							</script>
 							<div id="OR" class="hidden-xs">OR</div>
 						</div>
 						<div class="col-md-4 modal_body_right modal_body_right1">
 							<div class="row text-center sign-with">
-								<div class="col-md-12">
-									<h3 class="other-nw">Sign in with</h3>
+								<div class="col-md-12" style="margin:auto auto auto 5px;">
+									<div class="jumbotron">
+										<h3>欢迎!</h3>
+										<p>点击下方按钮进入系统后台。</p>
+										<p><a class="btn btn-primary btn-lg" href="#" role="button">后台登录</a></p>
+									</div>
 								</div>
-								<div class="col-md-12">
+								<!--<div class="col-md-12">
+									<h3 class="other-nw">前往后台</h3>
+								</div>
+								<div class="col-md-12 text-hide">
 									<ul class="social">
 										<li class="social_facebook"><a href="#" class="entypo-facebook"></a></li>
 										<li class="social_dribbble"><a href="#" class="entypo-dribbble"></a></li>
@@ -112,6 +119,8 @@
 										<li class="social_behance"><a href="#" class="entypo-behance"></a></li>
 									</ul>
 								</div>
+								<button type="button" class="btn btn-primary">后台登录</button>-->
+
 							</div>
 						</div>
 					</div>
@@ -139,13 +148,13 @@
 					</form>
 				</div>
 			</div>
-			<div class="cart cart box_1"> 
-				<form action="#" method="post" class="last"> 
+			<!--<div class="cart cart box_1">
+				<form action="#" method="post" class="last">
 					<input type="hidden" name="cmd" value="_cart" />
 					<input type="hidden" name="display" value="1" />
 					<button class="w3view-cart" type="submit" name="submit" value=""><i class="fa fa-cart-arrow-down" aria-hidden="true"></i></button>
-				</form>   
-			</div>  
+				</form>
+			</div>-->
 		</div>
 	</div>
 	<!-- //header -->
@@ -161,60 +170,80 @@
 						<span class="icon-bar"></span>
 						<span class="icon-bar"></span>
 					</button>
-				</div> 
+				</div>
 				<div class="collapse navbar-collapse" id="bs-megadropdown-tabs">
 					<ul class="nav navbar-nav">
-						<li><a href="index.html">Home</a></li>	
+						<li style="visibility:hidden;"><a href="mail.html">联系我们</a></li>
+						<li><a href="index.html">首页</a></li>
 						<!-- Mega Menu -->
 						<li class="dropdown">
-							<a href="#" class="dropdown-toggle" data-toggle="dropdown">Products <b class="caret"></b></a>
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown">所有分类 <b class="caret"></b></a>
 							<ul class="dropdown-menu multi-column columns-3">
 								<div class="row">
-									<div class="col-sm-3">
+									<div class="col-sm-2">
 										<ul class="multi-column-dropdown">
-											<h6>Mobiles</h6>
-											<li><a href="products.html">Mobile Phones</a></li>
-											<li><a href="products.html">Mp3 Players <span>New</span></a></li> 
-											<li><a href="products.html">Popular Models</a></li>
-											<li><a href="products.html">All Tablets<span>New</span></a></li>
-										</ul>
-									</div>
-									<div class="col-sm-3">
-										<ul class="multi-column-dropdown">
-											<h6>Accessories</h6>
-											<li><a href="products1.html">Laptop</a></li>
-											<li><a href="products1.html">Desktop</a></li>
-											<li><a href="products1.html">Wearables <span>New</span></a></li>
-											<li><a href="products1.html"><i>Summer Store</i></a></li>
+											<h6>苹果</h6>
+											<li><a href="products.html">iPhone</a></li>
+											<li><a href="products.html">iPad<!--<span>New</span>--></a></li>
+											<li><a href="products.html">Earphone</a></li>
+											<li><a href="products.html">iPod</a></li>
 										</ul>
 									</div>
 									<div class="col-sm-2">
 										<ul class="multi-column-dropdown">
-											<h6>Home</h6>
-											<li><a href="products2.html">Tv</a></li>
-											<li><a href="products2.html">Camera</a></li>
-											<li><a href="products2.html">AC</a></li>
-											<li><a href="products2.html">Grinders</a></li>
+											<h6>三星</h6>
+											<li><a href="products1.html">Note</a></li>
+											<li><a href="products1.html">Galaxy</a></li>
+											<li><a href="products1.html">Pad</a></li>
 										</ul>
 									</div>
-									<div class="col-sm-4">
+									<div class="col-sm-2">
+										<ul class="multi-column-dropdown">
+											<h6>OPPO</h6>
+											<li><a href="products.html">iPhone</a></li>
+											<li><a href="products.html">iPad<!--<span>New</span>--></a></li>
+											<li><a href="products.html">Earphone</a></li>
+											<li><a href="products.html">iPod</a></li>
+										</ul>
+									</div>
+									<div class="col-sm-2">
+										<ul class="multi-column-dropdown">
+											<h6>VIVO</h6>
+											<li><a href="products1.html">Note</a></li>
+											<li><a href="products1.html">Galaxy</a></li>
+											<li><a href="products1.html">Pad</a></li>
+										</ul>
+									</div>
+									<div class="col-sm-2">
+										<ul class="multi-column-dropdown">
+											<h6>小米</h6>
+											<li><a href="products.html">iPhone</a></li>
+											<li><a href="products.html">iPad<!--<span>New</span>--></a></li>
+											<li><a href="products.html">Earphone</a></li>
+											<li><a href="products.html">iPod</a></li>
+										</ul>
+									</div>
+									<div class="col-sm-2">
+										<ul class="multi-column-dropdown">
+											<h6>其他</h6>
+											<li><a href="products1.html">Note</a></li>
+											<li><a href="products1.html">Galaxy</a></li>
+											<li><a href="products1.html">Pad</a></li>
+										</ul>
+									</div>
+									<!--<div class="col-sm-4">
 										<div class="w3ls_products_pos">
-											<h4>30%<i>Off/-</i></h4>
+											<h4>Electronic Store<i></i></h4>
 											<img src="images/1.jpg" alt=" " class="img-responsive" />
 										</div>
-									</div>
+									</div>-->
 									<div class="clearfix"></div>
 								</div>
 							</ul>
 						</li>
-						<li><a href="ucenter.html">About Us</a></li>
-						<li class="w3pages"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Pages <span class="caret"></span></a>
-							<ul class="dropdown-menu">
-								<li><a href="icons.html">Web Icons</a></li>
-								<li><a href="codes.html">Short Codes</a></li>     
-							</ul>
-						</li>  
-						<li><a href="mail.html" class="act">Mail Us</a></li>
+						<li><a href="ucenter.html">个人中心</a></li>
+						<li><a href="mail.html" class="act">联系我们</a></li>
+						<li style="visibility:hidden;"><a href="mail.html">联系我们</a></li>
 					</ul>
 				</div>
 			</nav>
@@ -241,35 +270,34 @@
 	<!-- mail -->
 	<div class="mail">
 		<div class="container">
-			<h3>Mail Us</h3>
+			<h3>联系我们</h3>
 			<div class="agile_mail_grids">
 				<div class="col-md-5 contact-left">
-					<h4>Address</h4>
-					<p>est eligendi optio cumque nihil impedit quo minus id quod maxime
-						<span>26 56D Rescue,US</span></p>
+					<h4>联系地址</h4>
+					<p><span>红山区 学院路 内蒙古 赤峰市</span></p>
 					<ul>
-						<li>Free Phone :+1 078 4589 2456</li>
-						<li>Telephone :+1 078 4589 2456</li>
-						<li>Fax :+1 078 4589 2456</li>
-						<li><a href="mailto:info@example.com">info@example.com</a></li>
+						<li>电话 :+123 456 7890</li>
+						<li>手机 :+123 456 7890</li>
+						<li>传真 :+123 456 7890</li>
+						<li>jyxp1224@163.com</li><!--<a href="mailto:info@example.com"></a>-->
 					</ul>
 				</div>
 				<div class="col-md-7 contact-left">
-					<h4>Contact Form</h4>
+					<h4>请填写</h4>
 					<form action="#" method="post">
-						<input type="text" name="Name" placeholder="Your Name" required="">
-						<input type="email" name="Email" placeholder="Your Email" required="">
-						<input type="text" name="Telephone" placeholder="Telephone No" required="">
-						<textarea name="message" placeholder="Message..." required=""></textarea>
-						<input type="submit" value="Submit" >
+						<input type="text" name="Name" placeholder="姓名" required="">
+						<input type="email" name="Email" placeholder="邮箱" required="">
+						<input type="text" name="Telephone" placeholder="联系电话" required="">
+						<textarea name="message" placeholder="意见..." required=""></textarea>
+						<input type="submit" value="提交" >
 					</form>
 				</div>
 				<div class="clearfix"> </div>
 			</div>
 
-			<div class="contact-bottom">
+			<!--<div class="contact-bottom">
 				<iframe src="https://www.google.com/maps/embed?pb=!1m16!1m12!1m3!1d96908.54934770924!2d-73.74913540000001!3d40.62123259999999!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!2m1!1sanimal+rescue+service+near+Inwood%2C+New+York%2C+NY%2C+United+States!5e0!3m2!1sen!2sin!4v1436335928062" frameborder="0" style="border:0" allowfullscreen></iframe>
-			</div>
+			</div>-->
 		</div>
 	</div>
 	<!-- //mail -->
@@ -277,8 +305,8 @@
 	<div class="newsletter">
 		<div class="container">
 			<div class="col-md-6 w3agile_newsletter_left">
-				<h3>Newsletter</h3>
-				<p>Excepteur sint occaecat cupidatat non proident, sunt.</p>
+				<h3>Electronic Store</h3>
+				<p>Your stores. Your place.</p>
 			</div>
 			<div class="col-md-6 w3agile_newsletter_right">
 				<form action="#" method="post">
@@ -295,41 +323,34 @@
 		<div class="container">
 			<div class="w3_footer_grids">
 				<div class="col-md-3 w3_footer_grid">
-					<h3>Contact</h3>
-					<p>Duis aute irure dolor in reprehenderit in voluptate velit esse.</p>
+					<h3>联系方式</h3>
 					<ul class="address">
-						<li><i class="glyphicon glyphicon-map-marker" aria-hidden="true"></i>1234k Avenue, 4th block, <span>New York City.</span></li>
-						<li><i class="glyphicon glyphicon-envelope" aria-hidden="true"></i><a href="mailto:info@example.com">info@example.com</a></li>
+						<li><i class="glyphicon glyphicon-map-marker" aria-hidden="true"></i>红山区 学院路 内蒙古 赤峰市</li>
+						<li><i class="glyphicon glyphicon-envelope" aria-hidden="true"></i><a href="mailto:jyxp1224@163.com">jyxp1224@163.com</a></li>
 						<li><i class="glyphicon glyphicon-earphone" aria-hidden="true"></i>+1234 567 567</li>
 					</ul>
 				</div>
 				<div class="col-md-3 w3_footer_grid">
-					<h3>Information</h3>
-					<ul class="info"> 
-						<li><a href="ucenter.html">About Us</a></li>
-						<li><a href="mail.html">Contact Us</a></li>
-						<li><a href="codes.html">Short Codes</a></li>
-						<li><a href="faq.html">FAQ's</a></li>
-						<li><a href="products.html">Special Products</a></li>
+					<h3>消费者保障</h3>
+					<ul class="info">
+						<li><a href="ucenter.html">保障范围</a></li>
+						<li><a href="mail.html">退货退款流程</a></li>
+						<li><a href="codes.html">投诉举报</a></li>
+						<li><a href="faq.html">人工服务</a></li>
 					</ul>
 				</div>
 				<div class="col-md-3 w3_footer_grid">
-					<h3>Category</h3>
-					<ul class="info"> 
-						<li><a href="products.html">Mobiles</a></li>
-						<li><a href="products1.html">Laptops</a></li>
-						<li><a href="products.html">Purifiers</a></li>
-						<li><a href="products1.html">Wearables</a></li>
-						<li><a href="products2.html">Kitchen</a></li>
+					<h3>新手上路</h3>
+					<ul class="info">
+						<li><a href="products.html">新手须知</a></li>
+						<li><a href="products1.html">消费警示</a></li>
+						<li><a href="products.html">交易安全</a></li>
+						<li><a href="products1.html">发布流程</a></li>
+						<li><a href="products2.html">在线帮助</a></li>
 					</ul>
 				</div>
 				<div class="col-md-3 w3_footer_grid">
-					<h3>Profile</h3>
-					<ul class="info"> 
-						<li><a href="index.html">Home</a></li>
-						<li><a href="products.html">Today's Deals</a></li>
-					</ul>
-					<h4>Follow Us</h4>
+					<h4>关注我们</h4>
 					<div class="agileits_social_button">
 						<ul>
 							<li><a href="#" class="facebook"> </a></li>
@@ -349,7 +370,7 @@
 				</div>
 			</div>
 			<div class="container">
-				<p>Copyright &copy; 2017.Company name All rights reserved.<a target="_blank" href="http://www.smallseashell.com/">贝壳模板</a></p>
+				<p>Copyright &copy; 2018.解忧小铺 All rights reserved.</p>
 			</div>
 		</div>
 	</div>

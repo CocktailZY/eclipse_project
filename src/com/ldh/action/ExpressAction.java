@@ -11,8 +11,8 @@ import org.apache.struts2.convention.annotation.Namespace;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.springframework.context.annotation.Scope;
 
-import com.ldh.dao.IBrandDao;
-import com.ldh.model.Brand;
+import com.ldh.dao.IExpressDao;
+import com.ldh.model.Express;
 import com.ldh.util.JsonUtil;
 
 import net.sf.json.JSONObject;
@@ -20,17 +20,17 @@ import net.sf.json.JSONObject;
 @Scope("prototype")
 @ParentPackage("struts-default")
 //表示继承的父包
-@Namespace(value = "/brand")
-public class BrandAction {
+@Namespace(value = "/express")
+public class ExpressAction {
 	
-	private IBrandDao brandDao;
+	private IExpressDao expressDao;
 	
-	public IBrandDao getBrandDao() {
-		return brandDao;
+	public IExpressDao getExpressDao() {
+		return expressDao;
 	}
-	@Resource(name="BrandDao")
-	public void setBrandDao(IBrandDao brandDao) {
-		this.brandDao = brandDao;
+	@Resource(name="ExpressDao")
+	public void setExpressDao(IExpressDao expressDao) {
+		this.expressDao = expressDao;
 	}
 	
 	/**
@@ -40,11 +40,11 @@ public class BrandAction {
 	 */
 	@Action(value="save")
 	public String save() throws IOException{
-		String bDescribe = ServletActionContext.getRequest().getParameter("bDescribe");
-		Brand brand = new Brand();
-		brand.setbDescribe(bDescribe);
+		String eExpress = ServletActionContext.getRequest().getParameter("eExpress");
+		Express express = new Express();
+		express.seteExpress(eExpress);
 		JSONObject jobj = new JSONObject();
-		if(brandDao.save(brand)){
+		if(expressDao.save(express)){
 			//save success
 			jobj.put("mes", "保存成功!");
 			jobj.put("status", "success");
@@ -64,10 +64,10 @@ public class BrandAction {
 	 */
 	@Action(value="delete")
 	public String delete() throws IOException{
-		String goodsTypeId = ServletActionContext.getRequest().getParameter("id");
-		Brand brand = brandDao.getById(goodsTypeId);
+		String eId = ServletActionContext.getRequest().getParameter("eId");
+		Express express = expressDao.getById(eId);
 		JSONObject jobj = new JSONObject();
-		if(brandDao.delete(brand)){
+		if(expressDao.delete(express)){
 			//save success
 			jobj.put("mes", "删除成功!");
 			jobj.put("status", "success");
@@ -87,14 +87,14 @@ public class BrandAction {
 	 */
 	@Action(value="update")
 	public String update() throws IOException{
-		String brandId = ServletActionContext.getRequest().getParameter("bId");
-		String bDescribe = ServletActionContext.getRequest().getParameter("bDescribe");
-		Brand brand = brandDao.getById(brandId);
-		if(bDescribe != null && !"".equals(bDescribe)){
-			brand.setbDescribe(bDescribe);
+		String eId = ServletActionContext.getRequest().getParameter("eId");
+		String eExpress = ServletActionContext.getRequest().getParameter("eExpress");
+		Express express = expressDao.getById(eId);
+		if(eExpress != null && !"".equals(eExpress)){
+			express.seteExpress(eExpress);
 		}
 		JSONObject jobj = new JSONObject();
-		if(brandDao.update(brand)){
+		if(expressDao.update(express)){
 			//save success
 			jobj.put("mes", "更新成功!");
 			jobj.put("status", "success");
@@ -115,10 +115,10 @@ public class BrandAction {
 	 */
 	@Action(value="getById")
 	public String getById() throws IOException{
-		String goodsTypeId = ServletActionContext.getRequest().getParameter("id");
-		Brand brand = brandDao.getById(goodsTypeId);
+		String eId = ServletActionContext.getRequest().getParameter("eId");
+		Express express = expressDao.getById(eId);
 		JSONObject jobj = new JSONObject();
-		if(brand != null){
+		if(express != null){
 			//save success
 			jobj.put("mes", "获取成功!");
 			jobj.put("status", "success");
@@ -145,7 +145,7 @@ public class BrandAction {
 //			pageNum = Integer.parseInt(pageNumStr);
 //		}
 //		List<Object> list = new ArrayList<Object>();
-		List<Object> goodsTypelist = brandDao.list();//获取所有类型数据，不带分页
+		List<Object> goodsTypelist = expressDao.list();//获取所有类型数据，不带分页
 //		PageBean page=null;
 //		if(userlist.size()>0){
 //			page = new PageBean(userlist.size(),pageNum,5);

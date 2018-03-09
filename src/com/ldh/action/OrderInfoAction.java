@@ -11,8 +11,10 @@ import org.apache.struts2.convention.annotation.Namespace;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.springframework.context.annotation.Scope;
 
-import com.ldh.dao.IBrandDao;
-import com.ldh.model.Brand;
+import com.ldh.dao.IAddressDao;
+import com.ldh.dao.IOrderInfoDao;
+import com.ldh.dao.IUsersDao;
+import com.ldh.model.OrderInfo;
 import com.ldh.util.JsonUtil;
 
 import net.sf.json.JSONObject;
@@ -20,31 +22,60 @@ import net.sf.json.JSONObject;
 @Scope("prototype")
 @ParentPackage("struts-default")
 //表示继承的父包
-@Namespace(value = "/brand")
-public class BrandAction {
+@Namespace(value = "/orderInfo")
+public class OrderInfoAction {
 	
-	private IBrandDao brandDao;
+	private IOrderInfoDao orderInfoDao;
+	private IUsersDao userDao;
+	private IAddressDao addressDao;
 	
-	public IBrandDao getBrandDao() {
-		return brandDao;
+	public IOrderInfoDao getOrderInfoDao() {
+		return orderInfoDao;
 	}
-	@Resource(name="BrandDao")
-	public void setBrandDao(IBrandDao brandDao) {
-		this.brandDao = brandDao;
+	@Resource(name="OrderInfoDao")
+	public void setOrderInfoDao(IOrderInfoDao orderInfoDao) {
+		this.orderInfoDao = orderInfoDao;
+	}
+	
+	public IUsersDao getUsersDao() {
+		return userDao;
+	}
+	@Resource(name="UsersDao")
+	public void setUsersDao(IUsersDao userDao) {
+		this.userDao = userDao;
+	}
+	
+	public IAddressDao getAddressDao() {
+		return addressDao;
+	}
+	@Resource(name="AddressDao")
+	public void setAddressDao(IAddressDao addressDao) {
+		this.addressDao = addressDao;
 	}
 	
 	/**
-	 * 保存品牌(类型)信息
+	 * 保存订单信息
 	 * @return
 	 * @throws IOException 
 	 */
 	@Action(value="save")
 	public String save() throws IOException{
-		String bDescribe = ServletActionContext.getRequest().getParameter("bDescribe");
-		Brand brand = new Brand();
-		brand.setbDescribe(bDescribe);
+		String oTotal = ServletActionContext.getRequest().getParameter("oTotal");
+		String oDetermine = ServletActionContext.getRequest().getParameter("oDetermine");
+		String oComplete = ServletActionContext.getRequest().getParameter("oComplete");
+		int oSign = Integer.parseInt(ServletActionContext.getRequest().getParameter("oSign"));
+		String oUId = ServletActionContext.getRequest().getParameter("oUId");
+		String oAId = ServletActionContext.getRequest().getParameter("oAId");
+		
+		OrderInfo orderInfo = new OrderInfo();
+		orderInfo.setoTotal(oTotal);
+		orderInfo.setoDetermine(oDetermine);
+		orderInfo.setoComplete(oComplete);
+		orderInfo.setoSign(oSign);
+		orderInfo.setoUId(userDao.getById(oUId));
+		orderInfo.setoAId(addressDao.getById(oAId));
 		JSONObject jobj = new JSONObject();
-		if(brandDao.save(brand)){
+		if(orderInfoDao.save(orderInfo)){
 			//save success
 			jobj.put("mes", "保存成功!");
 			jobj.put("status", "success");
@@ -64,10 +95,11 @@ public class BrandAction {
 	 */
 	@Action(value="delete")
 	public String delete() throws IOException{
-		String goodsTypeId = ServletActionContext.getRequest().getParameter("id");
-		Brand brand = brandDao.getById(goodsTypeId);
+		
+		String oId = ServletActionContext.getRequest().getParameter("oId");
+		OrderInfo orderInfo = orderInfoDao.getById(oId);
 		JSONObject jobj = new JSONObject();
-		if(brandDao.delete(brand)){
+		if(orderInfoDao.delete(orderInfo)){
 			//save success
 			jobj.put("mes", "删除成功!");
 			jobj.put("status", "success");
@@ -87,14 +119,12 @@ public class BrandAction {
 	 */
 	@Action(value="update")
 	public String update() throws IOException{
-		String brandId = ServletActionContext.getRequest().getParameter("bId");
-		String bDescribe = ServletActionContext.getRequest().getParameter("bDescribe");
-		Brand brand = brandDao.getById(brandId);
-		if(bDescribe != null && !"".equals(bDescribe)){
-			brand.setbDescribe(bDescribe);
-		}
+		String oId = ServletActionContext.getRequest().getParameter("oId");
+		int oSign = Integer.parseInt(ServletActionContext.getRequest().getParameter("oSign"));
+		OrderInfo orderInfo = orderInfoDao.getById(oId);
+		orderInfo.setoSign(oSign);
 		JSONObject jobj = new JSONObject();
-		if(brandDao.update(brand)){
+		if(orderInfoDao.update(orderInfo)){
 			//save success
 			jobj.put("mes", "更新成功!");
 			jobj.put("status", "success");
@@ -115,10 +145,10 @@ public class BrandAction {
 	 */
 	@Action(value="getById")
 	public String getById() throws IOException{
-		String goodsTypeId = ServletActionContext.getRequest().getParameter("id");
-		Brand brand = brandDao.getById(goodsTypeId);
+		String oId = ServletActionContext.getRequest().getParameter("oId");
+		OrderInfo orderInfo = orderInfoDao.getById(oId);
 		JSONObject jobj = new JSONObject();
-		if(brand != null){
+		if(orderInfo != null){
 			//save success
 			jobj.put("mes", "获取成功!");
 			jobj.put("status", "success");
@@ -145,7 +175,7 @@ public class BrandAction {
 //			pageNum = Integer.parseInt(pageNumStr);
 //		}
 //		List<Object> list = new ArrayList<Object>();
-		List<Object> goodsTypelist = brandDao.list();//获取所有类型数据，不带分页
+		List<Object> goodsTypelist = orderInfoDao.list();//获取所有类型数据，不带分页
 //		PageBean page=null;
 //		if(userlist.size()>0){
 //			page = new PageBean(userlist.size(),pageNum,5);

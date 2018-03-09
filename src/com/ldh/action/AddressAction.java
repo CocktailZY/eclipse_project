@@ -11,8 +11,9 @@ import org.apache.struts2.convention.annotation.Namespace;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.springframework.context.annotation.Scope;
 
-import com.ldh.dao.IBrandDao;
-import com.ldh.model.Brand;
+import com.ldh.dao.IAddressDao;
+import com.ldh.dao.IUsersDao;
+import com.ldh.model.Address;
 import com.ldh.util.JsonUtil;
 
 import net.sf.json.JSONObject;
@@ -20,54 +21,68 @@ import net.sf.json.JSONObject;
 @Scope("prototype")
 @ParentPackage("struts-default")
 //表示继承的父包
-@Namespace(value = "/brand")
-public class BrandAction {
+@Namespace(value = "/address")
+public class AddressAction {
 	
-	private IBrandDao brandDao;
+	private IAddressDao addressDao;
+	private IUsersDao usersDao;
 	
-	public IBrandDao getBrandDao() {
-		return brandDao;
+	public IAddressDao getAddressDao() {
+		return addressDao;
 	}
-	@Resource(name="BrandDao")
-	public void setBrandDao(IBrandDao brandDao) {
-		this.brandDao = brandDao;
+	@Resource(name="AddressDao")
+	public void setAddressDao(IAddressDao addressDao) {
+		this.addressDao = addressDao;
 	}
+	
+	public IUsersDao getUsersDao() {
+		return usersDao;
+	}
+	@Resource(name="UsersDao")
+	public void setUsersDao(IUsersDao usersDao) {
+		this.usersDao = usersDao;
+	}
+
 	
 	/**
-	 * 保存品牌(类型)信息
+	 * 保存地址信息
 	 * @return
 	 * @throws IOException 
 	 */
 	@Action(value="save")
 	public String save() throws IOException{
-		String bDescribe = ServletActionContext.getRequest().getParameter("bDescribe");
-		Brand brand = new Brand();
-		brand.setbDescribe(bDescribe);
+		String aDescribe = ServletActionContext.getRequest().getParameter("aDescribe");
+		String aUId = ServletActionContext.getRequest().getParameter("aUId");
+		Address address = new Address();
+		address.setaDescribe(aDescribe);
+		address.setaUId(usersDao.getById(aUId));
+		address.setaSign(1);
 		JSONObject jobj = new JSONObject();
-		if(brandDao.save(brand)){
-			//save success
+		if(addressDao.save(address)) {
 			jobj.put("mes", "保存成功!");
 			jobj.put("status", "success");
-		}else{
-			//save failed
+		}else {
 			jobj.put("mes", "获取失败!");
 			jobj.put("status", "error");
 		}
 		ServletActionContext.getResponse().setHeader("content-type", "text/html;charset=UTF-8");
 		ServletActionContext.getResponse().getWriter().write(jobj.toString());
 		return null;
+		
 	}
 	/**
-	 * 删除品牌(类型)信息
+	 * 删除地址信息
 	 * @return
 	 * @throws IOException 
 	 */
 	@Action(value="delete")
 	public String delete() throws IOException{
-		String goodsTypeId = ServletActionContext.getRequest().getParameter("id");
-		Brand brand = brandDao.getById(goodsTypeId);
+		
+		
+		String aId = ServletActionContext.getRequest().getParameter("aId");
+		Address address = addressDao.getById(aId);
 		JSONObject jobj = new JSONObject();
-		if(brandDao.delete(brand)){
+		if(addressDao.delete(address)){
 			//save success
 			jobj.put("mes", "删除成功!");
 			jobj.put("status", "success");
@@ -81,21 +96,24 @@ public class BrandAction {
 		return null;
 	}
 	/**
-	 * 修改品牌(类型)信息
+	 * 修改地址信息
 	 * @return
 	 * @throws IOException 
 	 */
 	@Action(value="update")
 	public String update() throws IOException{
-		String brandId = ServletActionContext.getRequest().getParameter("bId");
-		String bDescribe = ServletActionContext.getRequest().getParameter("bDescribe");
-		Brand brand = brandDao.getById(brandId);
-		if(bDescribe != null && !"".equals(bDescribe)){
-			brand.setbDescribe(bDescribe);
+		
+		String aId = ServletActionContext.getRequest().getParameter("aId");
+		String aDescribe = ServletActionContext.getRequest().getParameter("aDescribe");
+		int aSign =  Integer.parseInt(ServletActionContext.getRequest().getParameter("aSign"));
+		Address address = addressDao.getById(aId);
+		if(aDescribe != null && !"".equals(aDescribe) ) {
+			address.setaDescribe(aDescribe);
+			address.setaSign(aSign);
 		}
 		JSONObject jobj = new JSONObject();
-		if(brandDao.update(brand)){
-			//save success
+		
+		if(addressDao.update(address)) {
 			jobj.put("mes", "更新成功!");
 			jobj.put("status", "success");
 		}else{
@@ -109,16 +127,16 @@ public class BrandAction {
 	}
 	
 	/**
-	 * 根据id品牌(类型)信息
+	 * 根据id信息
 	 * @return
 	 * @throws IOException
 	 */
 	@Action(value="getById")
 	public String getById() throws IOException{
-		String goodsTypeId = ServletActionContext.getRequest().getParameter("id");
-		Brand brand = brandDao.getById(goodsTypeId);
+		String aId = ServletActionContext.getRequest().getParameter("aid");
+		Address address = addressDao.getById(aId);
 		JSONObject jobj = new JSONObject();
-		if(brand != null){
+		if(address != null){
 			//save success
 			jobj.put("mes", "获取成功!");
 			jobj.put("status", "success");
@@ -145,18 +163,18 @@ public class BrandAction {
 //			pageNum = Integer.parseInt(pageNumStr);
 //		}
 //		List<Object> list = new ArrayList<Object>();
-		List<Object> goodsTypelist = brandDao.list();//获取所有类型数据，不带分页
+		List<Object> addressTypelist = addressDao.list();//获取所有类型数据，不带分页
 //		PageBean page=null;
 //		if(userlist.size()>0){
 //			page = new PageBean(userlist.size(),pageNum,5);
 //			list = userDao.listAll(page);//带分页
 //		}
 		JSONObject jobj = new JSONObject();
-		if(goodsTypelist.size() > 0){
+		if(addressTypelist.size() > 0){
 			//save success
 			jobj.put("mes", "获取成功!");
 			jobj.put("status", "success");
-			jobj.put("data", JsonUtil.toJsonByListObj(goodsTypelist));
+			jobj.put("data", JsonUtil.toJsonByListObj(addressTypelist));
 		}else{
 			//save failed
 			jobj.put("mes", "获取失败!");

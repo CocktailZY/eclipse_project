@@ -1,6 +1,7 @@
 package com.ldh.action;
 
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -167,4 +168,56 @@ public class ExpressAction {
 		return null;
 	}
 
+	/**
+	 * 带条件查询
+	 * @return
+	 * @throws IOException
+	 */
+	@Action(value="listByConds")
+	public String listByConds() throws IOException{
+		String jsonConds = ServletActionContext.getRequest().getParameter("conds");
+		JSONObject jsonObj = JSONObject.fromObject(jsonConds);
+		String hql = "from Express where ";
+		Iterator<String> sIterator = jsonObj.keys();  
+		while(sIterator.hasNext()){  
+		    // 获得key  
+		    String key = sIterator.next();
+		    String value = jsonObj.getString(key);
+		    if("eExpress".equals(key)){
+		    	hql+=key+" like '%"+value+"%' and ";
+		    }else{
+		    	hql+=key+"='"+value+"'and ";
+		    }
+		    // 根据key获得value, value也可以是JSONObject,JSONArray,使用对应的参数接收即可  
+//		    System.out.println("key: "+key+",value"+value);  
+		} 
+		//分页
+//		String pageNumStr = ServletActionContext.getRequest().getParameter("pageNum");
+//		int pageNum = 1;
+//		if(pageNumStr!=null && !"".equals(pageNumStr)){
+//			pageNum = Integer.parseInt(pageNumStr);
+//		}
+//		List<Object> list = new ArrayList<Object>();
+		if(hql.lastIndexOf("and ") != -1){
+			hql = hql.substring(0, hql.lastIndexOf("and "));
+		}
+		List<Object> expresslist = expressDao.getAllByConds(hql);//获取所有用户数据，不带分页
+//		PageBean page=null;
+//		if(userlist.size()>0){
+//			page = new PageBean(userlist.size(),pageNum,5);
+//			list = usersDao.getByConds(hql,page);//带分页
+//		}
+		if(expresslist.size() > 0){
+			//save success
+			JSONObject jobj = JSONObject.fromObject("{mes:\'获取成功!\',status:\'success\',data:"+JsonUtil.toJsonByListObj(expresslist)+"}");
+			ServletActionContext.getResponse().setHeader("content-type", "text/html;charset=UTF-8");
+			ServletActionContext.getResponse().getWriter().write(jobj.toString());
+		}else{
+			//save failed
+			JSONObject jobj = JSONObject.fromObject("{mes:\'无符合条件的用户!\',status:\'error\'}");
+			ServletActionContext.getResponse().setHeader("content-type", "text/html;charset=UTF-8");
+			ServletActionContext.getResponse().getWriter().write(jobj.toString());
+		}
+		return null;
+	}
 }

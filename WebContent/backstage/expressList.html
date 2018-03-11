@@ -21,10 +21,10 @@
            onclick="acceptRow()">保存</a>
         <a href="javascript:void(0)" id="rejectBtn" class="easyui-linkbutton" data-options="iconCls:'icon-undo',plain:false"
            onclick="cancelrow()">撤回</a>
-        编号: <input class="easyui-textbox" type="text" name="code" style="width:166px;height:35px;line-height:35px;"></input>
-        快递公司: <input class="easyui-textbox" type="text" name="name" style="width:166px;height:35px;line-height:35px;"></input>
-        <a href="#" class="easyui-linkbutton" iconCls="icon-search" data-options="selected:true">查询</a>
-        <a href="#" class="easyui-linkbutton" iconCls="icon-reload">重置</a>
+        编号: <input class="easyui-textbox" type="text" id="code" name="code" style="width:166px;height:35px;line-height:35px;"></input>
+        快递公司: <input class="easyui-textbox" type="text" id="eExpress" name="eExpress" style="width:166px;height:35px;line-height:35px;"></input>
+        <a href="#" class="easyui-linkbutton" iconCls="icon-search" data-options="selected:true" onclick="searchAll()">查询</a>
+        <a href="#" class="easyui-linkbutton" iconCls="icon-reload" onclick="resetsearch()">重置</a>
     </div>
 </div>
 
@@ -47,14 +47,14 @@
             striped:true,
             checkOnSelect:true,
             selectOnCheck:true,
-            collapsible:true,
+            collapsible:false,
             toolbar:'#tb',
             pageSize:10,
-            data:getData(),
+            /* data:getData(), */
             columns:[[
                 {field:'ck',checkbox:true,width:'5%'},
-                {field:'pid',title:'编号',width:'10%',align:'center',sortable:true},
-                {field:'pname',title:'快递公司',width:'85%',align:'center',editor:'text'},
+                {field:'eId',title:'编号',width:'20%',align:'center',sortable:true},
+                {field:'eExpress',title:'快递公司',width:'75%',align:'center',editor:'text'},
             ]],
             onDblClickRow: onClickCell,
             onClickRow:function(rowIndex, rowData){
@@ -107,15 +107,26 @@
         }).datagrid('clientPaging');
     });
     function getData(){
-        var rows = [];
-        for(var i=1; i<=30; i++){
-            rows.push({
-                pid: 'pid-'+i,//记得添加唯一标识可在不同页面保持选中状态
-                pname: '苹果',
-            });
-        }
-        return rows;
+    	//获取用户列表
+        $.ajax({
+    		type:"get",
+    		async:true,
+    		url:"../express/list.action",
+    		dataType:"json",
+    		data:{},
+    		success:function(data){
+    			console.log(data);
+    			if(data.status == 'success'){
+   					var rows = [];
+       				rows = data.data;
+       				$('#dg').datagrid('loadData', rows);
+    			}else{
+    				//没有数据或服务器错误
+    			}
+    		}
+    	});
     }
+    getData();
     $.extend($.fn.datagrid.methods, {
         getEditingRowIndexs: function(jq) {
             var rows = $.data(jq[0], "datagrid").panel.find('.datagrid-row-editing');
@@ -158,7 +169,7 @@
             if (endEditing()){
                 $('#dg').datagrid('selectRow', index)
                     .datagrid('beginEdit', index);
-                var ed = $('#dg').datagrid('getEditor', {index:index,field:'pname'});
+                var ed = $('#dg').datagrid('getEditor', {index:index,field:'eExpress'});
                 ($(ed.target).data('textbox') ? $(ed.target).textbox('textbox') : $(ed.target)).focus();
                 editIndex = index;
             } else {
@@ -182,7 +193,7 @@
 //            editIndex = $('#dg').datagrid('getRows').length-1;
             $('#dg').datagrid('selectRow', editIndex)
                 .datagrid('beginEdit', editIndex);
-            var ed = $('#dg').datagrid('getEditor', {index:editIndex,field:'pname'});
+            var ed = $('#dg').datagrid('getEditor', {index:editIndex,field:'eExpress'});
             ($(ed.target).data('textbox') ? $(ed.target).textbox('textbox') : $(ed.target)).focus();
         }
     }
@@ -196,25 +207,22 @@
                     var rindex = $('#dg').datagrid('getRowIndex', row);
                     //alert(rindex);
                     $('#dg').datagrid('deleteRow', rindex);
-//                $.ajax({
-//                    url : '<%=path%>/mbFlup/deleteFlupCycle.do',
-//                    type : 'POST',
-//                    timeout : 60000,
-//                    success : function(data) {
-//                        var msg = '删除';
-//                        if (data) {
-//                            $obj.datagrid('deleteRow', rindex);
-//                            //$obj.datagrid('reload');
-//                            $.messager.alert('提示', msg + '成功！', 'info', function() {
-//                                //window.location.href = root + 'esbService/initSysConfig.do';
-//                            });
-//                        } else {
-//                            $.messager.alert('提示', msg + '失败！', 'error', function() {
-//                                //window.location.href = root + 'esbService/initSysConfig.do';
-//                            });
-//                        }
-//                    }
-//                });
+                    $.ajax({
+            			type:"post",
+            			async:true,
+            			url:"../express/delete.action",
+            			dataType:"json",
+            			data:{
+            				eId:row.eId
+            			},
+            			success:function(data){
+            				if(data.status == 'success'){
+            					getData();
+            				}else{
+            					alert(data.mes);
+            				}
+            			}
+            		});
                 }else{
                     $('#dg').datagrid('clearSelections');
                 }
@@ -238,6 +246,42 @@
             var row = $('#dg').datagrid('getSelected');
             console.log(row);
             //发ajax请求后台
+            if(row.eId == '' || row.eId == null){
+            	$.ajax({
+        			type:"post",
+        			async:true,
+        			url:"../express/save.action",
+        			dataType:"json",
+        			data:{
+       					eExpress:row.eExpress
+        			},
+        			success:function(data){
+        				if(data.status == 'success'){
+        					getData();
+        				}else{
+        					alert(data.mes);
+        				}
+        			}
+        		});
+            }else{
+            	$.ajax({
+        			type:"post",
+        			async:true,
+        			url:"../express/update.action",
+        			dataType:"json",
+        			data:{
+        				eId:row.eId,
+        				eExpress:row.eExpress
+        			},
+        			success:function(data){
+        				if(data.status == 'success'){
+        					getData();
+        				}else{
+        					alert(data.mes);
+        				}
+        			}
+        		});
+            }
         }
     }
     //取消编辑
@@ -250,8 +294,53 @@
             var row = $('#dg').datagrid('getSelected');
             var rindex = $('#dg').datagrid('getRowIndex', row);
             $('#dg').datagrid('rejectChanges', rindex);
+            getData();
         }
     }
+    
+    function resetsearch(){
+    	$("#code").textbox('setValue','');
+    	$("#eExpress").textbox('setValue','');
+    	getData();
+    }
+    
+    function searchAll(){
+    	var conds = {
+    		eId:'',
+    		eExpress:''
+    	}
+    	if($('#code').textbox('getValue') != ''){
+    		conds.eId = $('#code').textbox('getValue');
+    	}else{
+    		delete conds.eId;
+    	}
+    	if($('#eExpress').textbox('getValue') != ''){
+    		conds.eExpress = $('#eExpress').textbox('getValue');
+    	}else{
+    		delete conds.eExpress;
+    	}
+    	if($('#code').textbox('getValue') == '' && $('#eExpress').textbox('getValue') == ''){
+    		getData();
+    	}
+    	$.ajax({
+			type:"post",
+			async:true,
+			url:"../express/listByConds.action",
+			dataType:"json",
+			data:{
+				conds:JSON.stringify(conds)
+			},
+			success:function(data){
+				if(data.status == 'success'){
+					$('#dg').datagrid('loadData', data.data);
+				}else{
+					resetsearch();
+					alert(data.mes);
+				}
+			}
+		});
+    }
+    
 
 </script>
 </body>

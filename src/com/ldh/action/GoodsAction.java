@@ -16,8 +16,12 @@ import org.springframework.context.annotation.Scope;
 import com.ldh.dao.IBrandDao;
 import com.ldh.dao.IDegreeDao;
 import com.ldh.dao.IGoodsDao;
+import com.ldh.dao.IPictureDao;
 import com.ldh.dao.IUsersDao;
+import com.ldh.model.Brand;
+import com.ldh.model.Degree;
 import com.ldh.model.Goods;
+import com.ldh.model.Picture;
 import com.ldh.util.JsonUtil;
 import com.ldh.util.PageBean;
 
@@ -33,6 +37,7 @@ public class GoodsAction {
 	private IBrandDao brandDao;
 	private IDegreeDao degreeDao;
 	private IUsersDao usersDao;
+	private IPictureDao pictureDao;
 
 	public IBrandDao getBrandDao() {
 		return brandDao;
@@ -61,31 +66,54 @@ public class GoodsAction {
 	public IGoodsDao getGoodsDao() {
 		return goodsDao;
 	}
-
+	@Resource(name="GoodsDao")
 	public void setGoodsDao(IGoodsDao goodsDao) {
 		this.goodsDao = goodsDao;
 	}
 	
+	public IPictureDao getPictureDao() {
+		return pictureDao;
+	}
+	@Resource(name="PictureDao")
+	public void setPictureDao(IPictureDao pictureDao) {
+		this.pictureDao = pictureDao;
+	}
 	@Action(value="save")
 	public String save() throws IOException{
-		String gName = ServletActionContext.getRequest().getParameter("gName");
-		String gPrice = ServletActionContext.getRequest().getParameter("gPrice");
-		String gDexcribe = ServletActionContext.getRequest().getParameter("gDexcribe");
-		String gBId = ServletActionContext.getRequest().getParameter("gBId");
-		String gDeId = ServletActionContext.getRequest().getParameter("gDeId");
-		String gUId = ServletActionContext.getRequest().getParameter("gUId");
+		String params = ServletActionContext.getRequest().getParameter("param");
+		JSONObject obj = JSONObject.fromObject(params);
+		String gName = obj.getString("gName");
+		String gPrice = obj.getString("gPrice");
+		String gDexcribe = obj.getString("gDexcribe");
+		String gBId = obj.getString("gBId");
+		String gDeId = obj.getString("gDeId");
+		String gUId = obj.getString("gUId");
+		String imgs = obj.getString("gPicture");
+		
 		
 		Goods good = new Goods();
 		good.setgName(gName);
 		good.setgPrice(gPrice);
-		good.setgDexcribe(gDexcribe);
+		good.setgDescribe(gDexcribe);
 		good.setgBId(brandDao.getById(gBId));
 		good.setgDeId(degreeDao.getById(gDeId));
 		good.setgUId(usersDao.getById(gUId));
 		
 		JSONObject jobj = new JSONObject();
-		if(goodsDao.save(good)){
+		String saveId = goodsDao.save(good);
+		if(!"0".equals(saveId)){
 			//save success
+			String[] temp = imgs.substring(1, imgs.length()).substring(0, imgs.length()-1).replace("[", "").replace("]", "").split(",");
+			for(int img = 0 ; img < temp.length; img++){
+				String tempPath = temp[img].substring(1, temp[img].length());
+				String imgPath = tempPath.substring(0, tempPath.length()-1);
+				if(imgPath.indexOf("default.png") == -1){
+					Picture tempPic = new Picture();
+					tempPic.setpGId(goodsDao.getById(saveId));
+					tempPic.setpUrl(imgPath);
+					pictureDao.save(tempPic);
+				}
+			}
 			jobj.put("mes", "保存成功!");
 			jobj.put("status", "success");
 		}else{
@@ -124,7 +152,7 @@ public class GoodsAction {
 		String gId = ServletActionContext.getRequest().getParameter("gId");
 		String gName = ServletActionContext.getRequest().getParameter("gName");
 		String gPrice = ServletActionContext.getRequest().getParameter("gPrice");
-		String gDexcribe = ServletActionContext.getRequest().getParameter("gDexcribe");
+		String gDescribe = ServletActionContext.getRequest().getParameter("gDescribe");
 		String gBId = ServletActionContext.getRequest().getParameter("gBId");
 		String gDeId = ServletActionContext.getRequest().getParameter("gDeId");
 		String gUId = ServletActionContext.getRequest().getParameter("gUId");
@@ -137,8 +165,8 @@ public class GoodsAction {
 		if(gPrice != null && !"".equals(gPrice)){
 			good.setgPrice(gPrice);
 		}
-		if(gDexcribe != null && !"".equals(gDexcribe)){
-			good.setgDexcribe(gDexcribe);
+		if(gDescribe != null && !"".equals(gDescribe)){
+			good.setgDescribe(gDescribe);
 		}
 		if(gBId != null && !"".equals(gBId)){
 			good.setgBId(brandDao.getById(gBId));
@@ -203,9 +231,18 @@ public class GoodsAction {
 		if(goodlist.size()>0){
 			page = new PageBean(goodlist.size(),pageNum,5);
 			list = goodsDao.listAll(page);//带分页
+			for(Object temp : list){
+				Goods obj = (Goods)temp;
+				Brand bObj = brandDao.getById(obj.getgBId().getbId());
+				Degree deObj = degreeDao.getById(obj.getgDeId().getDeId());
+				obj.setgBId(bObj);
+				obj.setgDeId(deObj);
+			}
 			jobj.put("mes", "获取成功!");
 			jobj.put("status", "success");
 			jobj.put("data", JsonUtil.toJsonByListObj(list));
+			jobj.put("pageTotal", page.getPageCount());
+			jobj.put("pageNum", page.getPageNum());
 		}else{
 			jobj.put("mes", "获取失败!");
 			jobj.put("status", "error");
@@ -259,6 +296,37 @@ public class GoodsAction {
 		}else{
 			//save failed
 			jobj.put("mes", "获取失败!");
+			jobj.put("status", "error");
+		}
+		ServletActionContext.getResponse().setHeader("content-type", "text/html;charset=UTF-8");
+		ServletActionContext.getResponse().getWriter().write(jobj.toString());
+		return null;
+	}
+	
+	@Action(value="calAvgPrice")
+	public String calAvgPrice() throws IOException{
+		String bId = ServletActionContext.getRequest().getParameter("bId");
+		String deId = ServletActionContext.getRequest().getParameter("deId");
+		String hql = "from Goods where gBId='"+bId+"' and gDeId='"+deId+"'";
+		List<Object> goodlist = goodsDao.getAllByConds(hql);//获取所有用户数据，不带分页
+		JSONObject jobj = new JSONObject();
+		if(goodlist.size() > 0){
+			int avg = 0;
+			int i = 0;
+			for(Object good : goodlist){
+				i++;
+				Goods temp = (Goods) good;
+				avg = avg + Integer.parseInt(temp.getgPrice());
+			}
+			int avgprice = avg / i; 
+			jobj.put("mes", "获取成功!");
+			jobj.put("status", "success");
+			jobj.put("showAvg", true);
+			jobj.put("avgprice", String.valueOf(avgprice));
+		}else{
+			//save failed
+			jobj.put("mes", "获取失败!");
+			jobj.put("showAvg", false);
 			jobj.put("status", "error");
 		}
 		ServletActionContext.getResponse().setHeader("content-type", "text/html;charset=UTF-8");

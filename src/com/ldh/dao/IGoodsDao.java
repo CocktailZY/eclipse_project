@@ -11,7 +11,7 @@ public interface IGoodsDao {
 	 * @param goods
 	 * @return
 	 */
-	public boolean save(Goods goods);
+	public String save(Goods goods);
 	
 	/**
 	 * 删除商品

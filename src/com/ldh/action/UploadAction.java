@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 
 import javax.servlet.ServletException;
@@ -16,7 +15,6 @@ import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.InterceptorRef;
 import org.apache.struts2.convention.annotation.Namespace;
 import org.apache.struts2.convention.annotation.ParentPackage;
-import org.aspectj.util.FileUtil;
 import org.springframework.context.annotation.Scope;
 
 import net.sf.json.JSONObject;
@@ -54,7 +52,7 @@ public class UploadAction {
 	public void setFileFileName(String fileFileName) {
 		this.fileFileName = fileFileName;
 	}
-
+	
 	/**
 	 * 上传
 	 * @return
@@ -106,7 +104,8 @@ public class UploadAction {
 		try {
 //			tempfile = tempfile.replace(/\\/g,'/');
 			String imgPath = filepath + "\\" + name;
-			FileInputStream in = new FileInputStream("F:/liuxiaolong/apache-tomcat-7.0.82/webapps/upload_files/D_head.jpg"); 
+			String reallyPath = imgPath.replaceAll("/\\/g","/");
+			FileInputStream in = new FileInputStream(reallyPath); 
 			byte data[] = new byte[in.available()];
 			in.read(data);
 			OutputStream toClient = ServletActionContext.getResponse().getOutputStream(); // 得到向客户端输出二进制数据的对象
@@ -123,6 +122,5 @@ public class UploadAction {
 		} // 以byte流的方式打开文件 d:\1.gif
 		return null;
 	}
-	
 	
 }

@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Row Editing in DataGrid - jQuery EasyUI Demo</title>
+    <link rel="stylesheet" href="lib/uimaker/easyui.css">
+    <link rel="stylesheet" type="text/css" href="lib/uimaker/icon.css">
+
+</head>
+<body>
+<div class="container">
+
+    <table id="dg"></table>
+
+    <div id="tb" style="height:auto">
+        <a href="javascript:void(0)" id="addBtn" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:false"
+           onclick="addRemark()">新增</a>
+        <a href="javascript:void(0)" id="delBtn" class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:false"
+           onclick="removeit()">删除</a>
+        <a href="javascript:void(0)" id="saveBtn" class="easyui-linkbutton" data-options="iconCls:'icon-save',plain:false"
+           onclick="acceptRow()">保存</a>
+        <a href="javascript:void(0)" id="rejectBtn" class="easyui-linkbutton" data-options="iconCls:'icon-undo',plain:false"
+           onclick="cancelrow()">撤回</a>
+    </div>
+</div>
+
+<script type="text/javascript" src="lib/jquery.min.js"></script>
+<script type="text/javascript" src="lib/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="lib/easyui-lang-zh_CN.js"></script>
+<script type="text/javascript" src="lib/datagrid-detailview.js"></script>
+<script type="text/javascript" src="lib/custom/pageFilter.js"></script>
+<script type="text/javascript">
+    $(function(){
+        $('#dg').datagrid({
+            title:'程度列表',
+            width:'auto',
+            height:600,
+            rownumbers:false,
+            singleSelect:true,
+            autoRowHeight:false,
+            pagination:true,
+            fitColumns:true,
+            striped:true,
+            checkOnSelect:true,
+            selectOnCheck:true,
+            collapsible:false,
+            toolbar:'#tb',
+            pageSize:10,
+            /* data:getData(), */
+            columns:[[
+                {field:'ck',checkbox:true,width:'5%'},
+                {field:'deId',title:'程度编号',width:'20%',align:'center',sortable:true},
+                {field:'deDescribe',title:'程度名称',width:'75%',align:'center',editor:'text'},
+            ]],
+            onDblClickRow: onClickCell,
+            onClickRow:function(rowIndex, rowData){
+                var indexs = $(this).datagrid('getEditingRowIndexs');
+                if(indexs.length > 0){
+                    $.each(indexs,function(index,item){
+                        $('#dg').datagrid('rejectChanges', item);
+                        $('#dg').datagrid("endEdit", item);
+                    });
+                }
+//                $('#addBtn').linkbutton('disable');
+//                $('#delBtn').linkbutton('enable');
+//                $('#saveBtn').linkbutton('enable');
+//                $('#rejectBtn').linkbutton('enable');
+            },
+           /* onClickCell: function(index,field,value){
+                $(this).datagrid('beginEdit', index);
+                var ed = $(this).datagrid('getEditor', {index:index,field:field});
+            },*/
+            onBeforeEdit:function(index,row){
+                /*//修改时要获取选择到的行
+                var rows = row;
+                //如果只选择了一行则可以进行修改，否则不操作
+                if (rows.length == 1) {
+                    //修改之前先关闭已经开启的编辑行，当调用endEdit该方法时会触发onAfterEdit事件
+                    if (index != undefined) {
+                        $('#dg').datagrid("endEdit", index);
+                    }
+                    //当无编辑行时
+                    if (index == undefined) {
+                        //获取到当前选择行的下标
+                        var index = $('#dg').datagrid("getRowIndex", rows[0]);
+                        //开启编辑
+                        $('#dg').datagrid("beginEdit", index);
+                        //把当前开启编辑的行赋值给全局变量editRow
+                        //应该取消当前列表的所有选择行，要不然双击之后无法再选择其他行进行编辑
+                        $('#dg').datagrid("unselectAll");
+                    }
+                }*/
+            },
+            onAfterEdit:function(index,row){
+            },
+            onCancelEdit:function(index,row){
+            },
+            onLoadSuccess:function(){
+//                $('#delBtn').linkbutton('disable');
+//                $('#saveBtn').linkbutton('disable');
+//                $('#rejectBtn').linkbutton('disable');
+            }
+        }).datagrid('clientPaging');
+    });
+    function getData(){
+    	//获取用户列表
+        $.ajax({
+    		type:"get",
+    		async:true,
+    		url:"../degree/list.action",
+    		dataType:"json",
+    		data:{},
+    		success:function(data){
+    			console.log(data);
+    			if(data.status == 'success'){
+   					var rows = [];
+       				rows = data.data;
+       				$('#dg').datagrid('loadData', rows);
+    			}else{
+    				//没有数据或服务器错误
+    			}
+    		}
+    	});
+    }
+    getData();
+    $.extend($.fn.datagrid.methods, {
+        getEditingRowIndexs: function(jq) {
+            var rows = $.data(jq[0], "datagrid").panel.find('.datagrid-row-editing');
+            var indexs = [];
+            rows.each(function(i, row) {
+                var index = row.sectionRowIndex;
+                if (indexs.indexOf(index) == -1) {
+                    indexs.push(index);
+                }
+            });
+            return indexs;
+        }
+    });
+    //可编辑行
+    var editIndex = undefined;
+    function endEditing(){
+        if (editIndex == undefined){return true}
+        if ($('#dg').datagrid('validateRow', editIndex)){
+            $('#dg').datagrid('endEdit', editIndex);
+            editIndex = undefined;
+//            $('#addBtn').linkbutton('enable');
+//            $('#delBtn').linkbutton('disable');
+//            $('#saveBtn').linkbutton('disable');
+//            $('#rejectBtn').linkbutton('disable');
+            return true;
+        } else {
+//            $('#addBtn').linkbutton('disable');
+//            $('#delBtn').linkbutton('enable');
+//            $('#saveBtn').linkbutton('enable');
+//            $('#rejectBtn').linkbutton('enable');
+            return false;
+        }
+    }
+    //修改的方式是直接点击单元格，所以table要加上onClickCell属性，然后重写onClickCell方法
+    function onClickCell(index, field){
+        console.log(index);
+        console.log(field);
+
+        if (editIndex != index){
+            if (endEditing()){
+                $('#dg').datagrid('selectRow', index)
+                    .datagrid('beginEdit', index);
+                var ed = $('#dg').datagrid('getEditor', {index:index,field:'deDescribe'});
+                ($(ed.target).data('textbox') ? $(ed.target).textbox('textbox') : $(ed.target)).focus();
+                editIndex = index;
+            } else {
+                $('#dg').datagrid('selectRow', editIndex);
+            }
+        }
+    }
+    // 添加
+    function addRemark(){
+//        $('#addBtn').linkbutton('disable');
+//        $('#delBtn').linkbutton('enable');
+//        $('#saveBtn').linkbutton('enable');
+//        $('#rejectBtn').linkbutton('enable');
+        if (endEditing()){
+            editIndex = 0;
+//            $('#dg').datagrid('insertRow',{'pid':'pid-'});
+            $('#dg').datagrid('insertRow',{
+                index: editIndex,  // 索引从0开始
+                row: {'ck': true}
+            });
+//            editIndex = $('#dg').datagrid('getRows').length-1;
+            $('#dg').datagrid('selectRow', editIndex).datagrid('beginEdit', editIndex);
+            var ed = $('#dg').datagrid('getEditor', {index:editIndex,field:'deDescribe'});
+            ($(ed.target).data('textbox') ? $(ed.target).textbox('textbox') : $(ed.target)).focus();
+        }
+    }
+    // 删除
+    function removeit(){
+        $.messager.defaults = {ok: '确定', cancel: '取消', width: '200px'};
+        var row = $('#dg').datagrid('getSelected');
+        if(row){
+            $.messager.confirm('操作提示','确认删除?',function(r){
+                if (r){
+                    var rindex = $('#dg').datagrid('getRowIndex', row);
+                    //alert(rindex);
+                    $('#dg').datagrid('deleteRow', rindex);
+                    $.ajax({
+            			type:"post",
+            			async:true,
+            			url:"../degree/delete.action",
+            			dataType:"json",
+            			data:{
+            				deId:row.deId
+            			},
+            			success:function(data){
+            				if(data.status == 'success'){
+            					getData();
+            				}else{
+            					alert(data.mes);
+            				}
+            			}
+            		});
+                }else{
+                    $('#dg').datagrid('clearSelections');
+                }
+            });
+        }else{
+            $.messager.alert("操作提示", "请至少选中一行!","error",function () {});
+        }
+//        $('#addBtn').linkbutton('enable');
+//        $('#delBtn').linkbutton('disable');
+//        $('#saveBtn').linkbutton('disable');
+//        $('#rejectBtn').linkbutton('disable');
+    }
+    // 保存方法（添加修改用了一个方法accept()）
+    function acceptRow(){
+        //成功之后
+//        $('#addBtn').linkbutton('enable');
+//        $('#delBtn').linkbutton('disable');
+//        $('#saveBtn').linkbutton('disable');
+//        $('#rejectBtn').linkbutton('disable');
+        if (endEditing()) {
+            var row = $('#dg').datagrid('getSelected');
+            console.log(row);
+            //发ajax请求后台
+          //发ajax请求后台
+            if(row.deId == '' || row.deId == null){
+            	$.ajax({
+        			type:"post",
+        			async:true,
+        			url:"../degree/save.action",
+        			dataType:"json",
+        			data:{
+        				deDescribe:row.deDescribe
+        			},
+        			success:function(data){
+        				if(data.status == 'success'){
+        					getData();
+        				}else{
+        					alert(data.mes);
+        				}
+        			}
+        		});
+            }else{
+            	$.ajax({
+        			type:"post",
+        			async:true,
+        			url:"../degree/update.action",
+        			dataType:"json",
+        			data:{
+        				deId:row.deId,
+        				deDescribe:row.deDescribe
+        			},
+        			success:function(data){
+        				if(data.status == 'success'){
+        					getData();
+        				}else{
+        					alert(data.mes);
+        				}
+        			}
+        		});
+            }
+        }
+    }
+    //取消编辑
+    function cancelrow(){
+//        $('#addBtn').linkbutton('enable');
+//        $('#delBtn').linkbutton('disable');
+//        $('#saveBtn').linkbutton('disable');
+//        $('#rejectBtn').linkbutton('disable');
+        if(endEditing()){
+            var row = $('#dg').datagrid('getSelected');
+            var rindex = $('#dg').datagrid('getRowIndex', row);
+            $('#dg').datagrid('rejectChanges', rindex);
+            getData();
+        }
+    }
+
+</script>
+</body>
+</html>

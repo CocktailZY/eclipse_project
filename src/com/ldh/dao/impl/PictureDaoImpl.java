@@ -31,7 +31,7 @@ public class PictureDaoImpl implements IPictureDao {
 		String returnId = (String) session.save(picture);
 		session.getTransaction().commit();
 		session.close();
-		if("".equals(returnId) && null != returnId){
+		if(!"".equals(returnId) && null != returnId){
 			return true;
 		}else{
 			return false;

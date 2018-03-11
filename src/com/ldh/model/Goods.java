@@ -25,7 +25,7 @@ public class Goods implements Serializable{
 	private String gId;
 	private String gName;
 	private String gPrice;
-	private String gDexcribe;
+	private String gDescribe;
 	private int gSign;
 	private Brand gBId;
 	private Degree gDeId;
@@ -52,11 +52,11 @@ public class Goods implements Serializable{
 	public void setgPrice(String gPrice) {
 		this.gPrice = gPrice;
 	}
-	public String getgDexcribe() {
-		return gDexcribe;
+	public String getgDescribe() {
+		return gDescribe;
 	}
-	public void setgDexcribe(String gDexcribe) {
-		this.gDexcribe = gDexcribe;
+	public void setgDescribe(String gDescribe) {
+		this.gDescribe = gDescribe;
 	}
 	public int getgSign() {
 		return gSign;
@@ -65,7 +65,7 @@ public class Goods implements Serializable{
 		this.gSign = gSign;
 	}
 	@ManyToOne(cascade={CascadeType.MERGE})
-	@JoinColumn(name="gBId",referencedColumnName="bId",insertable=false, updatable=false)
+	@JoinColumn(name="gBId")
 	public Brand getgBId() {
 		return gBId;
 	}
@@ -81,7 +81,7 @@ public class Goods implements Serializable{
 		this.gDeId = gDeId;
 	}
 	@ManyToOne(cascade={CascadeType.MERGE})
-	@JoinColumn(name="gUId",referencedColumnName="uId",insertable=false, updatable=false)
+	@JoinColumn(name="gUId")
 	public Users getgUId() {
 		return gUId;
 	}

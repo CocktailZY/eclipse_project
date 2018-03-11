@@ -41,7 +41,7 @@ public class Picture implements Serializable{
 		this.pUrl = pUrl;
 	}
 	@ManyToOne(cascade={CascadeType.MERGE})
-	@JoinColumn(name="pGId",referencedColumnName="gId",insertable=false, updatable=false)
+	@JoinColumn(name="pGId")
 	public Goods getpGId() {
 		return pGId;
 	}

@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Scope;
 import com.ldh.dao.IGoodsDao;
 import com.ldh.dao.IPictureDao;
 import com.ldh.dao.IUsersDao;
+import com.ldh.model.Goods;
 import com.ldh.model.Picture;
 import com.ldh.util.JsonUtil;
 
@@ -146,6 +147,26 @@ public class PictureAction {
 			jobj.put("mes", "获取成功!");
 			jobj.put("status", "success");
 			jobj.put("data", JsonUtil.toJsonByListObj(goodsTypelist));
+		}else{
+			//save failed
+			jobj.put("mes", "获取失败!");
+			jobj.put("status", "error");
+		}
+		ServletActionContext.getResponse().setHeader("content-type", "text/html;charset=UTF-8");
+		ServletActionContext.getResponse().getWriter().write(jobj.toString());
+		return null;
+	}
+	
+	@Action(value="getGoodsImg")
+	public String getGoodsImg() throws IOException{
+		String pGId = ServletActionContext.getRequest().getParameter("pGId");
+		String hql = "from Picture where pGId='"+pGId+"'";
+		List<Object> piclist = pictureDao.getAllByConds(hql);//获取所有用户数据，不带分页
+		JSONObject jobj = new JSONObject();
+		if(piclist.size() > 0){
+			jobj.put("mes", "获取成功!");
+			jobj.put("status", "success");
+			jobj.put("piclist", JsonUtil.toJsonByListObj(piclist));
 		}else{
 			//save failed
 			jobj.put("mes", "获取失败!");

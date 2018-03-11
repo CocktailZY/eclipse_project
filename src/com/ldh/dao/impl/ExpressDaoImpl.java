@@ -31,7 +31,7 @@ public class ExpressDaoImpl implements IExpressDao {
 		String returnId = (String) session.save(express);
 		session.getTransaction().commit();
 		session.close();
-		if("".equals(returnId) && null != returnId){
+		if(!"".equals(returnId) && null != returnId){
 			return true;
 		}else{
 			return false;

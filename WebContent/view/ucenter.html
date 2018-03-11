@@ -15,6 +15,7 @@
 <!-- //Custom Theme files -->
 <!-- font-awesome icons -->
 <link href="css/font-awesome.css" rel="stylesheet"> 
+<link href="css/teachers.css" rel="stylesheet">
 <!-- //font-awesome icons -->
 <!-- js -->
 <!-- <script src="js/jquery.min.js"></script> -->
@@ -306,12 +307,13 @@
 										<th>商品名称</th>
 										<th>品牌类别</th>
 										<th>商品价格</th>
+										<th>程度类别</th>
 										<th>商品状态</th>
 										<th>操作</th>
 									</tr>
 									</thead>
-									<tbody>
-									<tr>
+									<tbody id="goodslist">
+									<!-- <tr>
 										<td>1</td>
 										<td>Mark</td>
 										<td>Otto</td>
@@ -321,19 +323,19 @@
 											<button class="btn btn-xs btn-warning" data-toggle="modal" data-target="#modifyGoodModal">修改</button>
 											<button class="btn btn-xs btn-danger">下架</button>
 										</td>
-									</tr>
+									</tr> -->
 									</tbody>
 								</table>
 							<!--</div>-->
 							<div class="pull-right">
-								<ul class="pagination pagination-sm">
-									<li><a href="#">&laquo;</a></li>
+								<ul class="pagination pagination-sm" id="goodPage">
+									<!-- <li><a href="#">&laquo;</a></li>
 									<li class="active"><a href="#">1</a></li>
 									<li><a href="#">2</a></li>
 									<li><a href="#">3</a></li>
 									<li><a href="#">4</a></li>
 									<li><a href="#">5</a></li>
-									<li><a href="#">&raquo;</a></li>
+									<li><a href="#">&raquo;</a></li> -->
 								</ul>
 							</div>
 						</div>
@@ -352,16 +354,16 @@
 				</div>
 				<section>
 					<div class="modal-body">
-						<form class="form-horizontal">
+						<form class="form-horizontal" enctype="multipart/form-data">
 							<div class="col-md-5"><!--modal_body_left-->
-								<img src="images/default.png" alt=" " class="img-responsive" width="200" height="200" style="margin: 0 auto;"/>
+								<img src="images/default.png" alt=" " class="img-responsive" style="margin: 0 auto;margin-bottom: 8px; width:200px !important; height: 200px !important;" id="img0"/>
 								<!--<div style="margin: 0 auto;" class="clearfix">-->
-									<img src="images/default.png" alt=" " class="img-responsive pull-left" width="60" height="60" style="margin-left: 40px;margin-right: 8px;"/>
-									<img src="images/default.png" alt=" " class="img-responsive pull-left" width="60" height="60" style="margin-right: 8px;"/>
-									<img src="images/default.png" alt=" " class="img-responsive pull-left" width="60" height="60" style="margin-right: 8px;"/>
-									<img src="images/default.png" alt=" " class="img-responsive pull-left" width="60" height="60" style=""/>
+									<img src="images/default.png" alt=" " class="img-responsive pull-left" style="margin-left: 40px;margin-right: 8px;width:60px !important; height: 60px !important;" id="img1"/>
+									<img src="images/default.png" alt=" " class="img-responsive pull-left" style="margin-right: 8px;width:60px !important; height: 60px !important;" id="img2"/>
+									<img src="images/default.png" alt=" " class="img-responsive pull-left" style="margin-right: 8px;width:60px !important; height: 60px !important;" id="img3"/>
+									<img src="images/default.png" alt=" " class="img-responsive pull-left" style="width:60px !important; height: 60px !important;" id="img4"/>
 									<button class="btn btn-primary" style="position: relative; left: 133px; bottom: -37px; height:28px;line-height: 16px;">上传图片</button>
-									<input type="file" style="position: relative; left: 134px; bottom: -9px;opacity: 0;height:30px;">
+									<input type="file" style="position: relative; left: 134px; bottom: -9px;opacity: 0;height:30px;" multiple="multiple" name="files" id="uploadImgs" onchange="uploadImg()">
 								<!--</div>-->
 							</div>
 							<div class="col-md-7 modal_body_right">
@@ -369,6 +371,12 @@
 									<label for="goodName" class="col-sm-3 control-label">商品名称</label>
 									<div class="col-sm-9">
 										<input type="text" class="form-control" id="goodName">
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="goodDes" class="col-sm-3 control-label">商品描述</label>
+									<div class="col-sm-9">
+										<textarea class="form-control" rows="3" id="goodDes"></textarea>
 									</div>
 								</div>
 								<div class="form-group">
@@ -386,25 +394,26 @@
 								</div>
 								<div class="form-group">
 									<label for="goodPrice" class="col-sm-3 control-label">价格</label>
-									<div class="col-sm-9">
+									<div class="col-sm-4">
 										<input type="text" class="form-control" id="goodPrice">
 									</div>
+									<div class="col-sm-5 text-warning" id="avg" style="font-size: 12px;line-height:32px;display: none;">同类商品均价:<strong id="avgPrice">100</strong>￥</div>
 								</div>
 								<div class="form-group">
 									<label for="goodDegree" class="col-sm-3 control-label">程度类型</label>
 									<div class="col-sm-9">
 										<select class="form-control" id="goodDegree">
-											<option>99新</option>
+											<!-- <option>99新</option>
 											<option>9成新</option>
 											<option>88新</option>
 											<option>8成新</option>
-											<option>7成新</option>
+											<option>7成新</option> -->
 										</select>
 									</div>
 								</div>
 								<div class="form-group">
 									<div class="col-sm-offset-3 col-sm-9">
-										<button type="submit" class="btn btn-success col-sm-12">添加</button>
+										<button type="button" class="btn btn-success col-sm-12" onclick="addGood()">添加</button>
 									</div>
 								</div>
 							</div>
@@ -434,7 +443,7 @@
 								<img src="images/default.png" alt=" " class="img-responsive pull-left" width="60" height="60" style="margin-right: 8px;"/>
 								<img src="images/default.png" alt=" " class="img-responsive pull-left" width="60" height="60" style=""/>
 								<button class="btn btn-primary" style="position: relative; left: 133px; bottom: -37px; height:28px;line-height: 16px;">上传图片</button>
-								<input type="file" style="position: relative; left: 134px; bottom: -9px;opacity: 0;height:30px;">
+								<input type="file" style="position: relative; left: 134px; bottom: -9px;opacity: 0;height:30px;" multiple="multiple">
 								<!--</div>-->
 							</div>
 							<div class="col-md-7 modal_body_right">
@@ -489,6 +498,39 @@
 		</div>
 	</div>
 	<!-- //modify Good Modal-->
+	<!-- img Good Modal-->
+	<div class="modal video-modal fade" id="imgGoodModal" tabindex="-1" role="dialog" aria-labelledby="imgGoodModal">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				</div>
+				<section>
+					<div class="modal-body">
+						<div  class="teachers_banner">
+						    <div class="clearfix teachers_b" style="width:100%;">
+						        <div class="slide" id="slide">
+						            <ul id="imgs">
+						                <!-- <li> <img src="images/teacher01.jpg" alt="林奇涵" title=""> </li>
+						                <li> <img src="images/teacher02.jpg" alt="易星晨" title=""> </li>
+						                <li> <img src="images/teacher03.jpg" alt="曾海阳"  title=""> </li>
+						                <li> <img src="images/teacher04.jpg" alt="狄俊祺"  title=""> </li>
+						                <li> <img src="images/teacher05.jpg" alt="仲颖鸣" title="" /> </li>
+						                <li> <img src="images/teacher06.jpg" alt="徐晓磊" title="" /> </li> -->
+						            </ul>
+						            <div class="arrow">
+						                <div class="prev">&lt;</div>
+						                <div class="next">&gt;</div>
+						            </div>
+						        </div>
+						    </div>
+						</div>
+					</div>
+				</section>
+			</div>
+		</div>
+	</div>
+	<!-- //img Good Modal-->
 	<!-- //about --> 
 	<!-- newsletter -->
 	<div class="newsletter">
@@ -568,6 +610,7 @@
 	<script src="bootstrap/js/bootstrap.min.js"></script>
 	<script src="vendors/easypiechart/jquery.easy-pie-chart.js"></script>
 	<script src="assets/scripts.js"></script>
+	<script src="assets/urlproperties.js"></script>
 	<script>
         $(function() {
             // Easy pie charts
@@ -576,8 +619,117 @@
     			event.preventDefault();
     			$('html,body').animate({scrollTop:$(this.hash).offset().top},1000);
     		});
+            getGoodsList(1);
             getBrand();
+            getDegree();
+            
         });
+        $('#goodType').on('change',getAvgPrice);
+        $('#goodDegree').on('change',getAvgPrice);
+        
+        function getGoodsList(pageNum){
+        	$.ajax({
+        		type:"get",
+        		async:true,
+        		url:"../goods/list.action",
+        		dataType:"json",
+        		data:{
+        			pageNum:pageNum
+        		},
+        		success:function(data){
+        			console.log(data);
+        			if(data.status == 'success'){
+       					var rows = [];
+           				rows = data.data;
+           				var html = '';
+           				for(var i = 0 ; i < rows.length ; i++){
+           					html += '<tr>';
+           					html += '<td>'+rows[i].gId+'</td>';
+           					html += '<td><a href="javascript:showImg(\''+rows[i].gId+'\');">'+rows[i].gName+'</a></td>';
+           					html += '<td>'+rows[i].gBId.bDescribe+'</td>';
+           					html += '<td>'+rows[i].gPrice+'￥</td>';
+           					html += '<td>'+rows[i].gDeId.deDescribe+'</td>';
+           					if(rows[i].gSign == 0){
+           						html += '<td>未审核</td>';
+           						html += '<td>';
+           						html += '<button class="btn btn-xs btn-warning" data-toggle="modal" data-target="#modifyGoodModal">修改</button>';
+           						html += '</td>';
+           					}else if(rows[i].gSign == 1){
+           						html += '<td>已上架</td>';
+           						html += '<td>';
+           						html += '<button class="btn btn-xs btn-primary">下架</button>';
+           						html += '</td>';
+           					}else if(rows[i].gSign == 2){
+           						html += '<td>已锁定</td>';
+           						html += '<td>';
+           						html += '<button class="btn btn-xs btn-success">取消锁定</button>';
+           						html += '</td>';
+           					}else{
+           						html += '<td>已卖出</td>';
+           						html += '<td>';
+           						html += '<button class="btn btn-xs btn-danger">删除</button>';
+           						html += '</td>';
+           					}
+           				}
+           				$('#goodslist').empty().append(html);
+           				
+           				var pageHtml = '';
+           				if(data.pageTotal > 1){
+           					pageHtml += '<li><a href="javascript:getGoodsList('+(parseInt(data.pageNum)-1)+')">&laquo;</a></li>';
+               				pageHtml += '<li class="active"><a href="#">1</a></li>';
+           					for(var i = 2 ; i <= data.pageTotal ; i++){
+           						pageHtml += '<li><a href="javascript:getGoodsList('+i+')">'+i+'</a></li>';
+           					}
+           					if(pageNum <= pageTotal){
+	           					pageHtml += '<li><a href="javascript:getGoodsList('+(parseInt(data.pageNum)+1)+')">&raquo;</a></li>';
+           					}else{
+           						pageHtml += '<li><a href="#">&raquo;</a></li>';
+           					}
+           				}else{
+           					pageHtml += '<li><a>&laquo;</a></li>';
+               				pageHtml += '<li class="active"><a href="#">1</a></li>';
+               				pageHtml += '<li><a>&raquo;</a></li>';
+           				}
+           				$('#goodPage').empty().append(pageHtml);
+        			}else{
+        				//没有数据或服务器错误
+        				var htmlempty = '<tr><td colspan="7">暂无商品~</td></tr>';
+        				$('#goodslist').empty().append(htmlempty);
+        			}
+        		}
+        	});
+        }
+        
+        function showImg(id){
+        	$("#imgGoodModal").modal('show');
+        	$.ajax({
+        		type:"get",
+        		async:true,
+        		url:"../picture/getGoodsImg.action",
+        		dataType:"json",
+        		data:{
+        			pGId:id
+        		},
+        		success:function(data){
+        			console.log(data);
+        			if(data.status == 'success'){
+       					var rows = [];
+           				rows = data.piclist;
+           				var html = "";
+           				for(var i = 0 ; i < rows.length ; i++){
+           					html += '<li>';
+           					html += '<img src="'+rows[i].pUrl+'">';
+           					html += '</li>';
+           				}
+           				$('#imgs').empty().append(html);
+           				showImgs(rows.length);
+        			}else{
+        				//没有数据或服务器错误
+        			}
+        		}
+        	});
+        }
+        
         function getBrand(){
         	$.ajax({
         		type:"get",
@@ -600,6 +752,210 @@
         			}
         		}
         	});
+        }
+        function getDegree(){
+	       	$.ajax({
+	       		type:"get",
+	       		async:true,
+	       		url:"../degree/list.action",
+	       		dataType:"json",
+	       		data:{},
+	       		success:function(data){
+	       			console.log(data);
+	       			if(data.status == 'success'){
+	      					var rows = [];
+	          				rows = data.data;
+	          				var html = "";
+	          				for(var i = 0 ; i < rows.length ; i++){
+	          					html += '<option value="'+rows[i].deId+'">'+rows[i].deDescribe+'</option>';
+	          				}
+	          				$('#goodDegree').empty().append(html);
+	       			}else{
+	       				//没有数据或服务器错误
+	       			}
+	       		}
+	       	});
+        }
+        function getAvgPrice(){
+        	var bId = $('#goodType option:selected').val();
+        	var deId = $('#goodDegree option:selected').val();
+        	$.ajax({
+        		type:"get",
+        		async:true,
+        		url:"../goods/calAvgPrice.action",
+        		dataType:"json",
+        		data:{
+        			bId:bId,
+        			deId:deId
+        		},
+        		success:function(data){
+        			console.log(data);
+        			if(data.status == 'success'){
+        				if(data.showAvg){
+        					$('#avg').show();
+	        				$('#avgPrice').text(data.avgprice);
+        				}
+        			}else{
+        				//没有数据或服务器错误
+        				$('#avg').hide();
+        			}
+        		}
+        	});
+        }
+        function uploadImg(){
+        	var files = $('#uploadImgs')[0].files;
+        	if(files.length <= 5){
+        		for(var i=0;i<files.length;i++){
+            		var formData = new FormData();
+            		formData.append('file', files[i]);
+            		$.ajax({
+                        url: '../upload/uploadImg.action',
+                        type: 'POST',
+                        dataType:"json",
+                        async:false,
+                        cache: false,
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success:function(data){
+            				if(data.status == 'success'){
+            					//var re = new RegExp("\\", "g")
+            					var imgPath = data.data.replace(/\\/g,'/');
+            					$('#img'+i).attr('src', base + 'upload/readImg.action?name='+data.imgName);
+            				}else{
+            					alert(data.mes);
+            				}
+            			}
+                	});
+               	}	
+        	}else{
+       			$('#uploadImgs')[0].files = [];
+       			alert('最多可上传5张图片');
+        	}
+        	
+        }
+        function addGood(){
+        	var imgs = [];
+        	imgs.push($('#img0').attr('src'));
+        	imgs.push($('#img1').attr('src'));
+        	imgs.push($('#img2').attr('src'));
+        	imgs.push($('#img3').attr('src'));
+        	imgs.push($('#img4').attr('src'));
+        	
+        	var obj = {
+   				gName:$('#goodName').val(),
+   				gPrice:$('#goodPrice').val(),
+   				gDexcribe:$('#goodDes').val(),
+   				gBId:$('#goodType option:selected').val(),
+   				gDeId:$('#goodDegree option:selected').val(),
+   				gUId:'402881ed61d7ab130161d7ab16e60000',//Util.getSession('loginUser');
+   				gPicture:imgs
+   			}
+        	
+        	$.ajax({
+    			type:"post",
+    			async:true,
+    			url:"../goods/save.action",
+    			dataType:"json",
+    			data:{param:JSON.stringify(obj)},
+    			success:function(data){
+    				if(data.status == 'success'){
+    					$('#goodName').val('');
+    					$('#goodPrice').val('');
+    					$('#goodDes').val('');
+    					$('#img0').attr('src','images/default.png');
+    					$('#img1').attr('src','images/default.png');
+    					$('#img2').attr('src','images/default.png');
+    					$('#img3').attr('src','images/default.png');
+    					$('#img4').attr('src','images/default.png');
+    					$("#goodType option:first").prop("selected", 'selected');
+    					$("#goodDegree option:first").prop("selected", 'selected');
+    					$('#addGoodModal').modal('hide');
+    					getGoodsList(1);
+    				}else{
+    					alert(data.mes);
+    				}
+    			}
+    		});
+        }
+        function showImgs(num){
+        	/*图片位置数据*/
+        	var datas = [];
+        	if(num == 1){
+        		datas = [{'z-index': 6, opacity: 1, width: 660, height: 330, top: 40, left: 0}];
+        	}else if(num == 2){
+        		datas = [
+	    		    {'z-index': 6, opacity: 1, width: 660, height: 330, top: 40, left: 0},
+	        	    {'z-index': 4, opacity: 0.6, width: 560, height: 243, top:80, left: -50}
+    		    ]
+        	}else if(num == 3){
+        		datas = [
+					{'z-index': 6, opacity: 1, width: 660, height: 330, top: 40, left: 0},
+					{'z-index': 4, opacity: 0.6, width: 560, height: 243, top:80, left: -50},
+					{'z-index': 3, opacity: 0.4, width: 480, height: 203, top: -10, left: -25},
+       		    ]
+        	}else if(num == 4){
+        		datas = [
+					{'z-index': 6, opacity: 1, width: 660, height: 330, top: 40, left: 0},
+					{'z-index': 4, opacity: 0.6, width: 560, height: 243, top:80, left: -50},
+					{'z-index': 3, opacity: 0.4, width: 480, height: 203, top: -10, left: -25},
+					{'z-index': 2, opacity: 0.2, width: 620, height: 269, top: -60, left: 50},
+       		    ]
+        	}else{
+        		datas = [
+					{'z-index': 6, opacity: 1, width: 660, height: 330, top: 40, left: 0},
+					{'z-index': 4, opacity: 0.6, width: 560, height: 243, top:80, left: -50},
+					{'z-index': 3, opacity: 0.4, width: 480, height: 203, top: -10, left: -25},
+					{'z-index': 2, opacity: 0.2, width: 620, height: 269, top: -60, left: 50},
+					{'z-index': 3, opacity: 0.4, width: 480, height: 203,  top: -10, left: -150},
+				]
+        	}
+            move();
+
+            function move() {
+                /*图片分布*/
+                for (var i = 0; i < datas.length; i++) {
+                    var data = datas[i];
+                    $('#slide ul li').eq(i).css('z-index',data['z-index']);
+                    $('#slide ul li').eq(i).stop().animate(data, 1200);
+                }
+            }
+
+            /*左箭头事件*/
+            $('.prev').on('click', function () {
+                var last = datas.pop();
+                datas.unshift(last);
+
+                move();
+            })
+
+            /*右箭头事件处理函数*/
+            function nextYewu(){
+                var first = datas.shift();
+                datas.push(first);
+                move();
+            }
+            /*右箭头事件*/
+            $('.next').on('click', nextYewu);
+
+            /*自动播放*/
+            var timer = setInterval(function(){
+                nextYewu();
+            },5000);
+            /*鼠标进入slide显示箭头,清除自动播放*/
+            $('#slide').on({
+                mouseenter: function () {
+                    $('.arrow').css('display', 'block');
+                    clearInterval(timer);
+                }, mouseleave: function () {
+                    $('.arrow').css('display', 'none');
+                    /*鼠标离开时自动播放*/
+                    clearInterval(timer);
+                    timer = setInterval(function(){
+                        nextYewu();
+                    },5000)
+                }
+            })
         }
 	</script>
 	<!-- //cart-js --> 

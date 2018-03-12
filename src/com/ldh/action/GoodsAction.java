@@ -226,7 +226,6 @@ public class GoodsAction {
 		List<Object> list = new ArrayList<Object>();
 		List<Object> goodlist = goodsDao.list();//获取所有用户数据，不带分页
 		PageBean page=null;
-		
 		JSONObject jobj = new JSONObject();
 		if(goodlist.size()>0){
 			page = new PageBean(goodlist.size(),pageNum,5);
@@ -235,6 +234,10 @@ public class GoodsAction {
 				Goods obj = (Goods)temp;
 				Brand bObj = brandDao.getById(obj.getgBId().getbId());
 				Degree deObj = degreeDao.getById(obj.getgDeId().getDeId());
+//				List<Object> picList = pictureDao.getAllByConds("from Picture where pGId='"+obj.getgId()+"'");
+//				JSONObject tempObj = new JSONObject();
+//				tempObj.put("picList"+obj.getgId(), picList);
+//				list.add(tempObj);
 				obj.setgBId(bObj);
 				obj.setgDeId(deObj);
 			}
@@ -327,6 +330,29 @@ public class GoodsAction {
 			//save failed
 			jobj.put("mes", "获取失败!");
 			jobj.put("showAvg", false);
+			jobj.put("status", "error");
+		}
+		ServletActionContext.getResponse().setHeader("content-type", "text/html;charset=UTF-8");
+		ServletActionContext.getResponse().getWriter().write(jobj.toString());
+		return null;
+	}
+	
+	//后台对商品审核使用
+	@Action(value="updateToSign")
+	public String updateToSign() throws IOException{
+		String gId = ServletActionContext.getRequest().getParameter("gId");
+		int gSign = Integer.parseInt(ServletActionContext.getRequest().getParameter("gSign"));
+		Goods good = goodsDao.getById(gId);
+		good.setgSign(gSign);
+		
+		JSONObject jobj = new JSONObject();
+		if(goodsDao.update(good)){
+			//save success
+			jobj.put("mes", "更新成功!");
+			jobj.put("status", "success");
+		}else{
+			//save failed
+			jobj.put("mes", "更新失败!");
 			jobj.put("status", "error");
 		}
 		ServletActionContext.getResponse().setHeader("content-type", "text/html;charset=UTF-8");

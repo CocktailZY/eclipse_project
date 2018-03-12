@@ -132,6 +132,16 @@
     			if(data.status == 'success'){
    					var rows = [];
        				rows = data.data;
+       				for(var i = 0 ; i < rows.length ; i++){
+       					if(rows[i].uSign == 0){
+       						rows[i].uSign = '锁定';
+       					}else if(rows[i].uSign == 1){
+       						rows[i].uSign = '正常';
+       					}else{
+       						rows[i].uSign = '异常';
+       					}
+       					
+       				}
        				$('#dg').datagrid('loadData', rows);
     			}else{
     				//没有数据或服务器错误

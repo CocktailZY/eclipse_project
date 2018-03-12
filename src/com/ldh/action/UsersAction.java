@@ -57,6 +57,7 @@ public class UsersAction{
 			user.setuPassword(uPassword);
 			user.setuPhone(uPhone);
 			user.setuMail(uMail);
+			user.setuSign(1);
 			user.setuFraction(uFraction);
 			user.setuMoney(uMoney);
 			if(usersDao.save(user)){

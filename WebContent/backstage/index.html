@@ -260,25 +260,32 @@
 		function searchAll(){
 			var conds = {
 				gId:'',
-				gName:''
+				gName:'',
+				gUName:''
+				
 			}
 			if($('#code').textbox('getValue') != ''){
-				conds.uId = $('#code').textbox('getValue');
+				conds.gId = $('#code').textbox('getValue');
 			}else{
-				delete conds.uId;
+				delete conds.gId;
 			}
 			if($('#name').textbox('getValue') != ''){
-				conds.uName = $('#name').textbox('getValue');
+				conds.gName = $('#name').textbox('getValue');
 			}else{
-				delete conds.uName;
+				delete conds.gName;
 			}
-			if($('#code').textbox('getValue') == '' && $('#name').textbox('getValue') == ''){
+			if($('#UserName').textbox('getValue') != ''){
+				conds.gUName = $('#UserName').textbox('getValue');
+			}else{
+				delete conds.gUName;
+			}
+			if($('#code').textbox('getValue') == '' && $('#name').textbox('getValue') == '' && $('#UserName').textbox('getValue') == ''){
 				getData();
 			}
 			$.ajax({
 				type:"post",
 				async:true,
-				url:"../users/listByConds.action",
+				url:"../goods/listByConds.action",
 				dataType:"json",
 				data:{
 					conds:JSON.stringify(conds)

@@ -227,23 +227,25 @@ public class GoodsAction {
 		List<Object> goodlist = goodsDao.list();//获取所有用户数据，不带分页
 		PageBean page=null;
 		JSONObject jobj = new JSONObject();
+		List<Object> imgObj = new ArrayList();
 		if(goodlist.size()>0){
 			page = new PageBean(goodlist.size(),pageNum,5);
 			list = goodsDao.listAll(page);//带分页
-			for(Object temp : list){
-				Goods obj = (Goods)temp;
+			
+			for(int p = 0 ; p < list.size() ; p++){
+				Goods obj = (Goods)list.get(p);
 				Brand bObj = brandDao.getById(obj.getgBId().getbId());
 				Degree deObj = degreeDao.getById(obj.getgDeId().getDeId());
-//				List<Object> picList = pictureDao.getAllByConds("from Picture where pGId='"+obj.getgId()+"'");
-//				JSONObject tempObj = new JSONObject();
-//				tempObj.put("picList"+obj.getgId(), picList);
-//				list.add(tempObj);
+				List<Object> picList = pictureDao.getAllByConds("from Picture where pGId='"+obj.getgId()+"'");
+				imgObj.add(picList);
 				obj.setgBId(bObj);
 				obj.setgDeId(deObj);
 			}
+			
 			jobj.put("mes", "获取成功!");
 			jobj.put("status", "success");
 			jobj.put("data", JsonUtil.toJsonByListObj(list));
+			jobj.put("picList", imgObj);
 			jobj.put("pageTotal", page.getPageCount());
 			jobj.put("pageNum", page.getPageNum());
 		}else{

@@ -57,7 +57,7 @@
 								collapsible : false,
 								toolbar : '#tb',
 								pageSize : 10,
-								data : getData(),
+								/* data : getData(), */
 								columns : [ [ {
 									field : 'ck',
 									checkbox : true,
@@ -109,13 +109,11 @@
 								view : detailview,
 								detailFormatter : function(rowIndex, rowData) {
 									var htmlimg = '<table><tr><td rowspan=7 style="border:0">';
-									return '<table><tr>'
-											+ '<td rowspan=7 style="border:0"><img src="images/' + rowData.itemid + '.png" style="height:100px;">'
-											+ '<img src="' + rowData.gPicture + '" style="height:100px;">'
-											+ '<img src="images/' + rowData.itemid + '.png" style="height:100px;">'
-											+ '<img src="images/' + rowData.itemid + '.png" style="height:100px;">'
-											+ '<img src="images/' + rowData.itemid + '.png" style="height:100px;">'
-											+ '</td></tr></table>';
+									for(var img = 0 ; img < rowData.gPic.length ; img++){
+										htmlimg += '<img src="' + rowData.gPic[img].pUrl + '" style="height:100px;width:100px;margin-right:8px;">'
+									}
+									htmlimg += '</td></tr></table>';
+									return htmlimg;
 								}
 							}).datagrid('clientPaging');
 
@@ -146,6 +144,7 @@
 							rows[i].gBId = rows[i].gBId.bDescribe;
 							rows[i].gDeId = rows[i].gDeId.deDescribe;
 							rows[i].gUId = rows[i].gUId.uName;
+							rows[i].gPic = data.picList[i];
 						}
 						$('#tt').datagrid('loadData', rows);
 					} else {

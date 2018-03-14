@@ -22,6 +22,7 @@ import com.ldh.model.Brand;
 import com.ldh.model.Degree;
 import com.ldh.model.Goods;
 import com.ldh.model.Picture;
+import com.ldh.model.Users;
 import com.ldh.util.JsonUtil;
 import com.ldh.util.PageBean;
 
@@ -266,14 +267,31 @@ public class GoodsAction {
 	public String listByConds() throws IOException{
 		String jsonConds = ServletActionContext.getRequest().getParameter("conds");
 		JSONObject jsonObj = JSONObject.fromObject(jsonConds);
-		String hql = "from Goods where";
+		String uId = "";
+		String hql = "from Goods where 1=1 and ";
+		
 		Iterator<String> sIterator = jsonObj.keys();  
 		while(sIterator.hasNext()){  
 		    // 获得key  
-		    String key = sIterator.next();  
-		    // 根据key获得value, value也可以是JSONObject,JSONArray,使用对应的参数接收即可  
+		    String key = sIterator.next();
 		    String value = jsonObj.getString(key);
-		    hql+=key+"='"+value+"'and ";
+		    // 根据key获得value, value也可以是JSONObject,JSONArray,使用对应的参数接收即可  
+		    if("gUId".equals(key)){
+				List<Object> ulist = usersDao.getAllByConds("from Users where uName='"+value+"'");
+				if(ulist.size() > 0){
+					Users obj = (Users) ulist.get(0);
+					if(obj != null){
+						value = obj.getuId();
+						hql+=key+"='"+value+"'and ";
+					}else{
+						//没有查出用户
+						continue;
+					}
+				}
+				
+		    }else if("gName".equals(key) || "gId".equals(key)){
+		    	hql+=key+"='"+value+"'and ";
+		    }
 //		    System.out.println("key: "+key+",value"+value);  
 		} 
 		//分页
@@ -286,23 +304,41 @@ public class GoodsAction {
 		if(hql.lastIndexOf("and ") != -1){
 			hql = hql.substring(0, hql.lastIndexOf("and "));
 		}
-		List<Object> goodlist = goodsDao.getAllByConds(hql);//获取所有用户数据，不带分页
+		JSONObject jobj = new JSONObject();
+		if(!"from Goods where 1=1 ".equals(hql)){
+			List<Object> goodlist = goodsDao.getAllByConds(hql);//获取所有用户数据，不带分页
+			List<Object> imgObj = new ArrayList();
+			for(int p = 0 ; p < goodlist.size() ; p++){
+				Goods obj = (Goods)goodlist.get(p);
+				Brand bObj = brandDao.getById(obj.getgBId().getbId());
+				Degree deObj = degreeDao.getById(obj.getgDeId().getDeId());
+				List<Object> picList = pictureDao.getAllByConds("from Picture where pGId='"+obj.getgId()+"'");
+				imgObj.add(picList);
+				obj.setgBId(bObj);
+				obj.setgDeId(deObj);
+			}
+			if(goodlist.size() > 0){
+				//save success
+				jobj.put("mes", "获取成功!");
+				jobj.put("status", "success");
+				jobj.put("data", JsonUtil.toJsonByListObj(goodlist));
+				jobj.put("picList", imgObj);
+			}else{
+				//save failed
+				jobj.put("mes", "获取失败!");
+				jobj.put("status", "error");
+			}
+		}else{
+			jobj.put("mes", "该用户不存在或没有发布商品!");
+			jobj.put("status", "error");
+		}
+		
 //		PageBean page=null;
 //		if(userlist.size()>0){
 //			page = new PageBean(userlist.size(),pageNum,5);
 //			list = usersDao.getByConds(hql,page);//带分页
 //		}
-		JSONObject jobj = new JSONObject();
-		if(goodlist.size() > 0){
-			//save success
-			jobj.put("mes", "获取成功!");
-			jobj.put("status", "success");
-			jobj.put("data", JsonUtil.toJsonByListObj(goodlist));
-		}else{
-			//save failed
-			jobj.put("mes", "获取失败!");
-			jobj.put("status", "error");
-		}
+		
 		ServletActionContext.getResponse().setHeader("content-type", "text/html;charset=UTF-8");
 		ServletActionContext.getResponse().getWriter().write(jobj.toString());
 		return null;

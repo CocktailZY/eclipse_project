@@ -19,15 +19,15 @@
 				data-options="iconCls:'icon-add'" onclick="appendFunc()">通过</a> <a
 				href="javascript:void(0)" class="easyui-linkbutton"
 				data-options="iconCls:'icon-undo'" onclick="rejectFunc()">拒绝</a>
-			商品编码: <input class="easyui-textbox" type="text" name="code"
+			商品编码: <input class="easyui-textbox" type="text" name="code" id="code"
 				style="width: 166px; height: 35px; line-height: 35px;"></input>
-			商品名称: <input class="easyui-textbox" type="text" name="name"
+			商品名称: <input class="easyui-textbox" type="text" name="name" id="name"
 				style="width: 166px; height: 35px; line-height: 35px;"></input>
-			用户名称: <input class="easyui-textbox" type="text" name="UserName"
+			用户名称: <input class="easyui-textbox" type="text" name="UserName" id="username"
 				style="width: 166px; height: 35px; line-height: 35px;"></input> <a
-				href="#" class="easyui-linkbutton" iconCls="icon-search"
+				href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search"
 				data-options="selected:true" onclick="searchAll()">查询</a> <a
-				href="#" class="easyui-linkbutton" iconCls="icon-reload"
+				href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-reload"
 				onclick="resetsearch()">重置</a>
 		</div>
 	</div>
@@ -168,11 +168,72 @@
 				return indexs;
 			}
 		});
-		function resetsearch() {
-			$("#code").textbox('setValue', '');
-			$("#name").textbox('setValue', '');
-			getData();
-		}
+		function resetsearch(){
+	    	$("#code").textbox('setValue','');
+	    	$("#name").textbox('setValue','');
+	    	$("#username").textbox('setValue','');
+	    	getData();
+	    }
+		function searchAll(){
+	    	var conds = {
+	    		gId:'',
+	    		gName:'',
+	    		gUId:''
+	    	}
+	    	if($('#code').textbox('getValue') != ''){
+	    		conds.gId = $('#code').textbox('getValue');
+	    	}else{
+	    		delete conds.gId;
+	    	}
+	    	if($('#name').textbox('getValue') != ''){
+	    		conds.gName = $('#name').textbox('getValue');
+	    	}else{
+	    		delete conds.gName;
+	    	}
+	    	if($('#username').textbox('getValue') != ''){
+	    		conds.gUId = $('#username').textbox('getValue');
+	    	}else{
+	    		delete conds.gUId;
+	    	}
+	    	if($('#code').textbox('getValue') == '' && $('#name').textbox('getValue') == ''&& $('#username').textbox('getValue') == ''){
+	    		getData();
+	    	}
+	    	$.ajax({
+				type:"post",
+				async:true,
+				url:"../goods/listByConds.action",
+				dataType:"json",
+				data:{
+					conds:JSON.stringify(conds)
+				},
+				success:function(data){
+					if(data.status == 'success'){
+						var rows = [];
+	       				rows = data.data;
+	       				for(var i = 0 ; i < rows.length ; i++){
+	       					if(rows[i].gSign == 0){
+	       						rows[i].gSign = '未审核';
+	       					}else if(rows[i].gSign == 1){
+	       						rows[i].gSign = '已通过';
+	       					}else if(rows[i].gSign == 2){
+	       						rows[i].gSign = '待付款';
+	       					}else{
+	       						rows[i].gSign = '处理完成';
+	       					}
+	       					
+	       					rows[i].gBId = rows[i].gBId.bDescribe;
+	       					rows[i].gDeId = rows[i].gDeId.deDescribe;
+	       					rows[i].gUId = rows[i].gUId.uName;
+	       					rows[i].gPic = data.picList[i];
+	       				}
+	       				$('#tt').datagrid('loadData', rows);
+					}else{
+						resetsearch();
+						alert(data.mes);
+					}
+				}
+			});
+	    }
 		function appendFunc() {
 			$.messager.defaults = {
 				ok : '确定',

@@ -123,4 +123,58 @@ public class UsersDaoImpl implements IUsersDao {
 		return list;
 	}
 
+	@Override
+	public Users money(String id, String change,int sign) {
+		Session session = sessionFactory.openSession();
+		Users dto = (Users)session.get(Users.class, id);
+		double money = Double.parseDouble(dto.getuMoney());
+		String uMoney ;
+		//Sign ==1,代表充值操作，正在进行充值
+		if(sign == 1){
+			uMoney = String.valueOf ( money + Double.parseDouble(change) );
+			dto.setuMoney(uMoney);
+		}else if(sign == 2){
+		//Sign ==2，代表消费操作，正在进行消费
+			if(money - Double.parseDouble(change) < 0){
+				//提示余额不足，跳转到充值页面
+			}else{
+				uMoney = String.valueOf ( money - Double.parseDouble(change) );
+				dto.setuMoney(uMoney);
+			}
+			
+		}
+		session.close();
+		return dto;
+	}
+	
+	@Override
+	public Users fraction(String id,int sign) {
+		Session session = sessionFactory.openSession();
+		Users dto = (Users)session.get(Users.class, id);
+		double fraction = Double.parseDouble(dto.getuFraction());
+		String uFraction = dto.getuFraction() ;
+		//Sign ==1,代表完成订单，信用增加
+		if(sign == 1){
+			if(fraction <100){
+				uFraction = String.valueOf ( fraction + 5 );
+				dto.setuFraction(uFraction);
+			}else{
+				dto.setuFraction(uFraction);
+			}
+			
+		}else if(sign == 2){
+		//Sign ==2，代表消费操作，正在进行消费
+			if( (fraction-10) <30 ){
+				dto.setuSign(0);
+				//提示余额不足，跳转到充值页面
+			}else{
+				uFraction = String.valueOf ( fraction - 10 );
+				dto.setuFraction(uFraction);
+			}
+			
+		}
+		session.close();
+		return dto;
+	}
+
 }

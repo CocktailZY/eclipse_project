@@ -60,5 +60,18 @@ public interface IUsersDao {
 	 * @return
 	 */
 	public List<Object> getAllByConds(String hql);
+	
+	/**
+	 * 充值与消费
+	 * @param id
+	 * @return
+	 */
+	public Users money(String id,String change,int sign);
+	/**
+	 * 信用增减
+	 * @param id
+	 * @return
+	 */
+	public Users fraction(String id,int sign);
 
 }

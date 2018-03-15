@@ -76,11 +76,11 @@
 									<div class="tab-1 resp-tab-content" aria-labelledby="tab_item-0">
 										<div class="facts">
 											<div class="register">
-												<form action="#" method="post">			
-													<input name="Email" placeholder="用户名" type="text" required="">						
-													<input name="Password" placeholder="密码" type="password" required="">										
+												<form>			
+													<input name="Email" id="uname" placeholder="用户名" type="text" required="">						
+													<input name="Password" placeholder="密码" id="pwd" type="password" required="">										
 													<div class="sign-up">
-														<input type="submit" value="登录"/>
+														<input type="button" class="login_btn" value="登录" onclick="tologin()"/>
 													</div>
 												</form>
 											</div>
@@ -586,47 +586,86 @@
 <script src="assets/scripts.js"></script>
 <script src="assets/urlproperties.js"></script>
 <script type="text/javascript" src="../backstage/lib/custom/util.js"></script>
+<script src="js/loginutil.js"></script>
 <script>
 	var uId;
     $(function() {
         // Easy pie charts
         $('.chart').easyPieChart({animate: 1000});
+        if(Util.getSession('login_user')){
+			var loginUser = JSON.parse(Util.getSession("login_user"));
+			$('.w3l_login').empty().html('<div style="height:50px;line-height: 50px;font-size: large;">欢迎您! '+loginUser.uName+'&nbsp;&nbsp;&nbsp;&nbsp;<button class="btn btn-sm btn-info" onclick="loginout()">注销</button></div>');
+			$('.w3l_logo').css('margin-left','15em');
+		}
+        getGoodsBrand();
         getData();
-        function getData(){
-        	var conds = {
-            		uName:'admin1'//Util.getSession("loginUser")
-            	};
-        	$.ajax({
-        		type:"get",
-        		async:true,
-        		url:"../users/listByConds.action",
-        		dataType:"json",
-        		data:{
-        			conds:JSON.stringify(conds)
-        		},
-        		success:function(data){
-        			console.log(data);
-        			if(data.status == 'success'){
-       					var userinfo = data.data[0];
-       					uId = userinfo.uId;
-       					$('#inputEmail3').text(userinfo.uName);
-       					$('#inputPassword3').val(userinfo.uPassword);
-       					$('#inputEmail4').val(userinfo.uPhone);
-       					$('#inputEmail5').val(userinfo.uMail);
-       					$('#inputEmail6').text(userinfo.uFraction);
-       					if(userinfo.uPicture){
-       						$('#headImg').attr('src',userinfo.uPicture);
-       					}else{
-       						$('#headImg').attr('src','images/default.png');
-       					}
-       					//$('#yue').text(userinfo.uMoney);
-        			}else{
-        				//没有数据或服务器错误
-        			}
-        		}
-        	});
-        };
     });
+    
+    function getGoodsBrand(){
+		$.ajax({
+			type : "get",
+			async : true,
+			url : "../brand/list.action",
+			dataType : "json",
+			data : {},
+			success : function(data) {
+				console.log(data);
+				if (data.status == 'success') {
+					var rows = [];
+					rows = data.data;
+					var html ='';
+					for (var i = 0; i < rows.length; i++) {
+						html += '<div class="col-sm-2"><ul class="multi-column-dropdown">';
+						html += '<h6 onclick="tosearch(\''+rows[i].bId+'\')">'+rows[i].bDescribe+'</h6>';
+						html += '</ul></div>';
+					}
+					html += '<div class="clearfix"></div>';
+					$('#index-brand').empty().html(html);
+				} else {
+					//没有数据或服务器错误
+				}
+			}
+		});
+	}
+	
+	function tosearch(bId){
+		window.location.href = 'search.html?bId='+bId;
+	}
+    
+    function getData(){
+    	var conds = {
+        		uName:'admin1'//Util.getSession("loginUser")
+        	};
+    	$.ajax({
+    		type:"get",
+    		async:true,
+    		url:"../users/listByConds.action",
+    		dataType:"json",
+    		data:{
+    			conds:JSON.stringify(conds)
+    		},
+    		success:function(data){
+    			console.log(data);
+    			if(data.status == 'success'){
+   					var userinfo = data.data[0];
+   					uId = userinfo.uId;
+   					$('#inputEmail3').text(userinfo.uName);
+   					$('#inputPassword3').val(userinfo.uPassword);
+   					$('#inputEmail4').val(userinfo.uPhone);
+   					$('#inputEmail5').val(userinfo.uMail);
+   					$('#inputEmail6').text(userinfo.uFraction);
+   					if(userinfo.uPicture){
+   						$('#headImg').attr('src',userinfo.uPicture);
+   					}else{
+   						$('#headImg').attr('src','images/default.png');
+   					}
+   					//$('#yue').text(userinfo.uMoney);
+    			}else{
+    				//没有数据或服务器错误
+    			}
+    		}
+    	});
+    };
     function editUserInfo(){
 		$('#inputPassword3').removeAttr('readonly').attr('type','text').focus();
 		$('#inputEmail4').removeAttr('readonly');

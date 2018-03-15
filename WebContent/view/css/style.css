@@ -369,9 +369,9 @@ p.sbmincart-empty-text {
 ul.multi-column-dropdown h6 {
     font-size: 1.5em; 
     color:#3c43a4;
-    margin: 0 0 1em;
+    /* margin: 0 0 1em;
     padding-bottom: 1em;
-    border-bottom: 1px solid #E4E4E4;
+    border-bottom: 1px solid #E4E4E4; */
     text-transform: capitalize;
 }
 .multi-column-dropdown li {
@@ -5023,4 +5023,16 @@ td.invert-image a img {
     overflow: hidden;
     width:80px;
     height: 40px;
+}
+/* login btn */
+.login_btn{
+	outline: none;
+    border: none;
+    background: #212121;
+    padding: 10px 0;
+    color: #fff;
+    width: 40%;
+    font-size: 1em;
+    text-transform: uppercase;
+    margin: 2em 0 0;
 }

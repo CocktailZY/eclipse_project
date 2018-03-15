@@ -28,8 +28,8 @@ public class LoginAction {
 	public IUsersDao getUsersDao() {
 		return usersDao;
 	}
-	@Resource(name="UserDao")
-	public void setUserDao(IUsersDao usersDao) {
+	@Resource(name="UsersDao")
+	public void setUsersDao(IUsersDao usersDao) {
 		this.usersDao = usersDao;
 	}
 	
@@ -42,28 +42,29 @@ public class LoginAction {
 	public String login() throws IOException{
 		String username = ServletActionContext.getRequest().getParameter("username");
 		String password = ServletActionContext.getRequest().getParameter("password");
-		String hql = "from Users where username="+username+" and password="+password;
+		String hql = "from Users where uName='"+username+"' and uPassword='"+password+"'";
 		List<Object> list = usersDao.getAllByConds(hql);
+		JSONObject jobj = new JSONObject();
 		if(list.size() > 0){
 			Users loginUser = (Users) list.get(0);
 			//user exist
 			ServletActionContext.getRequest().getSession().setAttribute("login_user",loginUser);
-			JSONObject jobj = JSONObject.fromObject("{mes:\'用户存在!\',status:\'success\',user:"+loginUser+"}");
-			ServletActionContext.getResponse().setHeader("content-type", "text/html;charset=UTF-8");
-			ServletActionContext.getResponse().getWriter().write(jobj.toString());
+			jobj.put("mes","用户存在!");
+			jobj.put("status", "success");
+			jobj.put("user", loginUser);
 		}else{
 			//user not exist or password is not right
-			List<Object> templist = usersDao.getAllByConds("from Users where username="+username);
+			List<Object> templist = usersDao.getAllByConds("from Users where uName='"+username+"'");
 			if(list.size() > 0){
-				JSONObject jobj = JSONObject.fromObject("{mes:\'密码不正确!\',status:\'failed\'}");
-				ServletActionContext.getResponse().setHeader("content-type", "text/html;charset=UTF-8");
-				ServletActionContext.getResponse().getWriter().write(jobj.toString());
+				jobj.put("mes","密码不正确!");
+				jobj.put("status", "failed");
 			}else{
-				JSONObject jobj = JSONObject.fromObject("{mes:\'用户不存在!\',status:\'failed\'}");
-				ServletActionContext.getResponse().setHeader("content-type", "text/html;charset=UTF-8");
-				ServletActionContext.getResponse().getWriter().write(jobj.toString());
+				jobj.put("mes","用户不存在!");
+				jobj.put("status", "failed");
 			}
 		}
+		ServletActionContext.getResponse().setHeader("content-type", "text/html;charset=UTF-8");
+		ServletActionContext.getResponse().getWriter().write(jobj.toString());
 		return null;
 	}
 	
@@ -106,5 +107,5 @@ public class LoginAction {
 		
 		return null;
 	}
-
+	
 }

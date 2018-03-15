@@ -73,6 +73,11 @@
 	    		}
 			});
 		});
+		if(Util.getSession('login_user')){
+			var loginUser = JSON.parse(Util.getSession("login_user"));
+			$('.w3l_login').empty().html('<div style="height:50px;line-height: 50px;font-size: large;">欢迎您! '+loginUser.uName+'&nbsp;&nbsp;&nbsp;&nbsp;<button class="btn btn-sm btn-info" onclick="loginout()">注销</button></div>');
+			$('.w3l_logo').css('margin-left','15em');
+		}
 //        scrollBottomTest =function() {
 //            $("#contain").scroll(function () {
 //                var viewH = $(this).height();//可见高度
@@ -90,7 +95,40 @@
 //            });
 //        };
 //        scrollBottomTest();
+		getGoodsBrand();
 	});
+	
+	function getGoodsBrand(){
+		$.ajax({
+			type : "get",
+			async : true,
+			url : "../brand/list.action",
+			dataType : "json",
+			data : {},
+			success : function(data) {
+				console.log(data);
+				if (data.status == 'success') {
+					var rows = [];
+					rows = data.data;
+					var html ='';
+					for (var i = 0; i < rows.length; i++) {
+						html += '<div class="col-sm-2"><ul class="multi-column-dropdown">';
+						html += '<h6 onclick="tosearch(\''+rows[i].bId+'\')">'+rows[i].bDescribe+'</h6>';
+						html += '</ul></div>';
+					}
+					html += '<div class="clearfix"></div>';
+					$('#index-brand').empty().html(html);
+				} else {
+					//没有数据或服务器错误
+				}
+			}
+		});
+	}
+	
+	function tosearch(bId){
+		window.location.href = 'search.html?bId='+bId;
+	}
+	
 </script>
 <!-- //end-smooth-scrolling --> 
 </head> 
@@ -121,11 +159,11 @@
 									<div class="tab-1 resp-tab-content" aria-labelledby="tab_item-0">
 										<div class="facts">
 											<div class="register">
-												<form action="#" method="post">			
-													<input name="Email" placeholder="用户名" type="text" required="">						
-													<input name="Password" placeholder="密码" type="password" required="">										
+												<form>			
+													<input name="Email" id="uname" placeholder="用户名" type="text" required="">						
+													<input name="Password" placeholder="密码" id="pwd" type="password" required="">										
 													<div class="sign-up">
-														<input type="submit" value="登录"/>
+														<input type="button" class="login_btn" value="登录" onclick="tologin()"/>
 													</div>
 												</form>
 											</div>
@@ -273,65 +311,8 @@
 						<li class="dropdown">
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown">所有分类 <b class="caret"></b></a>
 							<ul class="dropdown-menu multi-column columns-3">
-								<div class="row">
-									<div class="col-sm-2">
-										<ul class="multi-column-dropdown">
-											<h6>苹果</h6>
-											<li><a href="products.html">iPhone</a></li>
-											<li><a href="products.html">iPad<!--<span>New</span>--></a></li> 
-											<li><a href="products.html">Earphone</a></li>
-											<li><a href="products.html">iPod</a></li>
-										</ul>
-									</div>
-									<div class="col-sm-2">
-										<ul class="multi-column-dropdown">
-											<h6>三星</h6>
-											<li><a href="products1.html">Note</a></li>
-											<li><a href="products1.html">Galaxy</a></li>
-											<li><a href="products1.html">Pad</a></li>
-										</ul>
-									</div>
-									<div class="col-sm-2">
-										<ul class="multi-column-dropdown">
-											<h6>OPPO</h6>
-											<li><a href="products.html">iPhone</a></li>
-											<li><a href="products.html">iPad<!--<span>New</span>--></a></li> 
-											<li><a href="products.html">Earphone</a></li>
-											<li><a href="products.html">iPod</a></li>
-										</ul>
-									</div>
-									<div class="col-sm-2">
-										<ul class="multi-column-dropdown">
-											<h6>VIVO</h6>
-											<li><a href="products1.html">Note</a></li>
-											<li><a href="products1.html">Galaxy</a></li>
-											<li><a href="products1.html">Pad</a></li>
-										</ul>
-									</div>
-									<div class="col-sm-2">
-										<ul class="multi-column-dropdown">
-											<h6>小米</h6>
-											<li><a href="products.html">iPhone</a></li>
-											<li><a href="products.html">iPad<!--<span>New</span>--></a></li> 
-											<li><a href="products.html">Earphone</a></li>
-											<li><a href="products.html">iPod</a></li>
-										</ul>
-									</div>
-									<div class="col-sm-2">
-										<ul class="multi-column-dropdown">
-											<h6>其他</h6>
-											<li><a href="products1.html">Note</a></li>
-											<li><a href="products1.html">Galaxy</a></li>
-											<li><a href="products1.html">Pad</a></li>
-										</ul>
-									</div>
-									<!--<div class="col-sm-4">
-										<div class="w3ls_products_pos">
-											<h4>Electronic Store<i></i></h4>
-											<img src="images/1.jpg" alt=" " class="img-responsive" />
-										</div>
-									</div>-->
-									<div class="clearfix"></div>
+								<div class="row" id="index-brand">
+									
 								</div>
 							</ul>
 						</li>
@@ -2104,12 +2085,14 @@
 	<!-- //footer --> 
 	<!-- cart-js -->
 	<script src="js/minicart.js"></script>
+	<script type="text/javascript" src="../backstage/lib/custom/util.js"></script>
+	<script src="js/loginutil.js"></script>
 	<script>
         w3ls.render();
 
         w3ls.cart.on('w3sb_checkout', function (evt) {
         	var items, len, i;
-
+			alert('submit');
         	if (this.subtotal() > 0) {
         		items = this.items();
 

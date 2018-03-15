@@ -28,13 +28,53 @@
 <script type="text/javascript" src="js/bootstrap-3.1.1.min.js"></script>
 <!-- //for bootstrap working -->
 <!-- start-smooth-scrolling -->
+<script src="../backstage/lib/custom/util.js"></script>
+<script src="js/loginutil.js"></script>
 <script type="text/javascript">
 	jQuery(document).ready(function($) {
 		$(".scroll").click(function(event){		
 			event.preventDefault();
 			$('html,body').animate({scrollTop:$(this.hash).offset().top},1000);
 		});
+		if(Util.getSession('login_user')){
+			var loginUser = JSON.parse(Util.getSession("login_user"));
+			$('.w3l_login').empty().html('<div style="height:50px;line-height: 50px;font-size: large;">欢迎您! '+loginUser.uName+'&nbsp;&nbsp;&nbsp;&nbsp;<button class="btn btn-sm btn-info" onclick="loginout()">注销</button></div>');
+			$('.w3l_logo').css('margin-left','15em');
+		}
+		getGoodsBrand();
 	});
+	
+	function getGoodsBrand(){
+		$.ajax({
+			type : "get",
+			async : true,
+			url : "../brand/list.action",
+			dataType : "json",
+			data : {},
+			success : function(data) {
+				console.log(data);
+				if (data.status == 'success') {
+					var rows = [];
+					rows = data.data;
+					var html ='';
+					for (var i = 0; i < rows.length; i++) {
+						html += '<div class="col-sm-2"><ul class="multi-column-dropdown">';
+						html += '<h6 onclick="tosearch(\''+rows[i].bId+'\')">'+rows[i].bDescribe+'</h6>';
+						html += '</ul></div>';
+					}
+					html += '<div class="clearfix"></div>';
+					$('#index-brand').empty().html(html);
+				} else {
+					//没有数据或服务器错误
+				}
+			}
+		});
+	}
+	
+	function tosearch(bId){
+		window.location.href = 'search.html?bId='+bId;
+	}
+	
 </script>
 <!-- //end-smooth-scrolling --> 
 </head> 
@@ -180,59 +220,7 @@
 						<li class="dropdown">
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown">所有分类 <b class="caret"></b></a>
 							<ul class="dropdown-menu multi-column columns-3">
-								<div class="row">
-									<div class="col-sm-2">
-										<ul class="multi-column-dropdown">
-											<h6>苹果</h6>
-											<li><a href="products.html">iPhone</a></li>
-											<li><a href="products.html">iPad<!--<span>New</span>--></a></li> 
-											<li><a href="products.html">Earphone</a></li>
-											<li><a href="products.html">iPod</a></li>
-										</ul>
-									</div>
-									<div class="col-sm-2">
-										<ul class="multi-column-dropdown">
-											<h6>三星</h6>
-											<li><a href="products1.html">Note</a></li>
-											<li><a href="products1.html">Galaxy</a></li>
-											<li><a href="products1.html">Pad</a></li>
-										</ul>
-									</div>
-									<div class="col-sm-2">
-										<ul class="multi-column-dropdown">
-											<h6>OPPO</h6>
-											<li><a href="products.html">iPhone</a></li>
-											<li><a href="products.html">iPad<!--<span>New</span>--></a></li> 
-											<li><a href="products.html">Earphone</a></li>
-											<li><a href="products.html">iPod</a></li>
-										</ul>
-									</div>
-									<div class="col-sm-2">
-										<ul class="multi-column-dropdown">
-											<h6>VIVO</h6>
-											<li><a href="products1.html">Note</a></li>
-											<li><a href="products1.html">Galaxy</a></li>
-											<li><a href="products1.html">Pad</a></li>
-										</ul>
-									</div>
-									<div class="col-sm-2">
-										<ul class="multi-column-dropdown">
-											<h6>小米</h6>
-											<li><a href="products.html">iPhone</a></li>
-											<li><a href="products.html">iPad<!--<span>New</span>--></a></li> 
-											<li><a href="products.html">Earphone</a></li>
-											<li><a href="products.html">iPod</a></li>
-										</ul>
-									</div>
-									<div class="col-sm-2">
-										<ul class="multi-column-dropdown">
-											<h6>其他</h6>
-											<li><a href="products1.html">Note</a></li>
-											<li><a href="products1.html">Galaxy</a></li>
-											<li><a href="products1.html">Pad</a></li>
-										</ul>
-									</div>
-									<div class="clearfix"></div>
+								<div class="row" id="index-brand">
 								</div>
 							</ul>
 						</li>

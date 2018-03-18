@@ -53,6 +53,36 @@ public class OrderInfoAction {
 		this.addressDao = addressDao;
 	}
 	
+	//页面传参
+	private String good_id;//商品id
+	private String good_price;//商品价格
+	private String good_total;//商品总计
+	private String good_num;//商品数量
+	
+	public String getGood_id() {
+		return good_id;
+	}
+	public void setGood_id(String good_id) {
+		this.good_id = good_id;
+	}
+	public String getGood_price() {
+		return good_price;
+	}
+	public void setGood_price(String good_price) {
+		this.good_price = good_price;
+	}
+	public String getGood_total() {
+		return good_total;
+	}
+	public void setGood_total(String good_total) {
+		this.good_total = good_total;
+	}
+	public String getGood_num() {
+		return good_num;
+	}
+	public void setGood_num(String good_num) {
+		this.good_num = good_num;
+	}
 	/**
 	 * 保存订单信息
 	 * @return

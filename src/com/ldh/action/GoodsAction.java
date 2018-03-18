@@ -201,12 +201,16 @@ public class GoodsAction {
 	public String getById() throws IOException{
 		String gId = ServletActionContext.getRequest().getParameter("gId");
 		Goods good = goodsDao.getById(gId);
+		List<Object> picList = pictureDao.getAllByConds("from Picture where pGId='"+gId+"'");
+		good.setgUId(usersDao.getById(good.getgUId().getuId()));
+		good.setgDeId(degreeDao.getById(good.getgDeId().getDeId()));
 		JSONObject jobj = new JSONObject();
 		if(good != null){
 			//save success
 			jobj.put("mes", "获取成功!");
 			jobj.put("status", "success");
 			jobj.put("good", good);
+			jobj.put("pic", picList.get(0));
 		}else{
 			//save failed
 			jobj.put("mes", "获取失败!");

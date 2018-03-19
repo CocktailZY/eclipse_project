@@ -210,7 +210,7 @@ public class GoodsAction {
 			jobj.put("mes", "获取成功!");
 			jobj.put("status", "success");
 			jobj.put("good", good);
-			jobj.put("pic", picList.get(0));
+			jobj.put("pic", picList);
 		}else{
 			//save failed
 			jobj.put("mes", "获取失败!");

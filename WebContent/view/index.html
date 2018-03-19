@@ -272,7 +272,7 @@
 			success : function(data) {
 				console.log(data);
 				if (data.status == 'success') {
-					$('#good-modal-img').empty().html('<img src="'+data.pic.pUrl+'" alt=" " class="img-responsive" style="width:255px;height:340px;"/>');
+					$('#good-modal-img').empty().html('<img src="'+data.pic[0].pUrl+'" alt=" " class="img-responsive" style="width:255px;height:340px;"/>');
 					var html = '';
 					html += '<h4>'+data.good.gName+'</h4>';
 					html += '<p style="width:80%;word-wrap:break-word;">'+data.good.gDescribe+'</p>';

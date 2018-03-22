@@ -26,6 +26,7 @@ public class OrderDetails implements Serializable {
 	private Goods dGId;
 	private Express dExId;
 	private OrderInfo dOId;
+	private Users dUId;
 	
 	@Id
 	@GenericGenerator(name="systemUUID",strategy="uuid")
@@ -47,6 +48,14 @@ public class OrderDetails implements Serializable {
 	}
 	public void setdNumber(String dNumber) {
 		this.dNumber = dNumber;
+	}
+	@ManyToOne(cascade={CascadeType.MERGE})
+	@JoinColumn(name="dUId",referencedColumnName="uId",insertable=false, updatable=false)
+	public Users getdUId() {
+		return dUId;
+	}
+	public void setdUId(Users dUId) {
+		this.dUId = dUId;
 	}
 	@ManyToOne(cascade={CascadeType.MERGE})
 	@JoinColumn(name="dGId",referencedColumnName="gId",insertable=false, updatable=false)

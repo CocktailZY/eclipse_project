@@ -15,8 +15,8 @@ import com.ldh.dao.IExpressDao;
 import com.ldh.dao.IGoodsDao;
 import com.ldh.dao.IOrderDetailsDao;
 import com.ldh.dao.IOrderInfoDao;
+import com.ldh.dao.IUsersDao;
 import com.ldh.model.OrderDetails;
-import com.ldh.model.OrderInfo;
 import com.ldh.util.JsonUtil;
 
 import net.sf.json.JSONObject;
@@ -31,6 +31,7 @@ public class OrderDetailsAction {
 	private IGoodsDao goodsDao;
 	private IExpressDao expressDao;
 	private IOrderInfoDao orderInfoDao;
+	private IUsersDao usersDao;
 	
 	public IOrderDetailsDao getOrderDetailsDao() {
 		return orderDetailsDao;
@@ -64,6 +65,14 @@ public class OrderDetailsAction {
 		this.orderInfoDao = orderInfoDao;
 	}
 	
+	public IUsersDao getUsersDao() {
+		return usersDao;
+	}
+	@Resource(name="UsersDao")
+	public void UsersDao(IUsersDao usersDao) {
+		this.usersDao = usersDao;
+	}
+	
 	
 	/**
 	 * 保存订单详情信息
@@ -77,6 +86,7 @@ public class OrderDetailsAction {
 		String dGId = ServletActionContext.getRequest().getParameter("dGId");
 		String dExId = ServletActionContext.getRequest().getParameter("dExId");
 		String dOId = ServletActionContext.getRequest().getParameter("dOId");
+		String dUId = ServletActionContext.getRequest().getParameter("dUId");
 		
 		OrderDetails orderDetails = new OrderDetails();
 		
@@ -85,6 +95,7 @@ public class OrderDetailsAction {
 		orderDetails.setdGId(goodsDao.getById(dGId));
 		orderDetails.setdExId(expressDao.getById(dExId));
 		orderDetails.setdOId(orderInfoDao.getById(dOId));
+		orderDetails.setdUId(usersDao.getById(dUId));
 		JSONObject jobj = new JSONObject();
 		if(orderDetailsDao.save(orderDetails)){
 			//save success

@@ -310,7 +310,7 @@ public class GoodsAction {
 			hql = hql.substring(0, hql.lastIndexOf("and "));
 		}
 		JSONObject jobj = new JSONObject();
-		if(!"from Goods where 1=1 ".equals(hql)){
+		if(!"from Goods where 1=1 and gSign IN (1,2) ".equals(hql)){
 			List<Object> goodlist = goodsDao.getAllByConds(hql);//获取所有用户数据，不带分页
 			List<Object> imgObj = new ArrayList();
 			for(int p = 0 ; p < goodlist.size() ; p++){

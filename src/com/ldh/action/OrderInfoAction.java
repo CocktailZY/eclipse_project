@@ -20,13 +20,10 @@ import com.ldh.dao.IGoodsDao;
 import com.ldh.dao.IOrderDetailsDao;
 import com.ldh.dao.IOrderInfoDao;
 import com.ldh.dao.IUsersDao;
-import com.ldh.model.Brand;
-import com.ldh.model.Degree;
-import com.ldh.model.Goods;
 import com.ldh.model.OrderDetails;
 import com.ldh.model.OrderInfo;
-import com.ldh.model.Users;
 import com.ldh.util.JsonUtil;
+import com.ldh.util.PageBean;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -169,8 +166,10 @@ public class OrderInfoAction {
 	public String update() throws IOException{
 		String oId = ServletActionContext.getRequest().getParameter("oId");
 		int oSign = Integer.parseInt(ServletActionContext.getRequest().getParameter("oSign"));
+		String oAId = ServletActionContext.getRequest().getParameter("oAId");
 		OrderInfo orderInfo = orderInfoDao.getById(oId);
 		orderInfo.setoSign(oSign);
+		orderInfo.setoAId(addressDao.getById(oAId));
 		JSONObject jobj = new JSONObject();
 		if(orderInfoDao.update(orderInfo)){
 			//save success
@@ -254,7 +253,7 @@ public class OrderInfoAction {
 	public String listByConds() throws IOException{
 		String jsonConds = ServletActionContext.getRequest().getParameter("conds");
 		JSONObject jsonObj = JSONObject.fromObject(jsonConds);
-		String hql = "from OrderInfo where uSign !=0 and ";
+		String hql = "from OrderInfo where oSign !=0 and ";
 		Iterator<String> sIterator = jsonObj.keys();  
 		while(sIterator.hasNext()){  
 		    // 获得key  
@@ -264,33 +263,49 @@ public class OrderInfoAction {
 		    hql+=key+"='"+value+"'and ";
 //		    System.out.println("key: "+key+",value"+value);  
 		} 
-		//分页
-//		String pageNumStr = ServletActionContext.getRequest().getParameter("pageNum");
-//		int pageNum = 1;
-//		if(pageNumStr!=null && !"".equals(pageNumStr)){
-//			pageNum = Integer.parseInt(pageNumStr);
-//		}
-//		List<Object> list = new ArrayList<Object>();
+//		分页
+		String pageNumStr = ServletActionContext.getRequest().getParameter("pageNum");
+		int pageNum = 1;
+		if(pageNumStr!=null && !"".equals(pageNumStr)){
+			pageNum = Integer.parseInt(pageNumStr);
+		}
+		List<Object> list = new ArrayList<Object>();
 		if(hql.lastIndexOf("and ") != -1){
 			hql = hql.substring(0, hql.lastIndexOf("and "));
 		}
 		List<Object> orderlist = orderInfoDao.getAllByConds(hql);//获取所有用户数据，不带分页
-//		PageBean page=null;
-//		if(userlist.size()>0){
-//			page = new PageBean(userlist.size(),pageNum,5);
-//			list = usersDao.getByConds(hql,page);//带分页
-//		}
-		if(orderlist.size() > 0){
+		PageBean page=null;
+		if(orderlist.size()>0){
+			page = new PageBean(orderlist.size(),pageNum,5);
+			list = orderInfoDao.getByConds(hql,page);//带分页
+		}
+		JSONArray jsonlist = new JSONArray();
+		for(int o = 0 ; o < list.size() ; o++){
+			OrderInfo oinfo = (OrderInfo) list.get(o);
+			JSONObject temp = new JSONObject();
+			temp.put("oId", oinfo.getoId());
+			temp.put("oDetermine", oinfo.getoDetermine());
+			temp.put("oTotal", oinfo.getoTotal());
+			temp.put("oSign", oinfo.getoSign());
+			String hqldetail = "from OrderDetails where dOId='"+oinfo.getoId()+"'";
+			List<Object> orderdetaillist = orderDetailsDao.getAllByConds(hqldetail);
+			temp.put("details", orderdetaillist);
+			jsonlist.add(temp);
+		}
+		
+		JSONObject jobj = new JSONObject();
+		if(list.size() > 0){
 			//save success
-			JSONObject jobj = JSONObject.fromObject("{mes:\'获取成功!\',status:\'success\',data:"+JsonUtil.toJsonByListObj(orderlist)+"}");
-			ServletActionContext.getResponse().setHeader("content-type", "text/html;charset=UTF-8");
-			ServletActionContext.getResponse().getWriter().write(jobj.toString());
+			jobj.put("mes", "获取成功!");
+			jobj.put("status", "success");
+			jobj.put("data", jsonlist);
 		}else{
 			//save failed
-			JSONObject jobj = JSONObject.fromObject("{mes:\'无符合条件的用户!\',status:\'error\'}");
-			ServletActionContext.getResponse().setHeader("content-type", "text/html;charset=UTF-8");
-			ServletActionContext.getResponse().getWriter().write(jobj.toString());
+			jobj.put("mes", "获取失败!");
+			jobj.put("status", "error");
 		}
+		ServletActionContext.getResponse().setHeader("content-type", "text/html;charset=UTF-8");
+		ServletActionContext.getResponse().getWriter().write(jobj.toString());
 		return null;
 	}
 

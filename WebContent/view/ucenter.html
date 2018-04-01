@@ -554,6 +554,7 @@
 	<script src="js/loginutil.js"></script>
 	<script>
 	var loginUser;
+	var myPageNum = 1;
         $(function() {
             // Easy pie charts
             $('.chart').easyPieChart({animate: 1000});
@@ -620,6 +621,7 @@
         		success:function(data){
         			console.log(data);
         			if(data.status == 'success'){
+        				myPageNum = data.pageNum;
        					var rows = [];
            				rows = data.data;
            				var html = '';
@@ -657,11 +659,19 @@
            				var pageHtml = '';
            				if(data.pageTotal > 1){
            					pageHtml += '<li><a href="javascript:getGoodsList('+(parseInt(data.pageNum)-1)+')">&laquo;</a></li>';
-               				pageHtml += '<li class="active"><a href="#">1</a></li>';
+               				if(myPageNum == 1){
+	           					pageHtml += '<li class="active"><a href="javascript:getGoodsList(1)">1</a></li>';
+               				}else{
+               					pageHtml += '<li><a href="javascript:getGoodsList(1)">1</a></li>';
+               				}
            					for(var i = 2 ; i <= data.pageTotal ; i++){
-           						pageHtml += '<li><a href="javascript:getGoodsList('+i+')">'+i+'</a></li>';
+           						if(myPageNum == i){
+         							pageHtml += '<li class="active"><a href="javascript:getGoodsList('+i+')">'+i+'</a></li>';
+         						}else{
+         							pageHtml += '<li><a href="javascript:getGoodsList('+i+')">'+i+'</a></li>';
+         						}
            					}
-           					if(data.pageNum <= data.pageTotal){
+           					if(myPageNum <= data.pageTotal){
 	           					pageHtml += '<li><a href="javascript:getGoodsList('+(parseInt(data.pageNum)+1)+')">&raquo;</a></li>';
            					}else{
            						pageHtml += '<li><a href="#">&raquo;</a></li>';

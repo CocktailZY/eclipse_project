@@ -316,14 +316,14 @@
 						</div> -->
                         <!--</div>-->
                         <div class="pull-right">
-                            <ul class="pagination pagination-sm">
-                                <li><a href="#">&laquo;</a></li>
+                            <ul class="pagination pagination-sm" id="goodPage">
+                                <!-- <li><a href="#">&laquo;</a></li>
                                 <li class="active"><a href="#">1</a></li>
                                 <li><a href="#">2</a></li>
                                 <li><a href="#">3</a></li>
                                 <li><a href="#">4</a></li>
                                 <li><a href="#">5</a></li>
-                                <li><a href="#">&raquo;</a></li>
+                                <li><a href="#">&raquo;</a></li> -->
                             </ul>
                         </div>
                     </div>
@@ -415,9 +415,9 @@
 <script src="../backstage/lib/custom/util.js"></script>
 <script src="js/loginutil.js"></script>
 <script>
+	var loginUser;
     $(function() {
         // Easy pie charts
-        var loginUser;
         $('.chart').easyPieChart({animate: 1000});
         if(Util.getSession('login_user')){
 			loginUser = JSON.parse(Util.getSession("login_user"));
@@ -429,7 +429,8 @@
         $('#sj_phone').text(loginUser.uPhone);
         
         getGoodsBrand();
-        getAddress();
+        getOrder(1);
+        
     });
     function getGoodsBrand(){
 		$.ajax({
@@ -490,16 +491,23 @@
 		});
 	}
 	
-	function getOrder(){
+	function getOrder(pageNum){
+		var conds = {
+    		oUId:loginUser.uId,
+    	}
 		$.ajax({
 			type : "get",
-			async : true,
-			url : "../orderDetails/list.action",
+			async : false,
+			url : "../orderInfo/listByConds.action",
 			dataType : "json",
-			data : {},
+			data : {
+				conds:JSON.stringify(conds),
+				pageNum:pageNum
+			},
 			success : function(data) {
 				console.log(data);
 				if (data.status == 'success') {
+					console.log(data);
 					var rows = [];
 					rows = data.data;
 					var html ='';
@@ -507,33 +515,165 @@
 						html += '<table class="table" style="background-color: #f5f5f5;border-radius: 4px;">';
 						html += '<thead>';
 						html += '<tr style="border-bottom: 1px solid #dddddd;">';
-						html += '<td colspan="2" style="text-align: left !important;">'+rows[0].dOId.oId+'</td>';
-						html += '<td colspan="2" style="text-align: right !important;">'+rows[0].dOId.oDetermine+'</td>';
+						html += '<td colspan="2" style="text-align: left !important;">订单编号:'+rows[i].oId+'</td>';
+						html += '<td colspan="2" style="text-align: right !important;">'+rows[i].oDetermine+'</td>';
 						html += '</tr>';
 						html += '</thead>';
 						html += '<tbody>';
-						html += '<tr>';
-						html += '<td>'++'</td>';
-						html += '<td>单价</td>';
-						html += '<td>数量</td>';
-						html += '<td>小计</td>';
-						html += '</tr>';
+						if(rows[i].details.length > 0){
+							for(var j = 0 ; j < rows[i].details.length ; j++){
+								var item = rows[i].details[j];
+								html += '<tr>';
+								html += '<td>'+item.dGId.gName+'</td>';
+								html += '<td>'+item.dGId.gPrice+'</td>';
+								html += '<td>'+item.dNumber+'</td>';
+								html += '<td>'+item.dSubTotal+'</td>';
+								html += '</tr>';
+							}
+						}
 						html += '</tbody>';
 						html += '</table>';
 						html += '<div class="row">';
 						html += '<div class="col-md-12 col-lg-12 col-sm-12">';
-						html += '<div class="cart-summary">';
+						html += '<div class="cart-summary clearfix">';
 						html += '<div style="margin-left: 1rem; margin-top: 0.4rem;" class="pull-right total">';
-						html += '<label>金额合计:<span id="priceTotal" class="price-total large-bold-red">'+rows[0].dOId.oTotal+'</span></label>';
-						
+						html += '<label>金额合计:<span id="priceTotal" class="price-total large-bold-red">'+rows[i].oTotal+'</span></label>';
+						html += '</div>';
+						if(rows[i].oSign == 1){
+							html += '<div class="pull-right" id="order_status"><h3><span class="label label-primary">未支付</span></h3></div>';
+							html += '<hr style="margin-top:55px;">';
+							html += '<form class="form-horizontal" role="form" style="padding-right:148px;">';
+							html += '<div class="form-group">';
+							html += '<label class="col-sm-4 control-label">收件人:</label>';
+							html += '<div class="col-sm-8">';
+							html += '<p class="form-control" id="sj_user">xxxxx</p>';
+							html += '</div></div>';
+							html += '<div class="form-group">';
+							html += '<label class="col-sm-4 control-label">联系电话:</label>';
+							html += '<div class="col-sm-8">';
+							html += '<p class="form-control" id="sj_phone">13112341234</p>';
+							html += '</div></div>';
+							html += '<div class="form-group">';
+							html += '<label class="col-sm-4 control-label">收货地址:</label>';
+							html += '<div class="col-sm-8">';
+							html += '<select class="form-control" id="address_select"></select>';
+							html += '</div></div>';
+							html += '<div class="form-group text-center">';
+							html += '<button type="button" class="btn btn-primary" style="width:30%;" onclick="confirmOrder(\''+rows[i].oId+'\')">确认付款</button>';
+							html += '</div></form>';
+						}else if(rows[i].oSign == 2){
+							html += '<div class="pull-right" id="order_status"><h3><span class="label label-primary">等待卖家发货</span></h3></div>';
+						}else if(rows[i].oSign == 3){
+							html += '<div class="pull-right" id="order_status"><h3><span class="label label-primary">卖家已发货</span></h3></div>';
+						}else if(rows[i].oSign == 4){
+							html += '<div class="pull-right" id="order_status"><h3><span class="label label-primary">已完成</span></h3></div>';
+						}
+						html += '</div>';
+						html += '</div></div>';
 					}
-					$('#address_select').empty().html(html);
+					$('#order_table').empty().html(html);
+					getAddress();
+					var pageHtml = '';
+     				if(data.pageTotal > 1){
+     					pageHtml += '<li><a href="javascript:getOrder('+(parseInt(data.pageNum)-1)+')">&laquo;</a></li>';
+     					if(myPageNum == 1){
+     						pageHtml += '<li class="active"><a href="javascript:getOrder(1)">1</a></li>';
+     					}else{
+     						pageHtml += '<li><a href="javascript:getOrder(1)">1</a></li>';
+     					}
+     					for(var i = 2 ; i <= data.pageTotal ; i++){
+     						if(myPageNum == i){
+     							pageHtml += '<li class="active"><a href="javascript:getOrder('+i+')">'+i+'</a></li>';
+     						}else{
+     							pageHtml += '<li><a href="javascript:getOrder('+i+')">'+i+'</a></li>';
+     						}
+     					}
+     					if(myPageNum <= data.pageTotal){
+         						pageHtml += '<li><a href="javascript:getOrder('+(parseInt(data.pageNum)+1)+')">&raquo;</a></li>';
+     					}else{
+     						pageHtml += '<li><a href="#">&raquo;</a></li>';
+     					}
+     				}else{
+     					pageHtml += '<li><a>&laquo;</a></li>';
+         				pageHtml += '<li class="active"><a href="#">1</a></li>';
+         				pageHtml += '<li><a>&raquo;</a></li>';
+     				}
+     				$('#goodPage').empty().append(pageHtml);
+					
 				} else {
 					//没有数据或服务器错误
 				}
 			}
 		});
 	}
+	
+	function confirmOrder(oid){
+		//先查余额是否足够
+		$.ajax({
+			type : "get",
+			async : false,
+			url : "../users/getById.action",
+			dataType : "json",
+			data : {
+				id:loginUser.uId
+			},
+			success : function(data) {
+				console.log(data);
+				if (data.status == 'success') {
+					var item = data.data;
+					var yue = item.uMoney;
+					var xufu = $('#priceTotal').text().replace(/,/g,'');
+					if(parseFloat(yue) < parseFloat(xufu)){
+						alert('您的余额不足，请充值！');
+					}else{
+						$.ajax({
+							type : "post",
+							async : false,
+							url : "../orderInfo/update.action",
+							dataType : "json",
+							data : {
+								oId:oid,
+								oSign:2,
+								oAId:$('#address_select option:selected').val()
+							},
+							success : function(data) {
+								console.log(data);
+								if (data.status == 'success') {
+									alert('支付成功！');
+									$.ajax({
+										type : "post",
+										async : false,
+										url : "../users/update.action",
+										dataType : "json",
+										data : {
+											uId:loginUser.uId,
+											uMoney:parseFloat(yue)-parseFloat(xufu),
+										},
+										success : function(data) {
+											console.log(data);
+											if (data.status == 'success') {
+												getOrder(1);
+											} else {
+												//没有数据或服务器错误
+												alert(data.mes);
+											}
+										}
+									});
+								} else {
+									//没有数据或服务器错误
+									alert(data.mes);
+								}
+							}
+						});
+					}
+				} else {
+					//没有数据或服务器错误
+				}
+			}
+		});
+	}
+	
+	
 </script>
 <!-- //cart-js -->
 </body>

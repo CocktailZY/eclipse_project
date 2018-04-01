@@ -553,6 +553,7 @@
 	<script type="text/javascript" src="../backstage/lib/custom/util.js"></script>
 	<script src="js/loginutil.js"></script>
 	<script>
+	var loginUser;
         $(function() {
             // Easy pie charts
             $('.chart').easyPieChart({animate: 1000});
@@ -562,7 +563,7 @@
     		});
             
             if(Util.getSession('login_user')){
-    			var loginUser = JSON.parse(Util.getSession("login_user"));
+    			loginUser = JSON.parse(Util.getSession("login_user"));
     			$('.w3l_login').empty().html('<div style="height:50px;line-height: 50px;font-size: large;">欢迎您! '+loginUser.uName+'&nbsp;&nbsp;&nbsp;&nbsp;<button class="btn btn-sm btn-info" onclick="loginout()">注销</button></div>');
     			$('.w3l_logo').css('margin-left','15em');
     		}
@@ -833,7 +834,7 @@
    				gDexcribe:$('#goodDes').val(),
    				gBId:$('#goodType option:selected').val(),
    				gDeId:$('#goodDegree option:selected').val(),
-   				gUId:'402881ed61d7ab130161d7ab16e60000',//Util.getSession('loginUser');
+   				gUId:loginUser.uId,//Util.getSession('loginUser');
    				gPicture:imgs
    			}
         	

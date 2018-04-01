@@ -43,7 +43,7 @@ public class Address implements Serializable{
 	}
 	
 	@ManyToOne(cascade={CascadeType.MERGE})
-	@JoinColumn(name="aUId",referencedColumnName="uId",insertable=false, updatable=false)
+	@JoinColumn(name="aUId")
 	public Users getaUId() {
 		return aUId;
 	}

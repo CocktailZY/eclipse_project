@@ -25,17 +25,13 @@ public class OrderInfoDaoImpl implements IOrderInfoDao {
 	}
 
 	@Override
-	public boolean save(OrderInfo orderInfo) {
+	public String save(OrderInfo orderInfo) {
 		Session session = sessionFactory.openSession();
 		session.beginTransaction();
 		String returnId = (String) session.save(orderInfo);
 		session.getTransaction().commit();
 		session.close();
-		if("".equals(returnId) && null != returnId){
-			return true;
-		}else{
-			return false;
-		}
+		return returnId;
 	}
 
 	@Override

@@ -14,8 +14,9 @@ import org.springframework.context.annotation.Scope;
 import com.ldh.dao.ICartDao;
 import com.ldh.dao.IGoodsDao;
 import com.ldh.dao.IUsersDao;
-import com.ldh.model.Brand;
 import com.ldh.model.Cart;
+import com.ldh.model.Goods;
+import com.ldh.model.Users;
 import com.ldh.util.JsonUtil;
 
 import net.sf.json.JSONObject;
@@ -55,7 +56,6 @@ public class CartAction {
 		this.userDao = userDao;
 	}
 	
-	
 	/**
 	 * 保存购物车信息
 	 * @return
@@ -63,26 +63,43 @@ public class CartAction {
 	 */
 	@Action(value="save")
 	public String save() throws IOException{
-		int cNumber = Integer.parseInt(ServletActionContext.getRequest().getParameter("cNumber"));
-		String cSubTotal = ServletActionContext.getRequest().getParameter("cSubTotal");
-		String cGId = ServletActionContext.getRequest().getParameter("cGId");
-		String cUId = ServletActionContext.getRequest().getParameter("cUId");
-		
+		String good_id = ServletActionContext.getRequest().getParameter("good_id");
+		String user_id = ServletActionContext.getRequest().getParameter("user_id");
+		String good_total = ServletActionContext.getRequest().getParameter("good_total");
+		String good_num = ServletActionContext.getRequest().getParameter("good_num");
 		Cart cart = new Cart();
-		cart.setcNumber(cNumber);
-		cart.setcSubTotal(cSubTotal);
-		cart.setcGId(goodsDao.getById(cGId));
-		cart.setcUId(userDao.getById(cUId));
-		
+		cart.setcNumber(Integer.parseInt(good_num));
+		cart.setcSubTotal(good_total);
+		cart.setcGId(goodsDao.getById(good_id));
+		cart.setcUId(userDao.getById(user_id));
+		String hql = "from Cart where cUId='" + user_id +"' and cGId='" + good_id +"'";
+		List<Object> cartlist = cartDao.getAllByConds(hql);
 		JSONObject jobj = new JSONObject();
-		if(cartDao.save(cart)){
-			//save success
-			jobj.put("mes", "保存成功!");
-			jobj.put("status", "success");
+		if(cartlist.size() > 0){
+			Cart temp = (Cart) cartlist.get(0);
+			cart.setcId(temp.getcId());
+			cart.setcNumber(temp.getcNumber()+cart.getcNumber());
+			cart.setcSubTotal(String.valueOf((Double.valueOf(temp.getcSubTotal())+Double.valueOf(cart.getcSubTotal()))));
+			if(cartDao.update(cart)){
+				//save success
+				jobj.put("mes", "添加成功!");
+				jobj.put("status", "success");
+			}else{
+				//save failed
+				jobj.put("mes", "添加失败!");
+				jobj.put("status", "error");
+			}
 		}else{
-			//save failed
-			jobj.put("mes", "获取失败!");
-			jobj.put("status", "error");
+			if(cartDao.save(cart)){
+				//save success
+				jobj.put("mes", "添加成功!");
+				jobj.put("status", "success");
+				
+			}else{
+				//save failed
+				jobj.put("mes", "添加失败!");
+				jobj.put("status", "error");
+			}
 		}
 		ServletActionContext.getResponse().setHeader("content-type", "text/html;charset=UTF-8");
 		ServletActionContext.getResponse().getWriter().write(jobj.toString());
@@ -175,6 +192,7 @@ public class CartAction {
 	 */
 	@Action(value="list")
 	public String list() throws IOException{
+		Users loginuser = (Users) ServletActionContext.getRequest().getSession().getAttribute("login_user");
 		//分页
 //		String pageNumStr = ServletActionContext.getRequest().getParameter("pageNum");
 //		int pageNum = 1;
@@ -182,23 +200,34 @@ public class CartAction {
 //			pageNum = Integer.parseInt(pageNumStr);
 //		}
 //		List<Object> list = new ArrayList<Object>();
-		List<Object> goodsTypelist = cartDao.list();//获取所有类型数据，不带分页
-//		PageBean page=null;
-//		if(userlist.size()>0){
-//			page = new PageBean(userlist.size(),pageNum,5);
-//			list = userDao.listAll(page);//带分页
-//		}
 		JSONObject jobj = new JSONObject();
-		if(goodsTypelist.size() > 0){
-			//save success
-			jobj.put("mes", "获取成功!");
-			jobj.put("status", "success");
-			jobj.put("data", JsonUtil.toJsonByListObj(goodsTypelist));
+		String hql = "from Cart where cUId='"+loginuser.getuId()+"'";
+		if(loginuser != null){
+			List<Object> goodsTypelist = cartDao.getAllByConds(hql);//获取所有类型数据，不带分页
+//			PageBean page=null;
+//			if(userlist.size()>0){
+//				page = new PageBean(userlist.size(),pageNum,5);
+//				list = userDao.listAll(page);//带分页
+//			}
+			if(goodsTypelist.size() > 0){
+//				for(int i = 0 ; i < goodsTypelist.size(); i++){
+//					Cart item = (Cart) goodsTypelist.get(i);
+//					Goods good = goodsDao.getById(item.getcGId())
+//				}
+				//save success
+				jobj.put("mes", "获取成功!");
+				jobj.put("status", "success");
+				jobj.put("data", JsonUtil.toJsonByListObj(goodsTypelist));
+			}else{
+				//save failed
+				jobj.put("mes", "获取失败!");
+				jobj.put("status", "error");
+			}
 		}else{
-			//save failed
-			jobj.put("mes", "获取失败!");
+			jobj.put("mes", "请先登录!");
 			jobj.put("status", "error");
 		}
+		
 		ServletActionContext.getResponse().setHeader("content-type", "text/html;charset=UTF-8");
 		ServletActionContext.getResponse().getWriter().write(jobj.toString());
 		return null;

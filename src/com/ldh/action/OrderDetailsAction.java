@@ -1,6 +1,7 @@
 package com.ldh.action;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -18,6 +19,7 @@ import com.ldh.dao.IOrderInfoDao;
 import com.ldh.dao.IUsersDao;
 import com.ldh.model.OrderDetails;
 import com.ldh.util.JsonUtil;
+import com.ldh.util.PageBean;
 
 import net.sf.json.JSONObject;
 
@@ -193,25 +195,27 @@ public class OrderDetailsAction {
 	 */
 	@Action(value="list")
 	public String list() throws IOException{
-		//分页
-//		String pageNumStr = ServletActionContext.getRequest().getParameter("pageNum");
-//		int pageNum = 1;
-//		if(pageNumStr!=null && !"".equals(pageNumStr)){
-//			pageNum = Integer.parseInt(pageNumStr);
-//		}
-//		List<Object> list = new ArrayList<Object>();
+//		分页
+		String pageNumStr = ServletActionContext.getRequest().getParameter("pageNum");
+		int pageNum = 1;
+		if(pageNumStr!=null && !"".equals(pageNumStr)){
+			pageNum = Integer.parseInt(pageNumStr);
+		}
+		List<Object> list = new ArrayList<Object>();
 		List<Object> goodsTypelist = orderDetailsDao.list();//获取所有类型数据，不带分页
-//		PageBean page=null;
-//		if(userlist.size()>0){
-//			page = new PageBean(userlist.size(),pageNum,5);
-//			list = userDao.listAll(page);//带分页
-//		}
+		PageBean page=null;
+		if(goodsTypelist.size()>0){
+			page = new PageBean(goodsTypelist.size(),pageNum,5);
+			list = orderDetailsDao.listAll(page);//带分页
+		}
 		JSONObject jobj = new JSONObject();
-		if(goodsTypelist.size() > 0){
+		if(list.size() > 0){
 			//save success
 			jobj.put("mes", "获取成功!");
 			jobj.put("status", "success");
-			jobj.put("data", JsonUtil.toJsonByListObj(goodsTypelist));
+			jobj.put("data", JsonUtil.toJsonByListObj(list));
+			jobj.put("pageTotal", page.getPageCount());
+			jobj.put("pageNum", page.getPageNum());
 		}else{
 			//save failed
 			jobj.put("mes", "获取失败!");

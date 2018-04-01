@@ -50,7 +50,7 @@ public class OrderDetails implements Serializable {
 		this.dNumber = dNumber;
 	}
 	@ManyToOne(cascade={CascadeType.MERGE})
-	@JoinColumn(name="dUId",referencedColumnName="uId",insertable=false, updatable=false)
+	@JoinColumn(name="dUId")
 	public Users getdUId() {
 		return dUId;
 	}
@@ -58,7 +58,7 @@ public class OrderDetails implements Serializable {
 		this.dUId = dUId;
 	}
 	@ManyToOne(cascade={CascadeType.MERGE})
-	@JoinColumn(name="dGId",referencedColumnName="gId",insertable=false, updatable=false)
+	@JoinColumn(name="dGId")
 	public Goods getdGId() {
 		return dGId;
 	}
@@ -72,7 +72,7 @@ public class OrderDetails implements Serializable {
 		this.dExId = dExId;
 	}
 	@ManyToOne(cascade={CascadeType.ALL})
-	@JoinColumn(name="dOId",referencedColumnName="oId",insertable=false, updatable=false)
+	@JoinColumn(name="dOId")
 	public OrderInfo getdOId() {
 		return dOId;
 	}

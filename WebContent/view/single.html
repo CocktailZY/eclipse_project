@@ -118,7 +118,7 @@
 						html += '<input type="hidden" name="w3ls_item" value="'+rows[i].gName+'">';
 						html += '<input type="hidden" name="amount" value="'+rows[i].gPrice+'">';
 						html += '<button type="submit" class="w3ls-cart">加入购物车</button>';
-						html += '</from></div></div></div></li>';
+						html += '</form></div></div></div></li>';
 						
 					}
 					$('#flexiselDemo2').empty().html(html);
@@ -159,7 +159,7 @@
 					carthtml += '<input type="hidden" name="w3ls_item" value="'+data.good.gName+'">';
 					carthtml += '<input type="hidden" name="amount" value="'+(parseInt(goodnum)*(data.good.gPrice*1))+'">';
 					carthtml += '<button type="submit" class="w3ls-cart">加入购物车</button>';
-					
+					carthtml += '</form>';
 					$('#detail-img').empty().html(imghtml);
 					$('#detail-title').empty().html(data.good.gName);
 					$('#detail-content').empty().html(data.good.gDescribe);
@@ -377,7 +377,7 @@
 		<div class="container">
 			<div class="col-md-4 single-left">
 				<div class="flexslider">
-					<ul class="slides" id="detail-img">
+					<!-- <ul class="slides" id="detail-img">
 						<li data-thumb="images/a.jpg">
 							<div class="thumb-image"> <img src="images/a.jpg" data-imagezoom="true" class="img-responsive" alt=""> </div>
 						</li>
@@ -387,7 +387,7 @@
 						<li data-thumb="images/c.jpg">
 						   <div class="thumb-image"> <img src="images/c.jpg" data-imagezoom="true" class="img-responsive" alt=""> </div>
 						</li> 
-					</ul>
+					</ul> -->
 				</div>
 				<!-- flexslider -->
 					<script defer src="js/jquery.flexslider.js"></script>

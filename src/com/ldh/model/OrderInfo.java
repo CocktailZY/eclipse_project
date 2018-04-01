@@ -63,7 +63,7 @@ public class OrderInfo implements Serializable {
 		this.oSign = oSign;
 	}
 	@ManyToOne(cascade={CascadeType.MERGE})
-	@JoinColumn(name="oUId",referencedColumnName="uId",insertable=false, updatable=false)
+	@JoinColumn(name="oUId")
 	public Users getoUId() {
 		return oUId;
 	}

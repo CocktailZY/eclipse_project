@@ -171,12 +171,13 @@
 						html += '<div class="simpleCart_shelfItem">';
 						html += '<p><span>'+rows[i].gDeId.deDescribe+'</span> <i class="item_price">￥'+rows[i].gPrice+'</i></p>';
 						html += '<form action="#" method="post">';
-						html += '<input type="hidden" name="cmd" value="_cart">';
-						html += '<input type="hidden" name="add" value="1">';
-						html += '<input type="hidden" name="w3ls_item" value="'+rows[i].gName+'">';
-						html += '<input type="hidden" name="amount" value="'+rows[i].gPrice+'">';
-						html += '<button type="submit" class="w3ls-cart">加入购物车</button>';
-						html += '</from></div></div>';
+						html += '<input type="hidden" name="good_id_'+rows[i].gId+'" value="'+rows[i].gId+'">';
+						html += '<input type="hidden" name="good_num_'+rows[i].gId+'" value="1">';
+						html += '<input type="hidden" name="user_id_'+rows[i].gId+'" value="'+rows[i].gPrice+'">';
+						html += '<input type="hidden" name="w3ls_item_'+rows[i].gId+'" value="'+rows[i].gName+'">';
+						html += '<input type="hidden" name="good_total_'+rows[i].gId+'" value="'+rows[i].gPrice+'">';
+						html += '<button type="button" class="w3ls-cart" onclick="saveToCart(\''+rows[i].gId+'\')">加入购物车</button>';
+						html += '</form></div></div>';
 						
 					}
 					html += '<div class="clearfix"></div>';
@@ -221,12 +222,13 @@
 						html += '<div class="simpleCart_shelfItem">';
 						html += '<p><span>'+rows[i].gDeId.deDescribe+'</span> <i class="item_price">￥'+rows[i].gPrice+'</i></p>';
 						html += '<form action="#" method="post">';
-						html += '<input type="hidden" name="cmd" value="_cart">';
-						html += '<input type="hidden" name="add" value="1">';
-						html += '<input type="hidden" name="w3ls_item" value="'+rows[i].gName+'">';
-						html += '<input type="hidden" name="amount" value="'+rows[i].gPrice+'">';
-						html += '<button type="submit" class="w3ls-cart">加入购物车</button>';
-						html += '</from></div></div></div>';
+						html += '<input type="hidden" name="good_id_'+rows[i].gId+'" value="'+rows[i].gId+'">';
+						html += '<input type="hidden" name="good_num_'+rows[i].gId+'" value="1">';
+						html += '<input type="hidden" name="user_id_'+rows[i].gId+'" value="'+rows[i].gPrice+'">';
+						html += '<input type="hidden" name="w3ls_item_'+rows[i].gId+'" value="'+rows[i].gName+'">';
+						html += '<input type="hidden" name="good_total_'+rows[i].gId+'" value="'+rows[i].gPrice+'">';
+						html += '<button type="button" class="w3ls-cart" onclick="saveToCart(\''+rows[i].gId+'\')">加入购物车</button>';
+						html += '</form></div></div></div>';
 						if((flag+3) == i){
 	   						html += '</div><div class="clearfix"></div>';
 	   						flag = 0;
@@ -281,11 +283,12 @@
 					html += '<div class="modal_body_right_cart simpleCart_shelfItem">';
 					html += '<p><span>'+data.good.gDeId.deDescribe+'</span> <i class="item_price">￥'+data.good.gPrice+'</i></p>';
 					html += '<form action="#" method="post">';
-					html += '<input type="hidden" name="cmd" value="_cart">';
-					html += '<input type="hidden" name="add" value="1">';
-					html += '<input type="hidden" name="w3ls_item" value="'+data.good.gName+'">';
-					html += '<input type="hidden" name="amount" value="'+data.good.gPrice+'">';
-					html += '<button type="submit" class="w3ls-cart">加入购物车</button>';
+					html += '<input type="hidden" name="good_id_'+rows[i].gId+'" value="'+rows[i].gId+'">';
+					html += '<input type="hidden" name="good_num_'+rows[i].gId+'" value="1">';
+					html += '<input type="hidden" name="user_id_'+rows[i].gId+'" value="'+rows[i].gPrice+'">';
+					html += '<input type="hidden" name="w3ls_item_'+rows[i].gId+'" value="'+rows[i].gName+'">';
+					html += '<input type="hidden" name="good_total_'+rows[i].gId+'" value="'+rows[i].gPrice+'">';
+					html += '<button type="button" class="w3ls-cart" onclick="saveToCart(\''+rows[i].gId+'\')">加入购物车</button>';
 					html += '</form></div>';
 					$('#good-modal-content').empty().html(html);
 					$('#myModal').modal('show');
@@ -296,10 +299,40 @@
 		});
 	}
 	
+	function saveToCart(id){
+		var loginUser = JSON.parse(Util.getSession("login_user"));
+		if(loginUser){
+			console.log(id);			
+			$.ajax({
+				type : "post",
+				async : true,
+				url : "../cart/save.action",
+				dataType : "json",
+				data : {
+					good_id:id,
+					user_id:loginUser.uId,
+					good_total:$('input[name="good_total_'+id+'"]').val(),
+					good_num:$('input[name="good_num_'+id+'"]').val()
+				},
+				success : function(data) {
+					console.log(data);
+					if (data.status == 'success') {
+						alert(data.mes);
+					} else {
+						//没有数据或服务器错误
+						alert(data.mes);
+					}
+				}
+			});
+		}else{
+			alert('请先登录！');
+		}
+	}
+	
 	function toCart(){
 		var loginUser = JSON.parse(Util.getSession("login_user"));
 		if(loginUser){
-			window.location.href = 'ShoppingCart-master/index.html?uId='+loginUser.uId;
+			window.location.href = 'cart.html?uId='+loginUser.uId;
 		}else{
 			alert('请先登录！');
 		}

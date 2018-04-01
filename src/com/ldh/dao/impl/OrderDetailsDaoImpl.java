@@ -31,7 +31,7 @@ public class OrderDetailsDaoImpl implements IOrderDetailsDao {
 		String returnId = (String) session.save(orderDetails);
 		session.getTransaction().commit();
 		session.close();
-		if("".equals(returnId) && null != returnId){
+		if(!"".equals(returnId) && null != returnId){
 			return true;
 		}else{
 			return false;

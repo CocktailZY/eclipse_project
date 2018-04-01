@@ -207,7 +207,7 @@
 		<div class="container">
 			<ul>
 				<li><a href="index.html"><span class="glyphicon glyphicon-home" aria-hidden="true"></span> 首页</a> <i>/</i></li>
-				<li>我的商品</li>
+				<li>地址管理</li>
 			</ul>
 		</div>
 	</div>
@@ -217,7 +217,7 @@
 		<div class="row-fluid">
 			<div class="span3" id="sidebar">
 				<ul class="nav nav-list bs-docs-sidenav nav-collapse text-center">
-					<li class="myactive">
+					<li>
 						<a href="ucenter.html"><i class="icon-chevron-right"></i> 我的商品</a>
 					</li>
 					<li>
@@ -226,7 +226,7 @@
 					<li>
 						<a href="userinfo.html"><i class="icon-chevron-right"></i> 个人中心</a>
 					</li>
-					<li>
+					<li class="myactive">
 						<a href="address.html"><i class="icon-chevron-right"></i> 地址管理</a>
 					</li>
 				</ul>
@@ -237,38 +237,33 @@
 					<!-- block -->
 					<div class="block">
 						<div class="navbar myTableLable block-header">
-							<div class="muted pull-left">商品列表</div>
+							<div class="muted pull-left">地址列表</div>
 							<div class="muted pull-right" style="margin-top: 4px !important;padding: 6px; margin-bottom: 4px; border: 1px solid #dddddd; border-radius: 4px;">
 								<!--<button class="btn btn-default btn-sm">添加商品</button>-->
-								<a href="#" data-toggle="modal" data-target="#addGoodModal">添加商品</a>
+								<a href="#" data-toggle="modal" data-target="#addGoodModal">添加地址</a>
 							</div>
 						</div>
 						<div class="block-content collapse in"><!-- collapse in -->
 							<!--<div class="span12">-->
-								<table class="table table-bordered text-center">
+								<table class="table table-condensed">
 									<thead>
-									<tr>
-										<th>编号</th>
-										<th>商品名称</th>
-										<th>品牌类别</th>
-										<th>商品价格</th>
-										<th>程度类别</th>
-										<th>商品状态</th>
-										<th>操作</th>
-									</tr>
+										<tr>
+											<th>编号</th>
+											<th>地址</th>
+											<th>状态</th>
+											<th>操作</th>
+										</tr>
 									</thead>
-									<tbody id="goodslist">
-									<!-- <tr>
-										<td>1</td>
-										<td>Mark</td>
-										<td>Otto</td>
-										<td>@mdo</td>
-										<td>Otto</td>
-										<td>
-											<button class="btn btn-xs btn-warning" data-toggle="modal" data-target="#modifyGoodModal">修改</button>
-											<button class="btn btn-xs btn-danger">下架</button>
-										</td>
-									</tr> -->
+									<tbody id="addresslist">
+										<!-- <tr>
+											<td>Tanmay</td>
+											<td>Bangalore</td>
+											<td>560001</td>
+											<td>
+												<button class="btn btn-xs btn-warning">编辑</button>
+												<button class="btn btn-xs btn-danger">删除</button>
+											</td>
+										</tr> -->
 									</tbody>
 								</table>
 							<!--</div>-->
@@ -300,66 +295,16 @@
 				<section>
 					<div class="modal-body">
 						<form class="form-horizontal" enctype="multipart/form-data">
-							<div class="col-md-5"><!--modal_body_left-->
-								<img src="images/default.png" alt=" " class="img-responsive" style="margin: 0 auto;margin-bottom: 8px; width:200px !important; height: 200px !important;" id="img0"/>
-								<!--<div style="margin: 0 auto;" class="clearfix">-->
-									<img src="images/default.png" alt=" " class="img-responsive pull-left" style="margin-left: 40px;margin-right: 8px;width:60px !important; height: 60px !important;" id="img1"/>
-									<img src="images/default.png" alt=" " class="img-responsive pull-left" style="margin-right: 8px;width:60px !important; height: 60px !important;" id="img2"/>
-									<img src="images/default.png" alt=" " class="img-responsive pull-left" style="margin-right: 8px;width:60px !important; height: 60px !important;" id="img3"/>
-									<img src="images/default.png" alt=" " class="img-responsive pull-left" style="width:60px !important; height: 60px !important;" id="img4"/>
-									<button class="btn btn-primary" style="position: relative; left: 133px; bottom: -37px; height:28px;line-height: 16px;">上传图片</button>
-									<input type="file" style="position: relative; left: 134px; bottom: -9px;opacity: 0;height:30px;" multiple="multiple" name="files" id="uploadImgs" onchange="uploadImg()">
-									<p class="text-warning text-center"><small>建议上传图片尺寸:255x340像素</small></p>
-								<!--</div>-->
-							</div>
-							<div class="col-md-7 modal_body_right">
+							<div class="col-md-12">
 								<div class="form-group">
-									<label for="goodName" class="col-sm-3 control-label">商品名称</label>
-									<div class="col-sm-9">
-										<input type="text" class="form-control" id="goodName">
-									</div>
-								</div>
-								<div class="form-group">
-									<label for="goodDes" class="col-sm-3 control-label">商品描述</label>
+									<label for="goodDes" class="col-sm-3 control-label">地址描述</label>
 									<div class="col-sm-9">
 										<textarea class="form-control" rows="3" id="goodDes"></textarea>
 									</div>
 								</div>
 								<div class="form-group">
-									<label for="goodType" class="col-sm-3 control-label">所属品牌</label>
-									<div class="col-sm-9">
-										<select class="form-control" id="goodType">
-											<!-- <option value="1">苹果</option>
-											<option value="2">小米</option>
-											<option value="3">OPPO</option>
-											<option value="4">VIVO</option>
-											<option value="5">三星</option>
-											<option value="6">其他</option> -->
-										</select>
-									</div>
-								</div>
-								<div class="form-group">
-									<label for="goodPrice" class="col-sm-3 control-label">价格</label>
-									<div class="col-sm-4">
-										<input type="text" class="form-control" id="goodPrice">
-									</div>
-									<div class="col-sm-5 text-warning" id="avg" style="font-size: 12px;line-height:32px;display: none;">同类商品均价:<strong id="avgPrice">100</strong>￥</div>
-								</div>
-								<div class="form-group">
-									<label for="goodDegree" class="col-sm-3 control-label">程度类型</label>
-									<div class="col-sm-9">
-										<select class="form-control" id="goodDegree">
-											<!-- <option>99新</option>
-											<option>9成新</option>
-											<option>88新</option>
-											<option>8成新</option>
-											<option>7成新</option> -->
-										</select>
-									</div>
-								</div>
-								<div class="form-group">
 									<div class="col-sm-offset-3 col-sm-9">
-										<button type="button" class="btn btn-success col-sm-12" onclick="addGood()">添加</button>
+										<button type="button" class="btn btn-success col-sm-12" onclick="addAddress()">添加</button>
 									</div>
 								</div>
 							</div>
@@ -553,6 +498,7 @@
 	<script type="text/javascript" src="../backstage/lib/custom/util.js"></script>
 	<script src="js/loginutil.js"></script>
 	<script>
+	var loginUser;
         $(function() {
             // Easy pie charts
             $('.chart').easyPieChart({animate: 1000});
@@ -562,19 +508,14 @@
     		});
             
             if(Util.getSession('login_user')){
-    			var loginUser = JSON.parse(Util.getSession("login_user"));
+    			loginUser = JSON.parse(Util.getSession("login_user"));
     			$('.w3l_login').empty().html('<div style="height:50px;line-height: 50px;font-size: large;">欢迎您! '+loginUser.uName+'&nbsp;&nbsp;&nbsp;&nbsp;<button class="btn btn-sm btn-info" onclick="loginout()">注销</button></div>');
     			$('.w3l_logo').css('margin-left','15em');
     		}
             getGoodsBrand();
-            getGoodsList(1);
-            getBrand();
-            getDegree();
-            
+            getAddressList(1);
             
         });
-        $('#goodType').on('change',getAvgPrice);
-        $('#goodDegree').on('change',getAvgPrice);
         
         function getGoodsBrand(){
     		$.ajax({
@@ -607,11 +548,11 @@
     		window.location.href = 'search.html?bId='+bId;
     	}
         
-        function getGoodsList(pageNum){
+        function getAddressList(pageNum){
         	$.ajax({
         		type:"get",
         		async:true,
-        		url:"../goods/list.action",
+        		url:"../address/list.action",
         		dataType:"json",
         		data:{
         			pageNum:pageNum
@@ -621,242 +562,67 @@
         			if(data.status == 'success'){
        					var rows = [];
            				rows = data.data;
-           				var html = '';
-           				for(var i = 0 ; i < rows.length ; i++){
-           					html += '<tr>';
-           					html += '<td>'+rows[i].gId+'</td>';
-           					html += '<td><a href="javascript:showImg(\''+rows[i].gId+'\');">'+rows[i].gName+'</a></td>';
-           					html += '<td>'+rows[i].gBId.bDescribe+'</td>';
-           					html += '<td>'+rows[i].gPrice+'￥</td>';
-           					html += '<td>'+rows[i].gDeId.deDescribe+'</td>';
-           					if(rows[i].gSign == 0){
-           						html += '<td>未审核</td>';
-           						html += '<td>';
-           						html += '<button class="btn btn-xs btn-warning" data-toggle="modal" data-target="#modifyGoodModal">修改</button>';
-           						html += '</td>';
-           					}else if(rows[i].gSign == 1){
-           						html += '<td>已上架</td>';
-           						html += '<td>';
-           						html += '<button class="btn btn-xs btn-primary">下架</button>';
-           						html += '</td>';
-           					}else if(rows[i].gSign == 2){
-           						html += '<td>已锁定</td>';
-           						html += '<td>';
-           						html += '<button class="btn btn-xs btn-success">取消锁定</button>';
-           						html += '</td>';
-           					}else{
-           						html += '<td>已卖出</td>';
-           						html += '<td>';
-           						html += '<button class="btn btn-xs btn-danger">删除</button>';
-           						html += '</td>';
-           					}
-           				}
-           				$('#goodslist').empty().append(html);
-           				
-           				var pageHtml = '';
-           				if(data.pageTotal > 1){
-           					pageHtml += '<li><a href="javascript:getGoodsList('+(parseInt(data.pageNum)-1)+')">&laquo;</a></li>';
-               				pageHtml += '<li class="active"><a href="#">1</a></li>';
-           					for(var i = 2 ; i <= data.pageTotal ; i++){
-           						pageHtml += '<li><a href="javascript:getGoodsList('+i+')">'+i+'</a></li>';
-           					}
-           					if(data.pageNum <= data.pageTotal){
-	           					pageHtml += '<li><a href="javascript:getGoodsList('+(parseInt(data.pageNum)+1)+')">&raquo;</a></li>';
-           					}else{
-           						pageHtml += '<li><a href="#">&raquo;</a></li>';
-           					}
-           				}else{
-           					pageHtml += '<li><a>&laquo;</a></li>';
-               				pageHtml += '<li class="active"><a href="#">1</a></li>';
-               				pageHtml += '<li><a>&raquo;</a></li>';
-           				}
-           				$('#goodPage').empty().append(pageHtml);
+        					var html = '';
+             				for(var i = 0 ; i < rows.length ; i++){
+             					html += '<tr>';
+             					html += '<td>'+rows[i].aId+'</td>';
+             					html += '<td>'+rows[i].aDescribe+'</td>';
+             					if(rows[i].aSign == 1){
+             						html += '<td>正常</td>';
+             					}else if(rows[i].aSign == 2){
+             						html += '<td>默认地址</td>';
+             					}
+             					html += '<td>';
+             					if(rows[i].aSign == 1){
+             						html += '<button class="btn btn-xs btn-info" style="margin-right:8px;">设为默认</button>';
+             					}
+             					html += '<button class="btn btn-xs btn-warning" style="margin-right:8px;">编辑</button>';
+             					html += '<button class="btn btn-xs btn-danger">删除</button>';
+             					html += '</td>';
+             				}
+             				$('#addresslist').empty().append(html);
+             				
+             				var pageHtml = '';
+             				if(data.pageTotal > 1){
+             					pageHtml += '<li><a href="javascript:getAddressList('+(parseInt(data.pageNum)-1)+')">&laquo;</a></li>';
+                 				pageHtml += '<li class="active"><a href="#">1</a></li>';
+             					for(var i = 2 ; i <= data.pageTotal ; i++){
+             						pageHtml += '<li><a href="javascript:getAddressList('+i+')">'+i+'</a></li>';
+             					}
+             					if(data.pageNum <= data.pageTotal){
+  	           					pageHtml += '<li><a href="javascript:getAddressList('+(parseInt(data.pageNum)+1)+')">&raquo;</a></li>';
+             					}else{
+             						pageHtml += '<li><a href="#">&raquo;</a></li>';
+             					}
+             				}else{
+             					pageHtml += '<li><a>&laquo;</a></li>';
+                 				pageHtml += '<li class="active"><a href="#">1</a></li>';
+                 				pageHtml += '<li><a>&raquo;</a></li>';
+             				}
+             				$('#goodPage').empty().append(pageHtml);
         			}else{
         				//没有数据或服务器错误
-        				var htmlempty = '<tr><td colspan="7">暂无商品~</td></tr>';
-        				$('#goodslist').empty().append(htmlempty);
+        				var htmlempty = '<tr><td colspan="7">暂无地址</td></tr>';
+        				$('#addresslist').empty().append(htmlempty);
         			}
         		}
         	});
         }
-        
-        function showImg(id){
-        	$("#imgGoodModal").modal('show');
-        	$.ajax({
-        		type:"get",
-        		async:true,
-        		url:"../picture/getGoodsImg.action",
-        		dataType:"json",
-        		data:{
-        			pGId:id
-        		},
-        		success:function(data){
-        			console.log(data);
-        			if(data.status == 'success'){
-       					var rows = [];
-           				rows = data.piclist;
-           				var html = '';
-           				var tagHtml = '';
-           				for(var i = 0 ; i < rows.length ; i++){
-           					if(i == 0){
-           						tagHtml += '<li data-target="#myCarousel" data-slide-to="'+i+'" class="active"></li>';
-           						html += '<div class="item active"><img src="'+rows[i].pUrl+'" style="margin:0 auto;"></div>';
-           					}else{
-           						tagHtml += '<li data-target="#myCarousel" data-slide-to="'+i+'"></li>';
-           						html += '<div class="item"><img src="'+rows[i].pUrl+'"  style="margin:0 auto;"></div>';
-           					}
-           				}
-           				$('#tag').empty().append(tagHtml);
-           				$('#img-content').empty().append(html);
-        			}else{
-        				//没有数据或服务器错误
-        			}
-        		}
-        	});
-        }
-        
-        function getBrand(){
-        	$.ajax({
-        		type:"get",
-        		async:true,
-        		url:"../brand/list.action",
-        		dataType:"json",
-        		data:{},
-        		success:function(data){
-        			console.log(data);
-        			if(data.status == 'success'){
-       					var rows = [];
-           				rows = data.data;
-           				var html = "";
-           				for(var i = 0 ; i < rows.length ; i++){
-           					html += '<option value="'+rows[i].bId+'">'+rows[i].bDescribe+'</option>';
-           				}
-           				$('#goodType').empty().append(html);
-        			}else{
-        				//没有数据或服务器错误
-        			}
-        		}
-        	});
-        }
-        function getDegree(){
-	       	$.ajax({
-	       		type:"get",
-	       		async:true,
-	       		url:"../degree/list.action",
-	       		dataType:"json",
-	       		data:{},
-	       		success:function(data){
-	       			console.log(data);
-	       			if(data.status == 'success'){
-	      					var rows = [];
-	          				rows = data.data;
-	          				var html = "";
-	          				for(var i = 0 ; i < rows.length ; i++){
-	          					html += '<option value="'+rows[i].deId+'">'+rows[i].deDescribe+'</option>';
-	          				}
-	          				$('#goodDegree').empty().append(html);
-	       			}else{
-	       				//没有数据或服务器错误
-	       			}
-	       		}
-	       	});
-        }
-        function getAvgPrice(){
-        	var bId = $('#goodType option:selected').val();
-        	var deId = $('#goodDegree option:selected').val();
-        	$.ajax({
-        		type:"get",
-        		async:true,
-        		url:"../goods/calAvgPrice.action",
-        		dataType:"json",
-        		data:{
-        			bId:bId,
-        			deId:deId
-        		},
-        		success:function(data){
-        			console.log(data);
-        			if(data.status == 'success'){
-        				if(data.showAvg){
-        					$('#avg').show();
-	        				$('#avgPrice').text(data.avgprice);
-        				}
-        			}else{
-        				//没有数据或服务器错误
-        				$('#avg').hide();
-        			}
-        		}
-        	});
-        }
-        function uploadImg(){
-        	var files = $('#uploadImgs')[0].files;
-        	if(files.length <= 5){
-        		for(var i=0;i<files.length;i++){
-            		var formData = new FormData();
-            		formData.append('file', files[i]);
-            		$.ajax({
-                        url: '../upload/uploadImg.action',
-                        type: 'POST',
-                        dataType:"json",
-                        async:false,
-                        cache: false,
-                        data: formData,
-                        processData: false,
-                        contentType: false,
-                        success:function(data){
-            				if(data.status == 'success'){
-            					//var re = new RegExp("\\", "g")
-            					var imgPath = data.data.replace(/\\/g,'/');
-            					$('#img'+i).attr('src', base + 'upload/readImg.action?name='+data.imgName);
-            				}else{
-            					alert(data.mes);
-            				}
-            			}
-                	});
-               	}	
-        	}else{
-       			$('#uploadImgs')[0].files = [];
-       			alert('最多可上传5张图片');
-        	}
-        	
-        }
-        function addGood(){
-        	var imgs = [];
-        	imgs.push($('#img0').attr('src'));
-        	imgs.push($('#img1').attr('src'));
-        	imgs.push($('#img2').attr('src'));
-        	imgs.push($('#img3').attr('src'));
-        	imgs.push($('#img4').attr('src'));
-        	
-        	var obj = {
-   				gName:$('#goodName').val(),
-   				gPrice:$('#goodPrice').val(),
-   				gDexcribe:$('#goodDes').val(),
-   				gBId:$('#goodType option:selected').val(),
-   				gDeId:$('#goodDegree option:selected').val(),
-   				gUId:'402881ed61d7ab130161d7ab16e60000',//Util.getSession('loginUser');
-   				gPicture:imgs
-   			}
-        	
+        function addAddress(){
         	$.ajax({
     			type:"post",
     			async:true,
-    			url:"../goods/save.action",
+    			url:"../address/save.action",
     			dataType:"json",
-    			data:{param:JSON.stringify(obj)},
+    			data:{
+    				aDescribe:$('#goodDes').val(),
+    				aUId:loginUser.uId
+				},
     			success:function(data){
     				if(data.status == 'success'){
-    					$('#goodName').val('');
-    					$('#goodPrice').val('');
     					$('#goodDes').val('');
-    					$('#img0').attr('src','images/default.png');
-    					$('#img1').attr('src','images/default.png');
-    					$('#img2').attr('src','images/default.png');
-    					$('#img3').attr('src','images/default.png');
-    					$('#img4').attr('src','images/default.png');
-    					$("#goodType option:first").prop("selected", 'selected');
-    					$("#goodDegree option:first").prop("selected", 'selected');
     					$('#addGoodModal').modal('hide');
-    					getGoodsList(1);
+    					getAddressList(1);
     				}else{
     					alert(data.mes);
     				}

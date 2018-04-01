@@ -31,7 +31,7 @@ public class AddressDaoImpl implements IAddressDao {
 		String returnId = (String) session.save(address);
 		session.getTransaction().commit();
 		session.close();
-		if("".equals(returnId) && null != returnId){
+		if(!"".equals(returnId) && null != returnId){
 			return true;
 		}else{
 			return false;

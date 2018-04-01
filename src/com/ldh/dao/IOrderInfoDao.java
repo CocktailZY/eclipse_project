@@ -11,7 +11,7 @@ public interface IOrderInfoDao {
 	 * @param orderInfo
 	 * @return
 	 */
-	public boolean save(OrderInfo orderInfo);
+	public String save(OrderInfo orderInfo);
 	
 	/**
 	 * 删除订单

@@ -1903,7 +1903,7 @@ var defaults = module.exports = {
 
     parent: (typeof document !== 'undefined') ? document.body : null,
 
-    action: 'products.html',//生成订单
+    action: '../../orderInfo/save.action',//生成订单
 
     target: '',
 

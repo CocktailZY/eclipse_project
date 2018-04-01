@@ -31,7 +31,7 @@ public class CartDaoImpl implements ICartDao {
 		String returnId = (String) session.save(cart);
 		session.getTransaction().commit();
 		session.close();
-		if("".equals(returnId) && null != returnId){
+		if(!"".equals(returnId) && null != returnId){
 			return true;
 		}else{
 			return false;

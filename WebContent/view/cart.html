@@ -94,7 +94,7 @@
 						html += '<tr id="'+rows[i].cId+'"><td class="goods"><label> <input type="checkbox" class="check-one check" attr="'+rows[i].cGId.gId+'" attr1="'+rows[i].cId+'" /></label></td>';
 						html += '<td style="line-height:23px;padding-top: 1.1rem;font-size: medium;">'+rows[i].cGId.gId+'</td>';
 						html += '<td style="line-height:23px;padding-top: 1.1rem;font-size: medium;">'+rows[i].cGId.gName+'</td>';
-						html += '<td class="selling-price number small-bold-red text-right" style="padding-top: 1.1rem;line-height:23px;font-size: medium;" data-bind="'+(parseInt(rows[i].cGId.gPrice)*parseInt(rows[i].cNumber))+'">'+(parseInt(rows[i].cGId.gPrice)*parseInt(rows[i].cNumber))+'</td>';
+						html += '<td class="selling-price number small-bold-red text-right" style="padding-top: 1.1rem;line-height:23px;font-size: medium;" data-bind="'+parseInt(rows[i].cGId.gPrice)+'">'+parseInt(rows[i].cGId.gPrice)+'</td>';
 						html += '<td><div class="input-group input-group-sm"><span class="input-group-addon minus">-</span>';
 						html += '<input type="text" class="number form-control input-sm" id="num_'+rows[i].cId+'" value="'+rows[i].cNumber+'" style="text-align: center;" />';
 						html += '<span class="input-group-addon plus">+</span></div></td>';

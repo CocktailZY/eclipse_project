@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
@@ -65,13 +66,15 @@ public class OrderDetails implements Serializable {
 	public void setdGId(Goods dGId) {
 		this.dGId = dGId;
 	}
+	@OneToOne
+	@JoinColumn(name="dExId")
 	public Express getdExId() {
 		return dExId;
 	}
 	public void setdExId(Express dExId) {
 		this.dExId = dExId;
 	}
-	@ManyToOne(cascade={CascadeType.ALL})
+	@ManyToOne(cascade={CascadeType.MERGE})
 	@JoinColumn(name="dOId")
 	public OrderInfo getdOId() {
 		return dOId;

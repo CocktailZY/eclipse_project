@@ -17,14 +17,15 @@
     <link href="css/font-awesome.css" rel="stylesheet">
     <!-- //font-awesome icons -->
     <!-- js -->
-    <script src="js/jquery.min.js"></script>
+    <!-- <script src="js/jquery.min.js"></script> -->
+    <script src="vendors/jquery-1.9.1.min.js"></script>
     <!-- //js -->
     <!-- web fonts
     <link href='http://fonts.googleapis.com/css?family=Glegoo:400,700' rel='stylesheet' type='text/css'>
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,400italic,600,600italic,700,700italic,800,800italic' rel='stylesheet' type='text/css'>
     <!-- //web fonts -->
     <!-- for bootstrap working -->
-    <script type="text/javascript" src="js/bootstrap-3.1.1.min.js"></script>
+    <!-- <script type="text/javascript" src="js/bootstrap-3.1.1.min.js"></script> -->
     <!-- //for bootstrap working -->
     <!-- Bootstrap -->
     <!--<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">-->
@@ -483,7 +484,7 @@
 							html += '<option value="'+rows[i].aId+'">'+rows[i].aDescribe+'</option>';
 						}
 					}
-					$('#address_select').empty().html(html);
+					$('.choose_address').empty().html(html);
 				} else {
 					//没有数据或服务器错误
 				}
@@ -512,14 +513,15 @@
 					rows = data.data;
 					var html ='';
 					for (var i = 0; i < rows.length; i++) {
-						html += '<table class="table" style="background-color: #f5f5f5;border-radius: 4px;">';
+						html += '<table class="table" style="background-color: #e5e5e5;border-radius: 4px;">';
 						html += '<thead>';
 						html += '<tr style="border-bottom: 1px solid #dddddd;">';
 						html += '<td colspan="2" style="text-align: left !important;">订单编号:'+rows[i].oId+'</td>';
-						html += '<td colspan="2" style="text-align: right !important;">'+rows[i].oDetermine+'</td>';
+						html += '<td colspan="3" style="text-align: right !important;">'+rows[i].oDetermine+'</td>';
 						html += '</tr>';
 						html += '</thead>';
 						html += '<tbody>';
+						html += '<tr><td>商品名称</td><td>单价</td><td>数量</td><td>小计</td><td>承运快递</td></tr>';
 						if(rows[i].details.length > 0){
 							for(var j = 0 ; j < rows[i].details.length ; j++){
 								var item = rows[i].details[j];
@@ -528,35 +530,40 @@
 								html += '<td>'+item.dGId.gPrice+'</td>';
 								html += '<td>'+item.dNumber+'</td>';
 								html += '<td>'+item.dSubTotal+'</td>';
+								if(item.dExId){
+									html += '<td>'+item.dExId.eExpress+'</td>';
+								}else{
+									html += '<td></td>';
+								}
 								html += '</tr>';
 							}
 						}
 						html += '</tbody>';
 						html += '</table>';
-						html += '<div class="row">';
+						html += '<div class="row" style="margin-bottom:10px;">';
 						html += '<div class="col-md-12 col-lg-12 col-sm-12">';
 						html += '<div class="cart-summary clearfix">';
 						html += '<div style="margin-left: 1rem; margin-top: 0.4rem;" class="pull-right total">';
-						html += '<label>金额合计:<span id="priceTotal" class="price-total large-bold-red">'+rows[i].oTotal+'</span></label>';
+						html += '<label>金额合计:<span id="priceTotal_'+rows[i].oId+'" class="price-total large-bold-red">'+rows[i].oTotal+'</span></label>';
 						html += '</div>';
 						if(rows[i].oSign == 1){
-							html += '<div class="pull-right" id="order_status"><h3><span class="label label-primary">未支付</span></h3></div>';
+							html += '<div class="pull-right" id="order_status_'+rows[i].oId+'"><h3><span class="label label-primary">未支付</span></h3></div>';
 							html += '<hr style="margin-top:55px;">';
 							html += '<form class="form-horizontal" role="form" style="padding-right:148px;">';
 							html += '<div class="form-group">';
 							html += '<label class="col-sm-4 control-label">收件人:</label>';
 							html += '<div class="col-sm-8">';
-							html += '<p class="form-control" id="sj_user">xxxxx</p>';
+							html += '<p class="form-control" id="sj_user_'+rows[i].oId+'">'+loginUser.uName+'</p>';
 							html += '</div></div>';
 							html += '<div class="form-group">';
 							html += '<label class="col-sm-4 control-label">联系电话:</label>';
 							html += '<div class="col-sm-8">';
-							html += '<p class="form-control" id="sj_phone">13112341234</p>';
+							html += '<p class="form-control" id="sj_phone_'+rows[i].oId+'">'+loginUser.uPhone+'</p>';
 							html += '</div></div>';
 							html += '<div class="form-group">';
 							html += '<label class="col-sm-4 control-label">收货地址:</label>';
 							html += '<div class="col-sm-8">';
-							html += '<select class="form-control" id="address_select"></select>';
+							html += '<select class="form-control choose_address" id="address_select_'+rows[i].oId+'"></select>';
 							html += '</div></div>';
 							html += '<div class="form-group text-center">';
 							html += '<button type="button" class="btn btn-primary" style="width:30%;" onclick="confirmOrder(\''+rows[i].oId+'\')">确认付款</button>';
@@ -565,6 +572,7 @@
 							html += '<div class="pull-right" id="order_status"><h3><span class="label label-primary">等待卖家发货</span></h3></div>';
 						}else if(rows[i].oSign == 3){
 							html += '<div class="pull-right" id="order_status"><h3><span class="label label-primary">卖家已发货</span></h3></div>';
+							html += '<div class="pull-right" id="order_status"><h3><span class="label label-success" style="margin-right:8px;" onclick="finishOrder(\''+rows[i].oId+'\')">确认收货</span></h3></div>';
 						}else if(rows[i].oSign == 4){
 							html += '<div class="pull-right" id="order_status"><h3><span class="label label-primary">已完成</span></h3></div>';
 						}
@@ -602,6 +610,7 @@
 					
 				} else {
 					//没有数据或服务器错误
+					$('#order_table').empty().html('<div>暂无数据</div>');
 				}
 			}
 		});
@@ -622,7 +631,7 @@
 				if (data.status == 'success') {
 					var item = data.data;
 					var yue = item.uMoney;
-					var xufu = $('#priceTotal').text().replace(/,/g,'');
+					var xufu = $('#priceTotal_'+oid).text().replace(/,/g,'');
 					if(parseFloat(yue) < parseFloat(xufu)){
 						alert('您的余额不足，请充值！');
 					}else{
@@ -634,7 +643,7 @@
 							data : {
 								oId:oid,
 								oSign:2,
-								oAId:$('#address_select option:selected').val()
+								oAId:$('#address_select_'+oid+' option:selected').val()
 							},
 							success : function(data) {
 								console.log(data);
@@ -668,6 +677,29 @@
 					}
 				} else {
 					//没有数据或服务器错误
+				}
+			}
+		});
+	}
+	
+	function finishOrder(oid){
+		$.ajax({
+			type : "post",
+			async : false,
+			url : "../orderInfo/finishOrder.action",
+			dataType : "json",
+			data : {
+				oId:oid,
+				oSign:4,
+			},
+			success : function(data) {
+				console.log(data);
+				if (data.status == 'success') {
+					//alert('finigsh');
+					getOrder(1);
+				} else {
+					//没有数据或服务器错误
+					alert(data.mes);
 				}
 			}
 		});

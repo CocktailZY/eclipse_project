@@ -17,14 +17,15 @@
     <link href="css/font-awesome.css" rel="stylesheet">
     <!-- //font-awesome icons -->
     <!-- js -->
-    <script src="js/jquery.min.js"></script>
+    <!-- <script src="js/jquery.min.js"></script> -->
+    <script src="vendors/jquery-1.9.1.min.js"></script>
     <!-- //js -->
     <!-- web fonts
     <link href='http://fonts.googleapis.com/css?family=Glegoo:400,700' rel='stylesheet' type='text/css'>
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,400italic,600,600italic,700,700italic,800,800italic' rel='stylesheet' type='text/css'>
     <!-- //web fonts -->
     <!-- for bootstrap working -->
-    <script type="text/javascript" src="js/bootstrap-3.1.1.min.js"></script>
+    <!-- <script type="text/javascript" src="js/bootstrap-3.1.1.min.js"></script> -->
     <!-- //for bootstrap working -->
     <!-- Bootstrap -->
     <!--<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">-->
@@ -255,45 +256,44 @@
                         <table class="table table-bordered text-center">
                             <thead>
                             <tr>
-                                <th>编号</th>
+                                <th>订单编号</th>
                                 <th>商品名称</th>
-                                <th>日期</th>
                                 <th>总计</th>
-                                <th>订单状态</th>
-                               	<th>分配快递</th>
+                                <th>下单用户</th>
+                                <th>分配快递</th>
+                               	<th>订单状态</th>
                                 <th>操作</th>
                             </tr>
                             </thead>
-                            <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>Mark</td>
-                                <td>Otto</td>
-                                <td>@mdo</td>
-                                <td>
-                                	<select id="express">
-                                		<option selected="selected">申通快递</option>
-                                		<option>韵达快递</option>
-                                	</select>
-                                </td>
-                                <td>待确认</td>
-                                <td>
-                                    <button class="btn btn-xs btn-default">详情</button>
-                                    <button class="btn btn-xs btn-danger">确认</button>
-                                </td>
-                            </tr>
+                            <tbody id="orderinfo_table">
+	                           <!--  <tr>
+	                                <td>1</td>
+	                                <td>Mark</td>
+	                                <td>@mdo</td>
+	                                <td>
+	                                	<select id="express">
+	                                		<option selected="selected">申通快递</option>
+	                                		<option>韵达快递</option>
+	                                	</select>
+	                                </td>
+	                                <td>待确认</td>
+	                                <td>
+	                                    <button class="btn btn-xs btn-default">详情</button>
+	                                    <button class="btn btn-xs btn-danger">确认</button>
+	                                </td>
+	                            </tr> -->
                             </tbody>
                         </table>
                         <!--</div>-->
                         <div class="pull-right">
-                            <ul class="pagination pagination-sm">
-                                <li><a href="#">&laquo;</a></li>
+                            <ul class="pagination pagination-sm" id="orderPage">
+                                <!-- <li><a href="#">&laquo;</a></li>
                                 <li class="active"><a href="#">1</a></li>
                                 <li><a href="#">2</a></li>
                                 <li><a href="#">3</a></li>
                                 <li><a href="#">4</a></li>
                                 <li><a href="#">5</a></li>
-                                <li><a href="#">&raquo;</a></li>
+                                <li><a href="#">&raquo;</a></li> -->
                             </ul>
                         </div>
                     </div>
@@ -385,17 +385,18 @@
 <script src="../backstage/lib/custom/util.js"></script>
 <script src="js/loginutil.js"></script>
 <script>
+	var loginUser;
     $(function() {
         // Easy pie charts
         $('.chart').easyPieChart({animate: 1000});
         if(Util.getSession('login_user')){
-			var loginUser = JSON.parse(Util.getSession("login_user"));
+			loginUser = JSON.parse(Util.getSession("login_user"));
 			$('.w3l_login').empty().html('<div style="height:50px;line-height: 50px;font-size: large;">欢迎您! '+loginUser.uName+'&nbsp;&nbsp;&nbsp;&nbsp;<button class="btn btn-sm btn-info" onclick="loginout()">注销</button></div>');
 			$('.w3l_logo').css('margin-left','15em');
 		}
         
         getGoodsBrand();
-        getExpress();
+        getOrderInfo(1);
         
     });
     function getGoodsBrand(){
@@ -418,6 +419,7 @@
 					}
 					html += '<div class="clearfix"></div>';
 					$('#index-brand').empty().html(html);
+					
 				} else {
 					//没有数据或服务器错误
 				}
@@ -449,13 +451,134 @@
 							html += '<option value="'+rows[i].eId+'">'+rows[i].eExpress+'</option>';
 						}
 					}
-					$('#express').empty().html(html);
+					$('.my_select').empty().html(html);
 				} else {
 					//没有数据或服务器错误
 				}
 			}
 		});
 	}
+	
+	function getOrderInfo(pageNum){
+		$.ajax({
+			type : "get",
+			async : true,
+			url : "../orderDetails/listByCondsFromHql.action",
+			dataType : "json",
+			data : {
+				dUId:loginUser.uId,
+				pageNum:pageNum
+			},
+			success : function(data) {
+				console.log(data);
+				if (data.status == 'success') {
+					var rows = [];
+					rows = data.data;
+					var html ='';
+					for (var i = 0; i < rows.length; i++) {
+						html += '<tr>';
+						html += '<td>'+rows[i].dOId.oId+'</td>';
+						html += '<td>'+rows[i].dGId.gName+'</td>';
+						html += '<td>'+rows[i].dSubTotal+'</td>';
+						html += '<td>'+rows[i].dOId.oUId.uName+'</td>';
+						html += '<td>';
+						if(rows[i].dExId){
+							html += rows[i].dExId.eExpress;
+						}else{
+							html += '<select class="my_select" id="express_'+rows[i].dId+'"></select>';
+						}
+						html += '</td>';
+						if(rows[i].dOId.oSign == 2){
+							html += '<td>待确认</td>';
+							html += '<td>';
+							html += '<button class="btn btn-xs btn-danger" onclick="confirmOrder(\''+rows[i].dId+'\',\''+rows[i].dOId.oId+'\')">确认</button>';
+							html += '</td>';
+						}else if(rows[i].dOId.oSign == 3){
+							html += '<td>已确认</td>';
+							html += '<td></td>';
+						}else if(rows[i].dOId.oSign == 4){
+							html += '<td>已完成</td>';
+							html += '<td></td>';
+						}
+						html += '</tr>';
+					}
+					$('#orderinfo_table').empty().html(html);
+					getExpress();
+					
+					var pageHtml = '';
+     				if(data.pageTotal > 1){
+     					pageHtml += '<li><a href="javascript:getOrderInfo('+(parseInt(data.pageNum)-1)+')">&laquo;</a></li>';
+     					if(myPageNum == 1){
+     						pageHtml += '<li class="active"><a href="javascript:getOrderInfo(1)">1</a></li>';
+     					}else{
+     						pageHtml += '<li><a href="javascript:getOrderInfo(1)">1</a></li>';
+     					}
+     					for(var i = 2 ; i <= data.pageTotal ; i++){
+     						if(myPageNum == i){
+     							pageHtml += '<li class="active"><a href="javascript:getOrderInfo('+i+')">'+i+'</a></li>';
+     						}else{
+     							pageHtml += '<li><a href="javascript:getOrderInfo('+i+')">'+i+'</a></li>';
+     						}
+     					}
+     					if(myPageNum <= data.pageTotal){
+         						pageHtml += '<li><a href="javascript:getOrderInfo('+(parseInt(data.pageNum)+1)+')">&raquo;</a></li>';
+     					}else{
+     						pageHtml += '<li><a href="#">&raquo;</a></li>';
+     					}
+     				}else{
+     					pageHtml += '<li><a>&laquo;</a></li>';
+         				pageHtml += '<li class="active"><a href="#">1</a></li>';
+         				pageHtml += '<li><a>&raquo;</a></li>';
+     				}
+     				$('#orderPage').empty().append(pageHtml);
+				} else {
+					//没有数据或服务器错误
+					$('#orderinfo_table').empty().html('<tr><td colspan="7">暂无数据</td></tr>');
+				}
+			}
+		});
+	}
+	
+	function confirmOrder(did,oid){
+		$.ajax({
+			type : "post",
+			async : false,
+			url : "../orderInfo/update.action",
+			dataType : "json",
+			data : {
+				oId:oid,
+				oSign:3,
+			},
+			success : function(data) {
+				console.log(data);
+				if (data.status == 'success') {
+					$.ajax({
+						type : "post",
+						async : false,
+						url : "../orderDetails/update.action",
+						dataType : "json",
+						data : {
+							dId:did,
+							dExId:$('#express_'+did+' option:selected').val()
+						},
+						success : function(data) {
+							console.log(data);
+							if (data.status == 'success') {
+								getOrderInfo(1);
+							} else {
+								//没有数据或服务器错误
+								alert(data.mes);
+							}
+						}
+					});
+				} else {
+					//没有数据或服务器错误
+					alert(data.mes);
+				}
+			}
+		});
+	}
+	
 </script>
 <!-- //cart-js -->
 </body>

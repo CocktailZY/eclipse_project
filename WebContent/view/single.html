@@ -122,6 +122,30 @@
 						
 					}
 					$('#flexiselDemo2').empty().html(html);
+					$("#flexiselDemo2").flexisel({
+						visibleItems:rows.length,
+						animationSpeed: 1000,
+						autoPlay: true,
+						autoPlaySpeed: 3000,    		
+						pauseOnHover: true,
+						enableResponsiveBreakpoints: true,
+						responsiveBreakpoints: { 
+							portrait: { 
+								changePoint:480,
+								visibleItems: 1
+							}, 
+							landscape: { 
+								changePoint:640,
+								visibleItems:2
+							},
+							tablet: { 
+								changePoint:768,
+								visibleItems: 3
+							}
+						}
+					});
+					
+					
 				} else {
 					//没有数据或服务器错误
 					$('#flexiselDemo2').empty().html('<label>暂无商品!</label>');
@@ -161,6 +185,10 @@
 					carthtml += '<button type="submit" class="w3ls-cart">加入购物车</button>';
 					carthtml += '</form>';
 					$('#detail-img').empty().html(imghtml);
+					$('.flexslider').flexslider({
+						animation: "slide",
+						controlNav: "thumbnails"
+					  });
 					$('#detail-title').empty().html(data.good.gName);
 					$('#detail-content').empty().html(data.good.gDescribe);
 					$('#detail-bottom').empty().html(carthtml);
@@ -377,8 +405,8 @@
 		<div class="container">
 			<div class="col-md-4 single-left">
 				<div class="flexslider">
-					<!-- <ul class="slides" id="detail-img">
-						<li data-thumb="images/a.jpg">
+					<ul class="slides" id="detail-img">
+					<!-- 	<li data-thumb="images/a.jpg">
 							<div class="thumb-image"> <img src="images/a.jpg" data-imagezoom="true" class="img-responsive" alt=""> </div>
 						</li>
 						<li data-thumb="images/b.jpg">
@@ -386,8 +414,8 @@
 						</li>
 						<li data-thumb="images/c.jpg">
 						   <div class="thumb-image"> <img src="images/c.jpg" data-imagezoom="true" class="img-responsive" alt=""> </div>
-						</li> 
-					</ul> -->
+						</li>  -->
+					</ul>
 				</div>
 				<!-- flexslider -->
 					<script defer src="js/jquery.flexslider.js"></script>
@@ -395,10 +423,10 @@
 					<script>
 					// Can also be used with $(document).ready()
 					$(window).load(function() {
-					  $('.flexslider').flexslider({
+					  /* $('.flexslider').flexslider({
 						animation: "slide",
 						controlNav: "thumbnails"
-					  });
+					  }); */
 					});
 					</script>
 				<!-- flexslider -->
@@ -490,7 +518,7 @@
 		<div class="container">
 			<h3>相关商品</h3>
 			<ul id="flexiselDemo2">			
-				<li>
+				<!-- <li>
 					<div class="w3l_related_products_grid">
 						<div class="agile_ecommerce_tab_left mobiles_grid">
 							<div class="hs-wrapper hs-wrapper3">
@@ -608,10 +636,10 @@
 							</div>
 						</div> 
 					</div>
-				</li>
+				</li> -->
 			</ul>
 			
-				<script type="text/javascript">
+				<!-- <script type="text/javascript">
 					$(window).load(function() {
 						$("#flexiselDemo2").flexisel({
 							visibleItems:4,
@@ -637,7 +665,7 @@
 						});
 						
 					});
-				</script>
+				</script> -->
 				<script type="text/javascript" src="js/jquery.flexisel.js"></script>
 		</div>
 	</div>

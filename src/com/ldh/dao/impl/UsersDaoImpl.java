@@ -31,10 +31,10 @@ public class UsersDaoImpl implements IUsersDao {
 		String returnId = (String) session.save(user);
 		session.getTransaction().commit();
 		session.close();
-		if("".equals(returnId) && null != returnId){
-			return false;
-		}else{
+		if(!"".equals(returnId) && null != returnId){
 			return true;
+		}else{
+			return false;
 		}
 	}
 

@@ -20,13 +20,12 @@ import com.ldh.dao.IGoodsDao;
 import com.ldh.dao.IOrderDetailsDao;
 import com.ldh.dao.IOrderInfoDao;
 import com.ldh.dao.IUsersDao;
-import com.ldh.model.Brand;
-import com.ldh.model.Degree;
 import com.ldh.model.Goods;
 import com.ldh.model.OrderDetails;
 import com.ldh.model.OrderInfo;
 import com.ldh.model.Users;
 import com.ldh.util.JsonUtil;
+import com.ldh.util.PageBean;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -97,27 +96,81 @@ public class OrderInfoAction {
 		String oUId = ServletActionContext.getRequest().getParameter("oUId");
 //		String oAId = ServletActionContext.getRequest().getParameter("oAId");
 		
-		OrderInfo orderInfo = new OrderInfo();
-		orderInfo.setoTotal(oTotal);
-		orderInfo.setoDetermine(df.format(new Date()));//下单时间
-//		orderInfo.setoComplete(oComplete);
-		orderInfo.setoSign(1);
-		orderInfo.setoUId(userDao.getById(oUId));
+//		OrderInfo orderInfo = new OrderInfo();
+//		orderInfo.setoTotal(oTotal);
+//		orderInfo.setoDetermine(df.format(new Date()));//下单时间
+////		orderInfo.setoComplete(oComplete);
+//		orderInfo.setoSign(1);
+//		orderInfo.setoUId(userDao.getById(oUId));
 //		orderInfo.setoAId(addressDao.getById(oAId));
 		JSONObject jobj = new JSONObject();
-		String saveOId = orderInfoDao.save(orderInfo);
 		boolean flag = false;
-		if(!"0".equals(saveOId) && null != saveOId){
+		if(obj.size() > 0){
 			//save success
+			String firstUId = null;
+			String firstOId = null;
+			String myTotal = null;
 			for(int i = 0 ; i < obj.size() ; i++){
-				OrderDetails tempDetail = new OrderDetails();
 				JSONObject json = JSONObject.fromObject(obj.get(i));
-				tempDetail.setdGId(goodsDao.getById(json.getString("gId")));
-				tempDetail.setdNumber(json.getString("gNum"));
-				tempDetail.setdOId(orderInfoDao.getById(saveOId));
-				tempDetail.setdSubTotal(json.getString("gSubTotal"));
-				tempDetail.setdUId(userDao.getById(goodsDao.getById(json.getString("gId")).getgUId().getuId()));
-				flag = orderDetailsDao.save(tempDetail);
+				//判断订单商品是否为同一卖家
+				if(i == 0){
+					OrderInfo orderInfo = new OrderInfo();
+					orderInfo.setoTotal(json.getString("gSubTotal"));
+					myTotal = json.getString("gSubTotal");
+					orderInfo.setoDetermine(df.format(new Date()));//下单时间
+					orderInfo.setoSign(1);
+					orderInfo.setoUId(userDao.getById(oUId));
+					firstOId = orderInfoDao.save(orderInfo);
+					
+					OrderDetails tempDetail = new OrderDetails();
+					tempDetail.setdGId(goodsDao.getById(json.getString("gId")));
+					tempDetail.setdNumber(json.getString("gNum"));
+					tempDetail.setdOId(orderInfoDao.getById(firstOId));
+					tempDetail.setdSubTotal(json.getString("gSubTotal"));
+					tempDetail.setdUId(userDao.getById(goodsDao.getById(json.getString("gId")).getgUId().getuId()));
+					flag = orderDetailsDao.save(tempDetail);
+					
+					firstUId = goodsDao.getById(json.getString("gId")).getgUId().getuId();//取到第一个商品的卖家id
+				}else{
+					String thisId = goodsDao.getById(json.getString("gId")).getgUId().getuId();
+					if(firstUId.equals(thisId)){
+						System.out.println(myTotal.getClass());
+						double temptotal = Double.parseDouble(myTotal.replaceAll(",",""));
+						double temptotal1 = Double.parseDouble(json.getString("gSubTotal").replaceAll(",",""));
+						myTotal = String.valueOf(temptotal+temptotal1);
+						OrderInfo tempObj = orderInfoDao.getById(firstOId);
+						tempObj.setoTotal(myTotal);
+						orderInfoDao.update(tempObj);//更新总计
+						
+						OrderDetails tempDetail = new OrderDetails();
+						tempDetail.setdGId(goodsDao.getById(json.getString("gId")));
+						tempDetail.setdNumber(json.getString("gNum"));
+						tempDetail.setdOId(orderInfoDao.getById(firstOId));
+						tempDetail.setdSubTotal(json.getString("gSubTotal"));
+						tempDetail.setdUId(userDao.getById(goodsDao.getById(json.getString("gId")).getgUId().getuId()));
+						flag = orderDetailsDao.save(tempDetail);
+						
+					}else{
+						OrderInfo orderInfo = new OrderInfo();
+						orderInfo.setoTotal(json.getString("gSubTotal"));
+						myTotal = json.getString("gSubTotal");
+						orderInfo.setoDetermine(df.format(new Date()));//下单时间
+						orderInfo.setoSign(1);
+						orderInfo.setoUId(userDao.getById(oUId));
+						firstOId = orderInfoDao.save(orderInfo);
+						
+						OrderDetails tempDetail = new OrderDetails();
+						tempDetail.setdGId(goodsDao.getById(json.getString("gId")));
+						tempDetail.setdNumber(json.getString("gNum"));
+						tempDetail.setdOId(orderInfoDao.getById(firstOId));
+						tempDetail.setdSubTotal(json.getString("gSubTotal"));
+						tempDetail.setdUId(userDao.getById(goodsDao.getById(json.getString("gId")).getgUId().getuId()));
+						flag = orderDetailsDao.save(tempDetail);
+						
+						firstUId = goodsDao.getById(json.getString("gId")).getgUId().getuId();//取到第一个商品的卖家id
+					}
+				}
+				
 			}
 			if(flag){
 				jobj.put("mes", "保存成功!");
@@ -254,7 +307,8 @@ public class OrderInfoAction {
 	public String listByConds() throws IOException{
 		String jsonConds = ServletActionContext.getRequest().getParameter("conds");
 		JSONObject jsonObj = JSONObject.fromObject(jsonConds);
-		String hql = "from OrderInfo where uSign !=0 and ";
+					//select * from orderdetails a,orderinfo b where a.dOId = b.oid and b.oSign != 0
+		String hql = "from orderdetails a,orderinfo b where a.dOId = b.oid and b.oSign != 0 ";
 		Iterator<String> sIterator = jsonObj.keys();  
 		while(sIterator.hasNext()){  
 		    // 获得key  
@@ -264,33 +318,88 @@ public class OrderInfoAction {
 		    hql+=key+"='"+value+"'and ";
 //		    System.out.println("key: "+key+",value"+value);  
 		} 
-		//分页
-//		String pageNumStr = ServletActionContext.getRequest().getParameter("pageNum");
-//		int pageNum = 1;
-//		if(pageNumStr!=null && !"".equals(pageNumStr)){
-//			pageNum = Integer.parseInt(pageNumStr);
-//		}
-//		List<Object> list = new ArrayList<Object>();
+//		分页
+		String pageNumStr = ServletActionContext.getRequest().getParameter("pageNum");
+		int pageNum = 1;
+		if(pageNumStr!=null && !"".equals(pageNumStr)){
+			pageNum = Integer.parseInt(pageNumStr);
+		}
+		List<Object> list = new ArrayList<Object>();
 		if(hql.lastIndexOf("and ") != -1){
 			hql = hql.substring(0, hql.lastIndexOf("and "));
 		}
 		List<Object> orderlist = orderInfoDao.getAllByConds(hql);//获取所有用户数据，不带分页
-//		PageBean page=null;
-//		if(userlist.size()>0){
-//			page = new PageBean(userlist.size(),pageNum,5);
-//			list = usersDao.getByConds(hql,page);//带分页
-//		}
-		if(orderlist.size() > 0){
+		PageBean page=null;
+		if(orderlist.size()>0){
+			page = new PageBean(orderlist.size(),pageNum,5);
+			list = orderInfoDao.getByConds(hql,page);//带分页
+		}
+		JSONArray jsonlist = new JSONArray();
+		for(int o = 0 ; o < list.size() ; o++){
+			OrderInfo oinfo = (OrderInfo) list.get(o);
+			JSONObject temp = new JSONObject();
+			temp.put("oId", oinfo.getoId());
+			temp.put("oDetermine", oinfo.getoDetermine());
+			temp.put("oTotal", oinfo.getoTotal());
+			temp.put("oSign", oinfo.getoSign());
+			String hqldetail = "from OrderDetails where dOId='"+oinfo.getoId()+"'";
+			List<Object> orderdetaillist = orderDetailsDao.getAllByConds(hqldetail);
+			temp.put("details", orderdetaillist);
+			jsonlist.add(temp);
+		}
+		
+		JSONObject jobj = new JSONObject();
+		if(list.size() > 0){
 			//save success
-			JSONObject jobj = JSONObject.fromObject("{mes:\'获取成功!\',status:\'success\',data:"+JsonUtil.toJsonByListObj(orderlist)+"}");
-			ServletActionContext.getResponse().setHeader("content-type", "text/html;charset=UTF-8");
-			ServletActionContext.getResponse().getWriter().write(jobj.toString());
+			jobj.put("mes", "获取成功!");
+			jobj.put("status", "success");
+			jobj.put("data", jsonlist);
 		}else{
 			//save failed
-			JSONObject jobj = JSONObject.fromObject("{mes:\'无符合条件的用户!\',status:\'error\'}");
-			ServletActionContext.getResponse().setHeader("content-type", "text/html;charset=UTF-8");
-			ServletActionContext.getResponse().getWriter().write(jobj.toString());
+			jobj.put("mes", "获取失败!");
+			jobj.put("status", "error");
 		}
+		ServletActionContext.getResponse().setHeader("content-type", "text/html;charset=UTF-8");
+		ServletActionContext.getResponse().getWriter().write(jobj.toString());
+		return null;
+	}
+	
+	@Action(value="finishOrder")
+	public String finishOrder() throws IOException{
+		String oId = ServletActionContext.getRequest().getParameter("oId");
+		String oSign = ServletActionContext.getRequest().getParameter("oSign");
+		boolean option_flag = false;
+		OrderInfo oinfo = orderInfoDao.getById(oId);
+		oinfo.setoSign(Integer.parseInt(oSign));
+		option_flag = orderInfoDao.update(oinfo);//更新订单
+		
+		List<Object> odlist = orderDetailsDao.getAllByConds("from OrderDetails where dOId = '"+oId+"' and dExId is not null");
+		for(int h = 0 ; h < odlist.size() ; h++){
+			OrderDetails item = (OrderDetails) odlist.get(h);
+			Users uinfo = item.getdUId();
+			double temptotal = Double.parseDouble(uinfo.getuMoney().replaceAll(",",""));
+			double temptotal1 = Double.parseDouble(item.getdSubTotal().replaceAll(",",""));
+			uinfo.setuMoney(String.valueOf(temptotal+temptotal1));
+			option_flag = userDao.update(uinfo);//更新卖家余额
+			
+			Goods ginfo = item.getdGId();
+			ginfo.setgSign(3);
+			option_flag = goodsDao.update(ginfo);//更新商品状态
+		}
+		
+		JSONObject jobj = new JSONObject();
+		if(option_flag){
+			//save success
+			jobj.put("mes", "更新成功!");
+			jobj.put("status", "success");
+//			jobj.put("data", JsonUtil.toJsonByListObj(goodsTypelist));
+		}else{
+			//save failed
+			jobj.put("mes", "获取失败!");
+			jobj.put("status", "error");
+		}
+		ServletActionContext.getResponse().setHeader("content-type", "text/html;charset=UTF-8");
+		ServletActionContext.getResponse().getWriter().write(jobj.toString());
 		return null;
 	}
 

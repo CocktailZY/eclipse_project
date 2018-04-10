@@ -17,14 +17,15 @@
     <link href="css/font-awesome.css" rel="stylesheet">
     <!-- //font-awesome icons -->
     <!-- js -->
-    <script src="js/jquery.min.js"></script>
+<!-- <script src="js/jquery.min.js"></script> -->
+<script src="vendors/jquery-1.9.1.min.js"></script>
     <!-- //js -->
     <!-- web fonts
     <link href='http://fonts.googleapis.com/css?family=Glegoo:400,700' rel='stylesheet' type='text/css'>
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,400italic,600,600italic,700,700italic,800,800italic' rel='stylesheet' type='text/css'>
     <!-- //web fonts -->
     <!-- for bootstrap working -->
-    <script type="text/javascript" src="js/bootstrap-3.1.1.min.js"></script>
+<!-- <script type="text/javascript" src="js/bootstrap-3.1.1.min.js"></script> -->
     <!-- //for bootstrap working -->
     <!-- Bootstrap -->
     <!--<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">-->
@@ -414,8 +415,8 @@
                                     <div class="form-group">
                                         <label for="inputEmail5" class="col-sm-2 control-label">账户余额</label>
                                         <div class="col-sm-6">
-                                            <span id="yue">100.0</span><strong style="color: #ff5635;">￥</strong>
-                                            <button type="button" class="btn btn-default" click="chongzhi()">充值</button>
+                                            <span id="my_money"></span><strong style="color: #ff5635;">￥</strong>
+                                            <a href="#" class="btn btn-default" data-toggle="modal" data-target="#chongzhiModal">充值</a>
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -509,6 +510,32 @@
 </div>-->
 <!-- //team-bottom -->
 <!-- newsletter -->
+<div class="modal video-modal fade" id="chongzhiModal" tabindex="-1" role="dialog" aria-labelledby="chongzhiModal">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			</div>
+			<section>
+				<div class="modal-body">
+					<form class="form-horizontal">
+					  <div class="form-group">
+						<label for="jine" class="col-sm-2 control-label">填写充值金额:</label>
+						<div class="col-sm-10">
+						  <input type="text" class="form-control" id="jine">
+						</div>
+					  </div>
+					  <div class="form-group">
+						<div class="col-sm-offset-2 col-sm-10">
+						  <button type="button" class="btn btn-default" onclick="chongzhi()">确定</button>
+						</div>
+					  </div>
+					</form>
+				</div>
+			</section>
+		</div>
+	</div>
+</div>
 <div class="newsletter">
     <div class="container">
         <div class="col-md-6 w3agile_newsletter_left">
@@ -592,11 +619,12 @@
 <script src="js/loginutil.js"></script>
 <script>
 	var uId;
+	var loginUser;
     $(function() {
         // Easy pie charts
         $('.chart').easyPieChart({animate: 1000});
         if(Util.getSession('login_user')){
-			var loginUser = JSON.parse(Util.getSession("login_user"));
+			loginUser = JSON.parse(Util.getSession("login_user"));
 			$('.w3l_login').empty().html('<div style="height:50px;line-height: 50px;font-size: large;">欢迎您! '+loginUser.uName+'&nbsp;&nbsp;&nbsp;&nbsp;<button class="btn btn-sm btn-info" onclick="loginout()">注销</button></div>');
 			$('.w3l_logo').css('margin-left','15em');
 		}
@@ -637,7 +665,7 @@
     
     function getData(){
     	var conds = {
-        		uName:'admin1'//Util.getSession("loginUser")
+        		uName:loginUser.uName
         	};
     	$.ajax({
     		type:"get",
@@ -657,6 +685,7 @@
    					$('#inputEmail4').val(userinfo.uPhone);
    					$('#inputEmail5').val(userinfo.uMail);
    					$('#inputEmail6').text(userinfo.uFraction);
+   					$('#my_money').text(userinfo.uMoney);
    					if(userinfo.uPicture){
    						$('#headImg').attr('src',userinfo.uPicture);
    					}else{
@@ -719,6 +748,43 @@
 				}
 			}
     	});
+    }
+    function chongzhi(){
+    	$.ajax({
+			type:"get",
+			async:false,
+			url:"../users/getById.action",
+			dataType:"json",
+			data:{
+				id:uId
+			},
+			success:function(data){
+				if(data.status == 'success'){
+					var money = parseFloat(data.data.uMoney)+parseFloat($('#jine').val());
+					$.ajax({
+						type:"post",
+						async:false,
+						url:"../users/update.action",
+						dataType:"json",
+						data:{
+							uId:uId,
+							uMoney:money
+						},
+						success:function(data){
+							if(data.status == 'success'){
+								$('#chongzhiModal').modal('hide');
+								$('#jine').val('');
+								getData();
+							}else{
+								alert(data.mes);
+							}
+						}
+					});
+				}else{
+					alert(data.mes);
+				}
+			}
+		});
     }
 </script>
 <!-- //cart-js -->

@@ -283,12 +283,12 @@
 					html += '<div class="modal_body_right_cart simpleCart_shelfItem">';
 					html += '<p><span>'+data.good.gDeId.deDescribe+'</span> <i class="item_price">￥'+data.good.gPrice+'</i></p>';
 					html += '<form action="#" method="post">';
-					html += '<input type="hidden" name="good_id_'+rows[i].gId+'" value="'+rows[i].gId+'">';
-					html += '<input type="hidden" name="good_num_'+rows[i].gId+'" value="1">';
-					html += '<input type="hidden" name="user_id_'+rows[i].gId+'" value="'+rows[i].gPrice+'">';
-					html += '<input type="hidden" name="w3ls_item_'+rows[i].gId+'" value="'+rows[i].gName+'">';
-					html += '<input type="hidden" name="good_total_'+rows[i].gId+'" value="'+rows[i].gPrice+'">';
-					html += '<button type="button" class="w3ls-cart" onclick="saveToCart(\''+rows[i].gId+'\')">加入购物车</button>';
+					html += '<input type="hidden" name="good_id_'+data.good.gId+'" value="'+data.good.gId+'">';
+					html += '<input type="hidden" name="good_num_'+data.good.gId+'" value="1">';
+					html += '<input type="hidden" name="user_id_'+data.good.gId+'" value="'+data.good.gPrice+'">';
+					html += '<input type="hidden" name="w3ls_item_'+data.good.gId+'" value="'+data.good.gName+'">';
+					html += '<input type="hidden" name="good_total_'+data.good.gId+'" value="'+data.good.gPrice+'">';
+					html += '<button type="button" class="w3ls-cart" onclick="saveToCart(\''+data.good.gId+'\')">加入购物车</button>';
 					html += '</form></div>';
 					$('#good-modal-content').empty().html(html);
 					$('#myModal').modal('show');

@@ -144,9 +144,9 @@ public class OrderDetailsAction {
 	@Action(value="update")
 	public String update() throws IOException{
 		
-		String bId = ServletActionContext.getRequest().getParameter("bId");
+		String dId = ServletActionContext.getRequest().getParameter("dId");
 		String dExId = ServletActionContext.getRequest().getParameter("dExId");
-		OrderDetails orderDetails = orderDetailsDao.getById(bId);
+		OrderDetails orderDetails = orderDetailsDao.getById(dId);
 		if(dExId != null && !"".equals(dExId)){
 			orderDetails.setdExId(expressDao.getById(dExId));
 		}
@@ -207,6 +207,41 @@ public class OrderDetailsAction {
 		if(goodsTypelist.size()>0){
 			page = new PageBean(goodsTypelist.size(),pageNum,5);
 			list = orderDetailsDao.listAll(page);//带分页
+		}
+		JSONObject jobj = new JSONObject();
+		if(list.size() > 0){
+			//save success
+			jobj.put("mes", "获取成功!");
+			jobj.put("status", "success");
+			jobj.put("data", JsonUtil.toJsonByListObj(list));
+			jobj.put("pageTotal", page.getPageCount());
+			jobj.put("pageNum", page.getPageNum());
+		}else{
+			//save failed
+			jobj.put("mes", "获取失败!");
+			jobj.put("status", "error");
+		}
+		ServletActionContext.getResponse().setHeader("content-type", "text/html;charset=UTF-8");
+		ServletActionContext.getResponse().getWriter().write(jobj.toString());
+		return null;
+	}
+	
+	@Action(value="listByCondsFromHql")
+	public String listByCondsFromHql() throws IOException{
+//		分页
+		String pageNumStr = ServletActionContext.getRequest().getParameter("pageNum");
+		String dUId = ServletActionContext.getRequest().getParameter("dUId");
+		String hql = "from OrderDetails where dUId='"+dUId+"'";
+		int pageNum = 1;
+		if(pageNumStr!=null && !"".equals(pageNumStr)){
+			pageNum = Integer.parseInt(pageNumStr);
+		}
+		List<Object> list = new ArrayList<Object>();
+		List<Object> goodsTypelist = orderDetailsDao.list();//获取所有类型数据，不带分页
+		PageBean page=null;
+		if(goodsTypelist.size()>0){
+			page = new PageBean(goodsTypelist.size(),pageNum,5);
+			list = orderDetailsDao.getByConds(hql, page);//带分页
 		}
 		JSONObject jobj = new JSONObject();
 		if(list.size() > 0){

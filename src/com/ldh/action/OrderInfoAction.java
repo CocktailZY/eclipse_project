@@ -230,6 +230,7 @@ public class OrderInfoAction {
 		if(oAId != null && "".equals(oAId)){
 			orderInfo.setoAId(addressDao.getById(oAId));
 		}
+		
 		JSONObject jobj = new JSONObject();
 		if(orderInfoDao.update(orderInfo)){
 			//save success

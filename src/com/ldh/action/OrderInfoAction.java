@@ -222,8 +222,14 @@ public class OrderInfoAction {
 	public String update() throws IOException{
 		String oId = ServletActionContext.getRequest().getParameter("oId");
 		int oSign = Integer.parseInt(ServletActionContext.getRequest().getParameter("oSign"));
+		String oAId = ServletActionContext.getRequest().getParameter("oAId");
 		OrderInfo orderInfo = orderInfoDao.getById(oId);
-		orderInfo.setoSign(oSign);
+		if(oSign != 0){
+			orderInfo.setoSign(oSign);
+		}
+		if(oAId != null && "".equals(oAId)){
+			orderInfo.setoAId(addressDao.getById(oAId));
+		}
 		JSONObject jobj = new JSONObject();
 		if(orderInfoDao.update(orderInfo)){
 			//save success
@@ -307,8 +313,7 @@ public class OrderInfoAction {
 	public String listByConds() throws IOException{
 		String jsonConds = ServletActionContext.getRequest().getParameter("conds");
 		JSONObject jsonObj = JSONObject.fromObject(jsonConds);
-					//select * from orderdetails a,orderinfo b where a.dOId = b.oid and b.oSign != 0
-		String hql = "from orderdetails a,orderinfo b where a.dOId = b.oid and b.oSign != 0 ";
+		String hql = "from OrderInfo where oSign !=0 and ";
 		Iterator<String> sIterator = jsonObj.keys();  
 		while(sIterator.hasNext()){  
 		    // 获得key  

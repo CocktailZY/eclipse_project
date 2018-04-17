@@ -42,12 +42,12 @@ public class UsersAction{
 	 */
 	@Action(value="save")
 	public String save() throws IOException{
-		String uName = ServletActionContext.getRequest().getParameter("uName");
-		String uPassword = ServletActionContext.getRequest().getParameter("uPassword");
+		String uName = ServletActionContext.getRequest().getParameter("username");
+		String uPassword = ServletActionContext.getRequest().getParameter("password");
 		String uPhone = ServletActionContext.getRequest().getParameter("uPhone");
 		String uMail = ServletActionContext.getRequest().getParameter("uMail");
-		String uFraction = ServletActionContext.getRequest().getParameter("uFraction");
-		String uMoney = ServletActionContext.getRequest().getParameter("uMoney");
+		//String uFraction = ServletActionContext.getRequest().getParameter("uFraction");
+		//String uMoney = ServletActionContext.getRequest().getParameter("uMoney");
 		
 //		String hql = "from Users where uName="+uName+" and uPassword="+uPassword;
 //		List<Object> list = usersDao.getAllByConds(hql);
@@ -58,8 +58,8 @@ public class UsersAction{
 			user.setuPhone(uPhone);
 			user.setuMail(uMail);
 			user.setuSign(1);
-			user.setuFraction(uFraction);
-			user.setuMoney(uMoney);
+			user.setuFraction("50");
+			user.setuMoney("0");
 			if(usersDao.save(user)){
 				//save success
 				JSONObject jobj = JSONObject.fromObject("{mes:\'保存成功!\',status:\'success\'}");

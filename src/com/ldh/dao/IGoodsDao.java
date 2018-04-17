@@ -59,5 +59,19 @@ public interface IGoodsDao {
 	 * @return
 	 */
 	public List<Object> getAllByConds(String hql);
+	
+	/**
+	 * 查询所有商品
+	 * @return
+	 */
+	public List<Object> listByState();
+	
+	public List<Object> listByUId(String uId);
+	
+	/**
+	 * 查询所有商品带分页
+	 * @return
+	 */
+	public List<Object> listByUId(PageBean page,String uId);
 
 }

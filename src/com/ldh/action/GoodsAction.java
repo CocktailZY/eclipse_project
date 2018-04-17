@@ -98,7 +98,8 @@ public class GoodsAction {
 		good.setgDescribe(gDexcribe);
 		good.setgBId(brandDao.getById(gBId));
 		good.setgDeId(degreeDao.getById(gDeId));
-		good.setgUId(usersDao.getById(gUId));
+		Users user = usersDao.getById(gUId);
+		good.setgUId(user);
 		
 		JSONObject jobj = new JSONObject();
 		String saveId = goodsDao.save(good);
@@ -270,20 +271,33 @@ public class GoodsAction {
 	 */
 	@Action(value="listByConds")
 	public String listByConds() throws IOException{
+		
 		String jsonConds = ServletActionContext.getRequest().getParameter("conds");
 		JSONObject jsonObj = JSONObject.fromObject(jsonConds);
 		String uId = "";
 		String hql = "from Goods where 1=1 and ";
 		
-		Iterator<String> sIterator = jsonObj.keys();  
+		Iterator<String> sIterator = jsonObj.keys(); 
+		PageBean page=null;
 		while(sIterator.hasNext()){  
 		    // 获得key  
 		    String key = sIterator.next();
 		    String value = jsonObj.getString(key);
-		    // 根据key获得value, value也可以是JSONObject,JSONArray,使用对应的参数接收即可  
+		    // 根据key获得value, value也可以是JSONObject,JSONArray,使用对应的参数接收即可 
+		    String pageNumStr = ServletActionContext.getRequest().getParameter("pageNum");
+			int pageNum = 1;
+			if(pageNumStr!=null && !"".equals(pageNumStr)){
+				pageNum = Integer.parseInt(pageNumStr);
+			}
+			List<Object> list = new ArrayList<Object>();
+			
 		    if("gUId".equals(key)){
 				List<Object> ulist = usersDao.getAllByConds("from Users where uName='"+value+"'");
+				
 				if(ulist.size() > 0){
+					page = new PageBean(ulist.size(),pageNum,5);
+					list = usersDao.listAll(page);//带分页
+					
 					Users obj = (Users) ulist.get(0);
 					if(obj != null){
 						value = obj.getuId();
@@ -300,12 +314,12 @@ public class GoodsAction {
 //		    System.out.println("key: "+key+",value"+value);  
 		} 
 		//分页
-//		String pageNumStr = ServletActionContext.getRequest().getParameter("pageNum");
-//		int pageNum = 1;
-//		if(pageNumStr!=null && !"".equals(pageNumStr)){
-//			pageNum = Integer.parseInt(pageNumStr);
-//		}
-//		List<Object> list = new ArrayList<Object>();
+		String pageNumStr = ServletActionContext.getRequest().getParameter("pageNum");
+		int pageNum = 1;
+		if(pageNumStr!=null && !"".equals(pageNumStr)){
+			pageNum = Integer.parseInt(pageNumStr);
+		}
+		List<Object> list = new ArrayList<Object>();
 		if(hql.lastIndexOf("and ") != -1){
 			hql = hql.substring(0, hql.lastIndexOf("and "));
 		}
@@ -328,6 +342,8 @@ public class GoodsAction {
 				jobj.put("status", "success");
 				jobj.put("data", JsonUtil.toJsonByListObj(goodlist));
 				jobj.put("picList", imgObj);
+				jobj.put("pageTotal", page.getPageCount());
+				jobj.put("pageNum", page.getPageNum());
 			}else{
 				//save failed
 				jobj.put("mes", "获取失败!");
@@ -480,5 +496,136 @@ public class GoodsAction {
 		ServletActionContext.getResponse().getWriter().write(jobj.toString());
 		return null;
 	}
+	
+	
+	
+	@Action(value="listToView")
+	public String listToView() throws IOException{
+		//分页
+		//String pageNumStr = ServletActionContext.getRequest().getParameter("pageNum");
+		//int pageNum = 1;
+		/*if(pageNumStr!=null && !"".equals(pageNumStr)){
+			pageNum = Integer.parseInt(pageNumStr);
+		}*/
+		List<Object> list = new ArrayList<Object>();
+		List<Object> goodlist = goodsDao.listByState();//获取所有用户数据，不带分页
+		System.out.println(goodlist.size());
+		//PageBean page=null;
+		JSONObject jobj = new JSONObject();
+		List<Object> imgObj = new ArrayList();
+		if(goodlist.size()>0){
+			//page = new PageBean(goodlist.size(),pageNum,5);
+			//list = goodsDao.listAll(page);//带分页
+			list = goodsDao.listByState();
+			for(int p = 0 ; p < list.size() ; p++){
+				Goods obj = (Goods)list.get(p);
+				Brand bObj = brandDao.getById(obj.getgBId().getbId());
+				Degree deObj = degreeDao.getById(obj.getgDeId().getDeId());
+				List<Object> picList = pictureDao.getAllByConds("from Picture where pGId='"+obj.getgId()+"'");
+				imgObj.add(picList);
+				obj.setgBId(bObj);
+				obj.setgDeId(deObj);
+			}
+			
+			jobj.put("mes", "获取成功!");
+			jobj.put("status", "success");
+			jobj.put("data", JsonUtil.toJsonByListObj(list));
+			jobj.put("picList", imgObj);
+			//jobj.put("pageTotal", page.getPageCount());
+			//jobj.put("pageNum", page.getPageNum());
+		}else{
+			jobj.put("mes", "获取失败!");
+			jobj.put("status", "error");
+		}
+		ServletActionContext.getResponse().setHeader("content-type", "text/html;charset=UTF-8");
+		ServletActionContext.getResponse().getWriter().write(jobj.toString());
+		return null;
+	}
+	
+	
+	@Action(value="listByUser")
+	public String listByUser() throws IOException{
+		//分页
+		String pageNumStr = ServletActionContext.getRequest().getParameter("pageNum");
+		String uId = ServletActionContext.getRequest().getParameter("uId");
+		int pageNum = 1;
+		if(pageNumStr!=null && !"".equals(pageNumStr)){
+			pageNum = Integer.parseInt(pageNumStr);
+		}
+		List<Object> list = new ArrayList<Object>();
+		List<Object> goodlist = goodsDao.listByUId(uId);//获取所有用户数据，不带分页
+		PageBean page=null;
+		JSONObject jobj = new JSONObject();
+		List<Object> imgObj = new ArrayList();
+		if(goodlist.size()>0){
+			page = new PageBean(goodlist.size(),pageNum,5);
+			list = goodsDao.listByUId(page,uId);//带分页
+			
+			for(int p = 0 ; p < list.size() ; p++){
+				Goods obj = (Goods)list.get(p);
+				Brand bObj = brandDao.getById(obj.getgBId().getbId());
+				Degree deObj = degreeDao.getById(obj.getgDeId().getDeId());
+				List<Object> picList = pictureDao.getAllByConds("from Picture where pGId='"+obj.getgId()+"'");
+				imgObj.add(picList);
+				obj.setgBId(bObj);
+				obj.setgDeId(deObj);
+			}
+			
+			jobj.put("mes", "获取成功!");
+			jobj.put("status", "success");
+			jobj.put("data", JsonUtil.toJsonByListObj(list));
+			jobj.put("picList", imgObj);
+			jobj.put("pageTotal", page.getPageCount());
+			jobj.put("pageNum", page.getPageNum());
+		}else{
+			jobj.put("mes", "获取失败!");
+			jobj.put("status", "error");
+		}
+		ServletActionContext.getResponse().setHeader("content-type", "text/html;charset=UTF-8");
+		ServletActionContext.getResponse().getWriter().write(jobj.toString());
+		return null;
+	}
 
+	@Action(value="listToBack")
+	public String listToBack() throws IOException{
+		//分页
+		//String pageNumStr = ServletActionContext.getRequest().getParameter("pageNum");
+		//int pageNum = 1;
+		/*if(pageNumStr!=null && !"".equals(pageNumStr)){
+			pageNum = Integer.parseInt(pageNumStr);
+		}*/
+		List<Object> list = new ArrayList<Object>();
+		List<Object> goodlist = goodsDao.list();//获取所有用户数据，不带分页
+		System.out.println(goodlist.size());
+		//PageBean page=null;
+		JSONObject jobj = new JSONObject();
+		List<Object> imgObj = new ArrayList();
+		if(goodlist.size()>0){
+			//page = new PageBean(goodlist.size(),pageNum,5);
+			//list = goodsDao.listAll(page);//带分页
+			list = goodsDao.list();
+			for(int p = 0 ; p < list.size() ; p++){
+				Goods obj = (Goods)list.get(p);
+				Brand bObj = brandDao.getById(obj.getgBId().getbId());
+				Degree deObj = degreeDao.getById(obj.getgDeId().getDeId());
+				List<Object> picList = pictureDao.getAllByConds("from Picture where pGId='"+obj.getgId()+"'");
+				imgObj.add(picList);
+				obj.setgBId(bObj);
+				obj.setgDeId(deObj);
+			}
+			
+			jobj.put("mes", "获取成功!");
+			jobj.put("status", "success");
+			jobj.put("data", JsonUtil.toJsonByListObj(list));
+			jobj.put("picList", imgObj);
+			//jobj.put("pageTotal", page.getPageCount());
+			//jobj.put("pageNum", page.getPageNum());
+		}else{
+			jobj.put("mes", "获取失败!");
+			jobj.put("status", "error");
+		}
+		ServletActionContext.getResponse().setHeader("content-type", "text/html;charset=UTF-8");
+		ServletActionContext.getResponse().getWriter().write(jobj.toString());
+		return null;
+	}
 }

@@ -610,12 +610,16 @@
     	}
         
         function getGoodsList(pageNum){
+        	var conds = {
+        		gUId:loginUser.uName
+        	}
         	$.ajax({
         		type:"get",
         		async:true,
-        		url:"../goods/list.action",
+        		url:"../goods/listByConds.action",
         		dataType:"json",
         		data:{
+        			conds:JSON.stringify(conds)
         			pageNum:pageNum
         		},
         		success:function(data){

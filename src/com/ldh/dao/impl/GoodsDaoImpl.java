@@ -122,4 +122,34 @@ public class GoodsDaoImpl implements IGoodsDao {
 		return list;
 	}
 
+	@Override
+	public List<Object> listByState() {
+		Session session = sessionFactory.openSession();
+		Query query = session.createQuery("from Goods where gsign = 1");
+		List<Object> list = query.list();
+		session.close();
+		return list;
+	}
+	
+	
+	@Override
+	public List<Object> listByUId(String uId) {
+		Session session = sessionFactory.openSession();
+		Query query = session.createQuery("from Goods where 1=1 and uid = "+ uId);
+		List<Object> list = query.list();
+		session.close();
+		return list;
+	}
+
+	@Override
+	public List<Object> listByUId(PageBean page,String uId) {
+		Session session = sessionFactory.openSession();
+		Query query = session.createQuery("from Goods where 1=1 and uid = "+ uId);
+		query.setFirstResult(page.getRowStart());
+		query.setMaxResults(page.getPageSize());
+		List<Object> list = query.list();
+		session.close();
+		return list;
+	}
+
 }

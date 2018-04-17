@@ -73,6 +73,27 @@
 	    		}
 			});
 		});
+		$("#uPhone").on('blur',function(){
+			var mobile = $("#uPhone").val();
+			if (mobile != "") {
+				if (!(/^1[3|4|5|8][0-9]\d{4,8}$/.test(mobile))) {
+					alert("手机格式不符，请正确填写");
+					//return false;
+				 }
+			}
+		
+			});
+		$("#uMail").on('blur',function(){
+			var mobile = $("#uMail").val();
+			if (mobile != "") {
+				if (!(/^([a-zA-Z0-9._-])+@([a-zA-Z0-9_-])+(\.[a-zA-Z0-9_-])+/.test(mobile))) {
+					alert("邮箱格式不符，请正确填写");
+					//return false;
+				 }
+			}
+		
+			});
+
 		if(Util.getSession('login_user')){
 			var loginUser = JSON.parse(Util.getSession("login_user"));
 			$('.w3l_login').empty().html('<div style="height:50px;line-height: 50px;font-size: large;">欢迎您! '+loginUser.uName+'&nbsp;&nbsp;&nbsp;&nbsp;<button class="btn btn-sm btn-info" onclick="loginout()">注销</button></div>');
@@ -193,7 +214,7 @@
 		$.ajax({
 			type:"get",
 			async:true,
-			url:"../goods/list.action",
+			url:"../goods/listToView.action",
 			dataType:"json",
 			data:{
 				pageNum:pageNum
@@ -338,6 +359,7 @@
 		}
 	}
 	
+	
 </script>
 <!-- //end-smooth-scrolling --> 
 </head> 
@@ -387,6 +409,8 @@
 													<span id="message" class="label label-success" style="display: none;"></span>
 													<input placeholder="密码" id="password" name="password" type="password" required="">	
 													<input placeholder="确认密码" id="confirmPwd" name="confirmPwd" type="password" required="">
+													<input placeholder="手机号" id="uPhone" name="uPhone" type="text" required="" style="margin: 1em 0 0;">
+													<input placeholder="邮箱" id="uMail" name="uMail" type="text" required="" style="margin: 1em 0 0;">
 													<div class="sign-up">
 														<input type="submit" value="创建用户"/>
 													</div>
@@ -416,15 +440,19 @@
 						                    return false;
 					                	}else{
 					                		$.ajax({  
-							                    url: "../user/save.action",  
+							                    url: "../users/save.action",  
 							                    type: 'post',  
-							                    dataType: 'json',  
+							                    dataType: 'json', 
+							                    async:false,
 							                    data: {  
 							                        'username': $('#username').val(),  
-							                        'password': $('#password').val(),  
+							                        'password': $('#password').val(), 
+							                        'uPhone': $('#uPhone').val(), 
+							                        'uMail': $('#uMail').val(), 
+							                        
 							                    },  
 							                    success: function(data) {  
-							                        alert("提交成功，" + data.info);  
+							                        alert(data.mes);  
 							                    },  
 							                    error: function(XMLHttpRequest, textStatus, errorThrown) {  
 							                        alert("发生错误，" + textStatus);  

@@ -86,7 +86,7 @@ public class LoginAction {
 	@Action(value="checkName")
 	public String checkName(){
 		String username = ServletActionContext.getRequest().getParameter("aaa");
-		List<Object> templist = usersDao.getAllByConds("from Users where username='"+username+"'");
+		List<Object> templist = usersDao.getAllByConds("from Users where uName='"+username+"'");
 		if(templist.size() > 0){
 			try {
 				JSONObject jobj = JSONObject.fromObject("{mes:\'用户名已存在!\',status:\'failed\'}");

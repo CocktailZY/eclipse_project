@@ -15,6 +15,7 @@ function tologin(){
 				$('.w3l_login').empty().html('<div style="height:50px;line-height: 50px;font-size: large;">欢迎您! '+data.user.uName+'&nbsp;&nbsp;&nbsp;&nbsp;<button class="btn btn-sm btn-info" onclick="loginout()">注销</button></div>');
 				$('.w3l_logo').css('margin-left','15em');
 				$('#myModal88').modal('hide');
+				window.reload();
 			} else {
 				//没有数据或服务器错误
 			}

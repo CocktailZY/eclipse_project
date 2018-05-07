@@ -91,18 +91,8 @@ public class OrderInfoAction {
 		String params = ServletActionContext.getRequest().getParameter("info");
 		JSONArray obj = JSONArray.fromObject(params);//详情
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
-//		String oComplete = ServletActionContext.getRequest().getParameter("oComplete");
-//		int oSign = Integer.parseInt(ServletActionContext.getRequest().getParameter("oSign"));
 		String oUId = ServletActionContext.getRequest().getParameter("oUId");
-//		String oAId = ServletActionContext.getRequest().getParameter("oAId");
 		
-//		OrderInfo orderInfo = new OrderInfo();
-//		orderInfo.setoTotal(oTotal);
-//		orderInfo.setoDetermine(df.format(new Date()));//下单时间
-////		orderInfo.setoComplete(oComplete);
-//		orderInfo.setoSign(1);
-//		orderInfo.setoUId(userDao.getById(oUId));
-//		orderInfo.setoAId(addressDao.getById(oAId));
 		JSONObject jobj = new JSONObject();
 		boolean flag = false;
 		if(obj.size() > 0){
